@@ -1,0 +1,86 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* res_currency_rate_provider_binance
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 18.0-20251008\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-10-23 04:43+0000\n"
+"PO-Revision-Date: 2025-10-23 04:43+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: res_currency_rate_provider_binance
+#: model:ir.model.fields.selection,name:res_currency_rate_provider_binance.selection__res_currency_rate_provider__service__bnb_p2p
+msgid "Binance P2P API"
+msgstr "Binance P2P API"
+
+#. module: res_currency_rate_provider_binance
+#: model:ir.model.fields.selection,name:res_currency_rate_provider_binance.selection__res_currency_rate_provider__p2p_transaction_type__buy
+msgid "Buy"
+msgstr "Comprar"
+
+#. module: res_currency_rate_provider_binance
+#: model:res.currency,currency_subunit_label:res_currency_rate_provider_binance.USDC
+#: model:res.currency,currency_subunit_label:res_currency_rate_provider_binance.USDT
+msgid "Cents"
+msgstr "Centavos"
+
+#. module: res_currency_rate_provider_binance
+#: model:ir.model,name:res_currency_rate_provider_binance.model_res_currency
+#: model:ir.model.fields,field_description:res_currency_rate_provider_binance.field_res_currency__name
+msgid "Currency"
+msgstr "Moneda"
+
+#. module: res_currency_rate_provider_binance
+#: model:ir.model.fields,help:res_currency_rate_provider_binance.field_res_currency__name
+msgid "Currency Code (ISO 4217)"
+msgstr "Código de divisa (ISO 4217)"
+
+#. module: res_currency_rate_provider_binance
+#: model:ir.model,name:res_currency_rate_provider_binance.model_res_currency_rate_provider
+msgid "Currency Rates Provider"
+msgstr "Proveedor de Tipos de Cambio"
+
+#. module: res_currency_rate_provider_binance
+#: model:ir.model.fields,field_description:res_currency_rate_provider_binance.field_res_currency_rate_provider__p2p_transaction_type
+msgid "P2P Transaction Type"
+msgstr "Tipo de transacción P2P"
+
+#. module: res_currency_rate_provider_binance
+#: model:ir.model.fields,field_description:res_currency_rate_provider_binance.field_res_currency_rate_provider__service
+msgid "Provider"
+msgstr "Proveedor"
+
+#. module: res_currency_rate_provider_binance
+#: model_terms:ir.ui.view,arch_db:res_currency_rate_provider_binance.view_res_currency_rate_provider_form_binance
+msgid ""
+"Rate synchronization with Binance does not allow a date range, it will take "
+"the current offers"
+msgstr "La sincronización de tasas con Binance no permite un rango de fechas, tomará"
+"las ofertas actuales"
+
+#. module: res_currency_rate_provider_binance
+#: model:ir.model.fields.selection,name:res_currency_rate_provider_binance.selection__res_currency_rate_provider__p2p_transaction_type__sell
+msgid "Sell"
+msgstr "Vender"
+
+#. module: res_currency_rate_provider_binance
+#: model:res.currency,currency_unit_label:res_currency_rate_provider_binance.USDC
+msgid "USDC"
+msgstr "USDC"
+
+#. module: res_currency_rate_provider_binance
+#: model:res.currency,currency_unit_label:res_currency_rate_provider_binance.USDT
+msgid "USDT"
+msgstr "USDT"
+
+#. module: res_currency_rate_provider_binance
+#: model_terms:ir.ui.view,arch_db:res_currency_rate_provider_binance.view_res_currency_rate_provider_form_binance
+msgid "Update Rates Now"
+msgstr "Actualizar tasas ahora"
