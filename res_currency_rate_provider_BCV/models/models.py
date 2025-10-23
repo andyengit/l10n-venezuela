@@ -19,7 +19,7 @@ class ResCompany(models.Model):
     _inherit = "res.currency.rate.provider"
 
     service = fields.Selection(
-        selection_add=[("bcv", "BCV scrapping")],
+        selection_add=[("bcv", "BCV scraping")],
         ondelete={"bcv": "set default"},
     )
 
