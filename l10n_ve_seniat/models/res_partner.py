@@ -7,6 +7,8 @@ import logging
 
 _logger = logging.getLogger(__name__)
 
+VE_CODE = "VE"
+
 
 class ResPartner(models.Model):
     _inherit = "res.partner"
@@ -21,13 +23,15 @@ class ResPartner(models.Model):
 
     taxpayer_type = fields.Selection(
         [
+            ("ordinary", "Ordinary"),
             ("formal", "Formal"),
             ("special", "Special"),
-            ("ordinary", "Ordinary"),
         ],
-        default="ordinary",
         store=True,
+        readonly=False,
+        compute="_compute_taxpayer_type",
     )
+
     prefix_vat = fields.Char(string="Prefix vat", compute="_compute_vat_prefix")
     municipality_id = fields.Many2one("res.country.municipality", "Municipality")
     parish_id = fields.Many2one("res.country.parish", "Parish")
@@ -43,6 +47,15 @@ class ResPartner(models.Model):
                     record.prefix_vat = match.group(1).upper()
                     continue
             record.prefix_vat = False
+
+    @api.depends("country_id", "country_id.code")
+    def _compute_taxpayer_type(self):
+        for record in self:
+            if record.country_id and record.country_id.code == VE_CODE:
+                if not record.taxpayer_type:
+                    record.taxpayer_type = "ordinary"
+            else:
+                record.taxpayer_type = False
 
     @api.onchange("municipality_id")
     def _onchange_municipality_id(self):
@@ -76,3 +89,14 @@ class ResPartner(models.Model):
             return False
 
         return True
+
+    @api.constrains("country_id", "taxpayer_type")
+    def _check_taxpayer_type_country(self):
+        for rec in self:
+            if rec.taxpayer_type and (not rec.country_id or rec.country_id.code != VE_CODE):
+                raise ValidationError(
+                    _(
+                        "The taxpayer type can only be set for Venezuelan partners "
+                        "(country code 'VE')."
+                    )
+                )
