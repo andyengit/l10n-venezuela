@@ -32,6 +32,7 @@ class ResPartner(models.Model):
         compute="_compute_taxpayer_type",
     )
 
+    # TODO: prefix_vat isn't used anywhere
     prefix_vat = fields.Char(string="Prefix vat", compute="_compute_vat_prefix")
     municipality_id = fields.Many2one("res.country.municipality", "Municipality")
     parish_id = fields.Many2one("res.country.parish", "Parish")
