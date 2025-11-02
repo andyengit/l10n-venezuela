@@ -8,7 +8,7 @@ from odoo import fields, models, _
 _logger = logging.getLogger(__name__)
 
 TIMEOUT = 5000
-MONEDAS = {"USDT": "USDT", "USDC": "USDC"}
+CURRENCIES = {"USDT": "USDT", "USDC": "USDC"}
 URL_BINANCE_P2P = "https://p2p.binance.com/bapi/c2c/v2/friendly/c2c/adv/search"
 
 
@@ -28,7 +28,7 @@ class ResCurrencyRateProvider(models.Model):
         self.ensure_one()
         if self.service != "bnb_p2p":
             return super()._get_supported_currencies()
-        return list(MONEDAS.keys())
+        return list(CURRENCIES.keys())
 
     def _obtain_rates(self, base_currency, currencies, date_from, date_to):
         self.ensure_one()

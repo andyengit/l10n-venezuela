@@ -11,7 +11,7 @@ from odoo import fields, models
 _logger = logging.getLogger(__name__)
 
 TIMEOUT = 5000
-MONEDAS = {"EUR": "euro", "CNY": "yuan", "TRY": "lira", "RUB": "rublo", "USD": "dolar"}
+CURRENCIES = {"EUR": "euro", "CNY": "yuan", "TRY": "lira", "RUB": "rublo", "USD": "dolar"}
 CARACAS_TZ = pytz.timezone("America/Caracas")
 
 
@@ -19,7 +19,7 @@ class ResCurrencyRateProvider(models.Model):
     _inherit = "res.currency.rate.provider"
 
     service = fields.Selection(
-        selection_add=[("bcv", "BCV scrapping")],
+        selection_add=[("bcv", "BCV scraping")],
         ondelete={"bcv": "set default"},
     )
 
@@ -27,7 +27,7 @@ class ResCurrencyRateProvider(models.Model):
         self.ensure_one()
         if self.service != "bcv":
             return super()._get_supported_currencies()
-        return list(MONEDAS.keys())
+        return list(CURRENCIES.keys())
 
     def _obtain_rates(self, base_currency, currencies, date_from, date_to):
         self.ensure_one()
@@ -64,7 +64,7 @@ class ResCurrencyRateProvider(models.Model):
                 if currency_name in ["Bs", "VES", "VEF", "VED"]:
                     rslt[currency_name] = (1.0, dt)
                 else:
-                    sValue = htmlelem.xpath(f".//div[@id='{MONEDAS[currency_name]}']/div/div/div[2]/strong")[0].text
+                    sValue = htmlelem.xpath(f".//div[@id='{CURRENCIES[currency_name]}']/div/div/div[2]/strong")[0].text
                     value = float(sValue.replace(" ", "").replace(",", "."))
 
                     rslt[currency_name] = (1.0 / value, dt)
