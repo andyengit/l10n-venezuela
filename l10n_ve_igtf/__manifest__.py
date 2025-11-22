@@ -1,0 +1,31 @@
+{
+    "name": "Venezuela - IGTF",
+    "summary": "Módulo para campos del impuesto IGTF (Impuesto a las grandes transacciones financieras)",
+    "license": "LGPL-3",
+    "description": "Módulo para campos del impuesto IGTF (Impuesto a las grandes transacciones financieras)",
+    "author": "Mauricio Istúriz, Anderson Armeya, Odoo Community Association (OCA)",
+    "category": "Accountant/Accountant",
+    "version": "18.0.1.0.0",
+    "depends": [
+        "base",
+        "account",
+        # "l10n_ve_rate",
+        # "l10n_ve_tax",
+        # "l10n_ve_tax_payer",
+    ],
+    "data": [
+        "views/account_journal_views.xml",
+        "views/res_company_views.xml",
+        "views/account_payment_views.xml",
+        "views/res_config_settings_views.xml",
+        # "report/invoice_free_form.xml",
+        "wizard/account_payment_register_views.xml",
+        "data/ir_actions_server.xml",
+    ],
+    "icon": "/account/static/description/l10n.png",
+    "assets": {
+        "web.assets_backend": ["l10n_ve_igtf/static/src/components/**/*"],
+    },
+    # "pre_init_hook": "pre_init_hook",
+    "application": False,
+}
