@@ -8,7 +8,10 @@ from odoo import Command, _, api, fields, models
 from odoo.exceptions import UserError, ValidationError
 from odoo.tools.float_utils import float_round
 
-from ..utils.utils_retention import load_retention_lines, search_invoices_with_taxes
+from ..utils.utils_retention import (
+    load_retention_lines,
+    search_invoices_with_taxes,
+)
 
 _logger = logging.getLogger(__name__)
 
@@ -136,9 +139,12 @@ class AccountRetention(models.Model):
 
     original_lines_per_invoice_counter = fields.Char(
         help=(
-            "Technical field to store the quantity of retention lines per invoice before the user"
-            " changes them. This is used to know if the user has deleted the retention lines when"
-            " the invoice is changed, in order to delete all the other lines of the same invoice"
+            "Technical field to store the quantity of retention"
+            "lines per invoice before the user"
+            " changes them. This is used to know if the user has"
+            "deleted the retention lines when"
+            " the invoice is changed, in order to delete all"
+            "the other lines of the same invoice"
             " that the one that just has been deleted."
         )
     )
@@ -689,7 +695,10 @@ class AccountRetention(models.Model):
         self.ensure_one()
         Payment = self.env["account.payment"]
         journals = {
-            ("islr", "in_invoice"): self.env.company.islr_supplier_retention_journal_id,
+            (
+                "islr",
+                "in_invoice",
+            ): self.env.company.islr_supplier_retention_journal_id,
             (
                 "islr",
                 "out_invoice",

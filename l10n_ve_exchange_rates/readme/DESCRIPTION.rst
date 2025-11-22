@@ -1,1 +1,0 @@
-Tooltip de Tasas

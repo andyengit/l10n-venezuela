@@ -5,7 +5,7 @@
     "sequence": 10,
     "summary": "",
     "license": "LGPL-3",
-    "author": ["andyengit"],
+    "author": "Andyengit,Odoo Community Association (OCA)",
     "images": [],
     "depends": [
         "product",

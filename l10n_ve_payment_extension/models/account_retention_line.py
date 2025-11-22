@@ -47,9 +47,6 @@ class AccountRetentionLine(models.Model):
     retention_rate = fields.Float(store=True, digits="Tasa")
     move_id = fields.Many2one("account.move", "move", ondelete="cascade", store=True)
     is_client_retention = fields.Boolean(default=True)
-    display_invoice_number = fields.Char(
-        string="Invoice Number", compute="_compute_display_invoice_number", store=True
-    )
     invoice_amount = fields.Float(
         string="Taxable income",
         digits="Tasa",
@@ -60,7 +57,10 @@ class AccountRetentionLine(models.Model):
     iva_amount = fields.Float(string="IVA", digits=(16, 2))
 
     retention_amount = fields.Float(
-        digits="Tasa", compute="_compute_retention_amount", store=True, readonly=False
+        digits="Tasa",
+        compute="_compute_retention_amount",
+        store=True,
+        readonly=False,
     )
 
     payment_concept_id = fields.Many2one(
@@ -229,7 +229,8 @@ class AccountRetentionLine(models.Model):
     @api.onchange("economic_activity_id", "move_id")
     def onchange_economic_activity_id(self):
         """
-        Computes the aliquot of the line when the economic activity is changed for the retentions
+        Computes the aliquot of the line when the economic
+        activity is changed for the retentions
         of municipal type.
         """
         municipal_retention_lines_with_economic_activity_and_invoice = self.filtered(
@@ -327,7 +328,11 @@ class AccountRetentionLine(models.Model):
             )
             retention_payments = self.env["account.payment"].search(
                 [
-                    ("move_id.line_ids", "in", partials.mapped("debit_move_id").ids),
+                    (
+                        "move_id.line_ids",
+                        "in",
+                        partials.mapped("debit_move_id").ids,
+                    ),
                     ("is_retention", "=", True),
                 ]
             )

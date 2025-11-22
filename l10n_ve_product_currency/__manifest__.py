@@ -5,7 +5,7 @@
     "category": "Products",
     "sequence": 10,
     "summary": "",
-    "author": ["andyengit", "ADHOC SA"],
+    "author": "Andyengit,Odoo Community Association (OCA)",
     "license": "LGPL-3",
     "images": [],
     "depends": [
@@ -16,7 +16,6 @@
         "security/product_currency_security.xml",
     ],
     "demo": [
-        "demo/product_product_demo.xml",
     ],
     "installable": True,
     "auto_install": False,

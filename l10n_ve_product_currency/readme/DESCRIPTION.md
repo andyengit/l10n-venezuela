@@ -1,1 +1,0 @@
-Modificar moneda del producto

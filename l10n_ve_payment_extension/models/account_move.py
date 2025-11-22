@@ -128,7 +128,8 @@ class AccountMoveRetention(models.Model):
 
     def _validate_iva_retention(self):
         """
-        Validate that the company has a journal for IVA supplier retention and that the invoice has
+        Validate that the company has a journal for IVA supplier
+        retention and that the invoice has
         at least one tax, in order for the IVA retention to be created.
         """
         self.ensure_one()
