@@ -56,5 +56,5 @@
         "wizard/wizard_retention_iva.xml",
         "views/menu.xml",
     ],
-    "application": True,
+    "application": False,
 }
