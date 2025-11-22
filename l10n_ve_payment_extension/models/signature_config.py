@@ -1,4 +1,4 @@
-from odoo import api, models, fields, _
+from odoo import fields, models
 
 
 class SignatureConfig(models.Model):

@@ -1,8 +1,8 @@
-from odoo import models, fields, api, Command, _
-from odoo.exceptions import UserError
-from ..utils.utils_retention import load_retention_lines
-
 import logging
+
+from odoo import Command, _, api, fields, models
+
+from ..utils.utils_retention import load_retention_lines
 
 _logger = logging.getLogger(__name__)
 
@@ -65,7 +65,12 @@ class AccountPaymentRegister(models.TransientModel):
         fields to True, so the user can edit the payment fields.
         """
         if not self.is_retention:
-            return {"value": {"retention_line_ids": [Command.clear()], "edit_retention_fields": True}}
+            return {
+                "value": {
+                    "retention_line_ids": [Command.clear()],
+                    "edit_retention_fields": True,
+                }
+            }
         if self.can_group_payments:
             self.group_payment = False
         self.journal_id = self.env.company.iva_customer_retention_journal_id.id
@@ -96,7 +101,9 @@ class AccountPaymentRegister(models.TransientModel):
             The onchange values containing the lines to be loaded or the errors.
         """
         invoices_without_taxes = invoices.filtered(
-            lambda i: not any(line.tax_ids[0].amount > 0 for line in i.line_ids if line.tax_ids)
+            lambda i: not any(
+                line.tax_ids[0].amount > 0 for line in i.line_ids if line.tax_ids
+            )
         )
         if any(invoices_without_taxes):
             error = _(
@@ -109,7 +116,11 @@ class AccountPaymentRegister(models.TransientModel):
             }
 
         invoices_with_emitted_retention = invoices.filtered(
-            lambda i: any(i.retention_iva_line_ids.filtered(lambda l: l.state in ("draft", "emitted")))
+            lambda i: any(
+                i.retention_iva_line_ids.filtered(
+                    lambda l: l.state in ("draft", "emitted")
+                )
+            )
         )
         if any(invoices_with_emitted_retention):
             error = _(
@@ -123,7 +134,9 @@ class AccountPaymentRegister(models.TransientModel):
 
         retention_lines = []
         for invoice in invoices:
-            retention_lines.extend(load_retention_lines(invoice, self.env["account.retention"]))
+            retention_lines.extend(
+                load_retention_lines(invoice, self.env["account.retention"])
+            )
         return {"value": {"retention_line_ids": retention_lines}}
 
     @api.onchange("retention_line_ids")
@@ -155,7 +168,7 @@ class AccountPaymentRegister(models.TransientModel):
         payments = super()._init_payments(to_process, edit_mode)
         if not self.is_retention:
             return payments
-        for payment, vals in zip(payments, to_process):
+        for payment, vals in zip(payments, to_process, strict=False):
             payment.is_retention = True
             payment.retention_line_ids = [
                 Command.link(line.id)
@@ -164,7 +177,9 @@ class AccountPaymentRegister(models.TransientModel):
             ]
             payment.journal_id = self.env.company.iva_customer_retention_journal_id.id
             payment.compute_retention_amount_from_retention_lines()
-        retention = self.with_context(skip_is_manually_modified=True)._create_retention(payments)
+        retention = self.with_context(skip_is_manually_modified=True)._create_retention(
+            payments
+        )
         retention.action_post()
         return payments
 
@@ -173,7 +188,11 @@ class AccountPaymentRegister(models.TransientModel):
         If the payment is a retention, we avoid the post of the payment because we manage that
         in the retention action_post method.
         """
-        return super()._post_payments(to_process, edit_mode) if not self.is_retention else None
+        return (
+            super()._post_payments(to_process, edit_mode)
+            if not self.is_retention
+            else None
+        )
 
     def _reconcile_payments(self, to_process, edit_mode=False):
         """

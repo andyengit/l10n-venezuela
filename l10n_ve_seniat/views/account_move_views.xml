@@ -2,17 +2,20 @@
     <record id="view_move_form" model="ir.ui.view">
         <field name="name">account.move.ve.form</field>
         <field name="model">account.move</field>
-        <field name="inherit_id" ref="account.view_move_form"/>
+        <field name="inherit_id" ref="account.view_move_form" />
         <field name="arch" type="xml">
             <xpath expr="//label[@for='invoice_date']" position="before">
                 <field
                     name="reception_date"
                     invisible="country_code != 'VE' or (country_code == 'VE' and (state == 'draft' or move_type == 'entry'))"
                     readonly="state != 'posted'"
-                    />
+                />
             </xpath>
             <xpath expr="//label[@for='invoice_date']" position="before">
-                <field name="l10n_ve_invoice_date" invisible="country_code != 'VE' or (country_code == 'VE' and state == 'draft')"/>
+                <field
+                    name="l10n_ve_invoice_date"
+                    invisible="country_code != 'VE' or (country_code == 'VE' and state == 'draft')"
+                />
             </xpath>
             <xpath expr="//label[@for='invoice_date']" position="attributes">
                 <attribute name="invisible">country_code == 'VE'</attribute>
@@ -24,10 +27,15 @@
                 <attribute name="invisible">move_type != 'entry'</attribute>
             </xpath>
             <xpath expr="//header" position="inside">
-                <button name="button_cancel" string="Cancel" type="object" groups="account.group_account_invoice" data-hotkey="x"
+                <button
+                    name="button_cancel"
+                    string="Cancel"
+                    type="object"
+                    groups="account.group_account_invoice"
+                    data-hotkey="x"
                     invisible="country_code != 'VE' or (country_code == 'VE' and (move_type == 'entry' or move_type != 'out_invoice' or state != 'posted'))"
                     confirm="This action will cancel the document. Are you sure you want to proceed?"
-                    />
+                />
             </xpath>
         </field>
     </record>

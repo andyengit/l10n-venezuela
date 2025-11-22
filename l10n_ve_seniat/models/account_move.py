@@ -1,11 +1,7 @@
-from datetime import datetime
-import json
 import logging
 
-
-from odoo import api, Command, fields, models, _
-from odoo.exceptions import ValidationError, UserError
-from odoo.tools import format_date
+from odoo import _, fields, models
+from odoo.exceptions import UserError, ValidationError
 
 _logger = logging.getLogger(__name__)
 
@@ -44,7 +40,7 @@ class AccountMove(models.Model):
 
     def button_cancel(self):
         self = self.with_context(force_draft=True)
-        return super(AccountMove, self).button_cancel()
+        return super().button_cancel()
 
     def button_draft(self):
         if self.country_code != self.env.ref("base.ve").code:

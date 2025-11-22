@@ -1,7 +1,9 @@
-from dateutil.relativedelta import relativedelta
-from odoo import fields, models, _
-from odoo.exceptions import UserError
 from datetime import date
+
+from dateutil.relativedelta import relativedelta
+
+from odoo import _, fields, models
+from odoo.exceptions import UserError
 
 
 class TxtWizard(models.TransientModel):
@@ -9,7 +11,9 @@ class TxtWizard(models.TransientModel):
     _description = "File IVA taxes with the SENIAT"
 
     date_start = fields.Date(default=date.today().replace(day=1))
-    date_end = fields.Date(default=date.today().replace(day=1) + relativedelta(months=1, days=-1))
+    date_end = fields.Date(
+        default=date.today().replace(day=1) + relativedelta(months=1, days=-1)
+    )
 
     def generate_txt(self):
         company_id = self.env.company.id
@@ -28,10 +32,13 @@ class TxtWizard(models.TransientModel):
         if retention_count == 0:
             raise UserError(_("No retentions found for the selected period"))
 
-        url = "/web/binary/download_retention_iva_txt?&date_start=%s&date_end=%s&company_id=%s" % (
-            self.date_start,
-            self.date_end,
-            str(company_id),
+        url = (
+            "/web/binary/download_retention_iva_txt?&date_start=%s&date_end=%s&company_id=%s"
+            % (
+                self.date_start,
+                self.date_end,
+                str(company_id),
+            )
         )
         return {"type": "ir.actions.act_url", "url": url, "target": "self"}
 
@@ -45,32 +52,44 @@ class TxtWizard(models.TransientModel):
         data = []
         for line in retentions.mapped("retention_line_ids"):
             line_data = {}
-            line_data["RIF del agente de retención"] = line.retention_id.company_id.partner_id.vat
+            line_data["RIF del agente de retención"] = (
+                line.retention_id.company_id.partner_id.vat
+            )
             line_data["Período impositivo"] = line.retention_id.date.strftime("%Y%m")
-            line_data["Fecha de factura"] = line.move_id.invoice_date.strftime("%Y-%m-%d")
+            line_data["Fecha de factura"] = line.move_id.invoice_date.strftime(
+                "%Y-%m-%d"
+            )
             line_data["Tipo de operación"] = "C"
 
             if line.move_id.journal_id.is_debit:
                 line_data["Tipo de documento"] = document_types["in_debit"]
-                line_data["Número del documento afectado"] = line.move_id.debit_origin_id.name or "0"
+                line_data["Número del documento afectado"] = (
+                    line.move_id.debit_origin_id.name or "0"
+                )
             else:
                 line_data["Tipo de documento"] = document_types[line.move_id.move_type]
-                line_data["Número del documento afectado"] = line.move_id.reversed_entry_id.name or "0"
+                line_data["Número del documento afectado"] = (
+                    line.move_id.reversed_entry_id.name or "0"
+                )
 
             line_data["RIF de proveedor"] = (
                 line.move_id.partner_id.prefix_vat + line.move_id.partner_id.vat
             )
             line_data["Número de documento"] = line.move_id.name
             line_data["Número de control"] = line.move_id.correlative
-            line_data["Número del documento afectado"] = line.move_id.debit_origin_id.name if line.move_id.journal_id.is_debit  else line.move_id.reversed_entry_id.name or "0"
+            line_data["Número del documento afectado"] = (
+                line.move_id.debit_origin_id.name
+                if line.move_id.journal_id.is_debit
+                else line.move_id.reversed_entry_id.name or "0"
+            )
             line_data["Número de comprobante de retención"] = (
                 int(line.retention_id.number) if line.retention_id.number else 0
             )
             line_data["Alícuota"] = line.aliquot
             exempt_amount = sum(
-                line.move_id.invoice_line_ids.filtered(lambda l: l.tax_ids.amount == 0).mapped(
-                    "price_subtotal"
-                )
+                line.move_id.invoice_line_ids.filtered(
+                    lambda l: l.tax_ids.amount == 0
+                ).mapped("price_subtotal")
             )
             line_data["Monto total del documento"] = (
                 line.invoice_amount + line.iva_amount + exempt_amount

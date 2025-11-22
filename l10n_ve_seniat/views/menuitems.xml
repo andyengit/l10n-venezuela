@@ -1,6 +1,10 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8" ?>
 <odoo>
-    <menuitem id="l10n_ve_menu_no_one" parent="base.menu_custom" name="Venezuelan Localization">
+    <menuitem
+        id="l10n_ve_menu_no_one"
+        parent="base.menu_custom"
+        name="Venezuelan Localization"
+    >
         <menuitem
             name="Municipalities"
             id="menu_res_municipality"
@@ -15,5 +19,4 @@
             sequence="3"
         />
     </menuitem>
-
 </odoo>

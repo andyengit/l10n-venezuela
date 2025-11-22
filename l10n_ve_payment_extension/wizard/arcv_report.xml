@@ -7,17 +7,17 @@
                 <sheet>
                     <group>
                         <group>
-                            <field name="partner_id"/>
+                            <field name="partner_id" />
                         </group>
                         <group>
-                            <field name="date_start"/>
-                            <field name="date_end"/>
+                            <field name="date_start" />
+                            <field name="date_end" />
                         </group>
                     </group>
                 </sheet>
                 <footer>
                     <button string="Imprimir" type="object" name="print_arcv" />
-                    <button string="Cancel" class="btn-default" special="cancel"/>
+                    <button string="Cancel" class="btn-default" special="cancel" />
                 </footer>
             </form>
         </field>

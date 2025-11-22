@@ -6,15 +6,20 @@
             <form string="Generate TXT">
                 <sheet>
                     <group>
-                        <field name="date_start"/>
+                        <field name="date_start" />
                     </group>
                     <group>
-                        <field name="date_end"/>
+                        <field name="date_end" />
                     </group>
                 </sheet>
                 <footer>
-                    <button string="Generate TXT" type="object" name="generate_txt" class="btn-primary"/>
-                    <button string="Cancel" class="btn-default" special="cancel"/>
+                    <button
+                        string="Generate TXT"
+                        type="object"
+                        name="generate_txt"
+                        class="btn-primary"
+                    />
+                    <button string="Cancel" class="btn-default" special="cancel" />
                 </footer>
             </form>
         </field>
@@ -27,4 +32,3 @@
         <field name="target">new</field>
     </record>
 </odoo>
-

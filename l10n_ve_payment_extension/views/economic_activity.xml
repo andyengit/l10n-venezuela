@@ -1,7 +1,12 @@
 <odoo>
     <data>
-        <record id="view_economic_activity_tree_l10n_ve_payment_extension" model="ir.ui.view">
-            <field name="name">view.economic.activity.list.l10n.ve.payment.extension</field>
+        <record
+            id="view_economic_activity_tree_l10n_ve_payment_extension"
+            model="ir.ui.view"
+        >
+            <field
+                name="name"
+            >view.economic.activity.list.l10n.ve.payment.extension</field>
             <field name="model">economic.activity</field>
             <field name="arch" type="xml">
                 <list>
@@ -15,8 +20,13 @@
             </field>
         </record>
 
-        <record id="view_economic_activity_from_l10n_ve_payment_extension" model="ir.ui.view">
-            <field name="name">view.economic.activity.from.l10n.ve.payment.extension</field>
+        <record
+            id="view_economic_activity_from_l10n_ve_payment_extension"
+            model="ir.ui.view"
+        >
+            <field
+                name="name"
+            >view.economic.activity.from.l10n.ve.payment.extension</field>
             <field name="model">economic.activity</field>
             <field name="arch" type="xml">
                 <form string="Economic activity">

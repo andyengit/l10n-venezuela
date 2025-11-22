@@ -8,7 +8,9 @@ class ResCurrency(models.Model):
     @api.model
     def get_exchange_rates(self):
         company_currency = self.env.company.currency_id
-        currencies = self.env["res.currency"].search([("active", "=", True), ("id", "!=", company_currency.id)])
+        currencies = self.env["res.currency"].search(
+            [("active", "=", True), ("id", "!=", company_currency.id)]
+        )
 
         rates_data = []
         for currency in currencies:
@@ -16,7 +18,9 @@ class ResCurrency(models.Model):
                 {
                     "name": currency.name,
                     "symbol": currency.symbol,
-                    "rate": float_round(currency.inverse_rate, precision_digits=currency.decimal_places),
+                    "rate": float_round(
+                        currency.inverse_rate, precision_digits=currency.decimal_places
+                    ),
                     "company_currency_name": company_currency.name,
                     "company_currency_symbol": company_currency.symbol,
                 }

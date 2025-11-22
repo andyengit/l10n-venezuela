@@ -7,4 +7,6 @@ class ResCountryParish(models.Model):
 
     name = fields.Char(string="Name", required=True)
     code = fields.Char(string="Code", required=True)
-    municipality_id = fields.Many2one("res.country.municipality", string="Municipality", required=True)
+    municipality_id = fields.Many2one(
+        "res.country.municipality", string="Municipality", required=True
+    )

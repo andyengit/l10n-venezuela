@@ -1,15 +1,15 @@
 /** @odoo-module **/
 
-import { Component, useState } from "@odoo/owl";
-import { useService } from "@web/core/utils/hooks";
-import { Dropdown } from "@web/core/dropdown/dropdown";
-import { DropdownItem } from "@web/core/dropdown/dropdown_item";
+import {Component, useState} from "@odoo/owl";
+import {useService} from "@web/core/utils/hooks";
+import {Dropdown} from "@web/core/dropdown/dropdown";
+import {DropdownItem} from "@web/core/dropdown/dropdown_item";
 
-import { registry } from "@web/core/registry";
-import { onWillStart } from "@odoo/owl";
+import {registry} from "@web/core/registry";
+import {onWillStart} from "@odoo/owl";
 
 export class ExchangeRateTooltip extends Component {
-    static components = { Dropdown, DropdownItem };
+    static components = {Dropdown, DropdownItem};
     setup() {
         this.orm = useService("orm");
         this.state = useState({

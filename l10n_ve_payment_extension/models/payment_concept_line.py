@@ -1,16 +1,21 @@
-from odoo import api, models, fields, _
-from odoo.exceptions import UserError, ValidationError
+from odoo import _, api, fields, models
 
 
 class PaymentConceptLine(models.Model):
     _name = "payment.concept.line"
     _description = "Payment Concept Line"
 
-    _sql_constraints = [("unique_code", "UNIQUE(code)", "The concept code already exists")]
+    _sql_constraints = [
+        ("unique_code", "UNIQUE(code)", "The concept code already exists")
+    ]
 
     pay_from = fields.Float(string="Payments greater than:")
     type_person_id = fields.Many2one(
-        "type.person", string="Type person",store=True, required=True, domain=[("state", "=", True)]
+        "type.person",
+        string="Type person",
+        store=True,
+        required=True,
+        domain=[("state", "=", True)],
     )
     payment_concept_id = fields.Many2one(
         "payment.concept",
@@ -20,7 +25,9 @@ class PaymentConceptLine(models.Model):
         ondelete="cascade",
     )
     percentage_tax_base = fields.Float(string="Percentage Taxable Base")
-    tariff_id = fields.Many2one("fees.retention", string="Tariff", domain=[("status", "=", True)])
+    tariff_id = fields.Many2one(
+        "fees.retention", string="Tariff", domain=[("status", "=", True)]
+    )
     code = fields.Char(string="Concept code", required=True)
 
     @api.onchange("percentage_tax_base")
@@ -29,7 +36,9 @@ class PaymentConceptLine(models.Model):
             return {
                 "warning": {
                     "title": _("Error in taxable base percentage field"),
-                    "message": _("the percentage may not exceed 100% on the payment concept line"),
+                    "message": _(
+                        "the percentage may not exceed 100% on the payment concept line"
+                    ),
                 },
                 "value": {"percentage_tax_base": 0},
             }

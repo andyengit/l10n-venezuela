@@ -11,7 +11,13 @@ from odoo import fields, models
 _logger = logging.getLogger(__name__)
 
 TIMEOUT = 5000
-CURRENCIES = {"EUR": "euro", "CNY": "yuan", "TRY": "lira", "RUB": "rublo", "USD": "dolar"}
+CURRENCIES = {
+    "EUR": "euro",
+    "CNY": "yuan",
+    "TRY": "lira",
+    "RUB": "rublo",
+    "USD": "dolar",
+}
 CARACAS_TZ = pytz.timezone("America/Caracas")
 
 
@@ -64,7 +70,9 @@ class ResCurrencyRateProvider(models.Model):
                 if currency_name in ["Bs", "VES", "VEF", "VED"]:
                     rslt[currency_name] = (1.0, dt)
                 else:
-                    sValue = htmlelem.xpath(f".//div[@id='{CURRENCIES[currency_name]}']/div/div/div[2]/strong")[0].text
+                    sValue = htmlelem.xpath(
+                        f".//div[@id='{CURRENCIES[currency_name]}']/div/div/div[2]/strong"
+                    )[0].text
                     value = float(sValue.replace(" ", "").replace(",", "."))
 
                     rslt[currency_name] = (1.0 / value, dt)

@@ -1,9 +1,11 @@
 import logging
-import requests
 from collections import defaultdict
 from datetime import datetime
 from decimal import Decimal
-from odoo import fields, models, _
+
+import requests
+
+from odoo import fields, models
 
 _logger = logging.getLogger(__name__)
 
@@ -21,7 +23,9 @@ class ResCurrencyRateProvider(models.Model):
     )
 
     p2p_transaction_type = fields.Selection(
-        selection=[("BUY", "Buy"), ("SELL", "Sell")], default="BUY", string="P2P Transaction Type"
+        selection=[("BUY", "Buy"), ("SELL", "Sell")],
+        default="BUY",
+        string="P2P Transaction Type",
     )
 
     def _get_supported_currencies(self):
@@ -86,5 +90,5 @@ class ResCurrencyRateProvider(models.Model):
                     return False
             else:
                 return False
-        except Exception as e:
+        except Exception:
             return False

@@ -1,0 +1,1 @@
+Tasa de Binance

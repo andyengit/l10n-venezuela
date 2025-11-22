@@ -1,4 +1,4 @@
-from odoo import models, fields, api, _
+from odoo import _, api, fields, models
 
 
 class TypeWithholding(models.Model):
@@ -6,17 +6,21 @@ class TypeWithholding(models.Model):
     _description = "Type Withholding"
     _order = "create_date desc"
     _sql_constraints = [
-        ("unique_name", "UNIQUE(name)", "You cannot add withholdings with the same name"),
-        ("unique_value", "UNIQUE(value)", "You can not add withholdings with the same Value"),
+        (
+            "unique_name",
+            "UNIQUE(name)",
+            "You cannot add withholdings with the same name",
+        ),
+        (
+            "unique_value",
+            "UNIQUE(value)",
+            "You can not add withholdings with the same Value",
+        ),
     ]
 
-    def case_upper(self, string,field_name):
+    def case_upper(self, string, field_name):
         if string:
-            result = {
-                'value': {
-                    field_name: str(string).strip().upper()
-                }
-            }
+            result = {"value": {field_name: str(string).strip().upper()}}
             return result
 
     name = fields.Char(store=True)

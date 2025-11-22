@@ -1,7 +1,7 @@
-from odoo import api, fields, models
 import json
-
 import logging
+
+from odoo import api, fields, models
 
 _logger = logging.getLogger(__name__)
 
@@ -30,16 +30,22 @@ class AccountMove(models.Model):
             totals = {}
             company_currency = move.company_id.currency_id
 
-            currencies = self.env["res.currency"].search([("active", "=", True), ("id", "!=", move.currency_id.id)])
+            currencies = self.env["res.currency"].search(
+                [("active", "=", True), ("id", "!=", move.currency_id.id)]
+            )
 
             for currency in currencies:
                 date = move.date or fields.Date.today()
-                total_in_currency = move.currency_id._convert(move.amount_total, currency, move.company_id, date)
+                total_in_currency = move.currency_id._convert(
+                    move.amount_total, currency, move.company_id, date
+                )
 
                 if currency == company_currency:
                     date = fields.Date.today()
 
-                residual_in_currency = move.currency_id._convert(move.amount_residual, currency, move.company_id, date)
+                residual_in_currency = move.currency_id._convert(
+                    move.amount_residual, currency, move.company_id, date
+                )
 
                 totals[str(currency.id)] = {
                     "currency_id": currency.id,

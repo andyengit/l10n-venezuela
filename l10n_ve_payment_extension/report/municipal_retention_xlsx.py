@@ -1,10 +1,12 @@
-from odoo import models, tools
-from datetime import date
-import xlsxwriter
-from io import BytesIO
 import base64
-import pandas
 from collections import OrderedDict
+from datetime import date
+from io import BytesIO
+
+import pandas
+import xlsxwriter
+
+from odoo import models, tools
 
 
 class MunicipalRetentionXlsx(models.AbstractModel):
@@ -30,7 +32,13 @@ class MunicipalRetentionXlsx(models.AbstractModel):
         bold = workbook.add_format({"bold": 1})
         boldWithBorder = workbook.add_format({"bold": 1, "border": 1})
         boldWithBorderJustify = workbook.add_format(
-            {"bold": 1, "border": 1, "text_wrap": True, "valign": "top", "align": "justify"}
+            {
+                "bold": 1,
+                "border": 1,
+                "text_wrap": True,
+                "valign": "top",
+                "align": "justify",
+            }
         )
         datos = tabla
         worksheet2 = workbook.add_worksheet(nombre)
@@ -40,7 +48,9 @@ class MunicipalRetentionXlsx(models.AbstractModel):
             tax_authorities_logo = BytesIO(
                 base64.b64decode(tax_authorities_record.tax_authorities_logo)
             )
-            worksheet2.insert_image("A2", "image.png", {"image_data": tax_authorities_logo})
+            worksheet2.insert_image(
+                "A2", "image.png", {"image_data": tax_authorities_logo}
+            )
         tax_authorities_name = tax_authorities_record.tax_authorities_name or ""
 
         worksheet2.write(
@@ -83,7 +93,9 @@ class MunicipalRetentionXlsx(models.AbstractModel):
         today = date.today()
         worksheet2.write("H15", today.strftime("%d-%m-%Y"), boldWithBorderJustify)
         worksheet2.write("D15", "CONTRIBUYENTE", bold)
-        worksheet2.write_rich_string("A16", bold, "RAZÓN SOCIAL: ", str(retention.partner_id.name))
+        worksheet2.write_rich_string(
+            "A16", bold, "RAZÓN SOCIAL: ", str(retention.partner_id.name)
+        )
         worksheet2.write_rich_string(
             "A17",
             bold,
@@ -105,7 +117,9 @@ class MunicipalRetentionXlsx(models.AbstractModel):
         worksheet2.set_row(24, 23, merge_format)
         columnas = list(datos.columns.values)
         columns2 = [{"header": r} for r in columnas]
-        money_format = workbook.add_format({"num_format": '#,##0.00 "' + currency_symbol + '"'})
+        money_format = workbook.add_format(
+            {"num_format": '#,##0.00 "' + currency_symbol + '"'}
+        )
         control_format = workbook.add_format({"align": "center"})
         porcent_format = workbook.add_format({"num_format": "0.0 %"})
         columns2[0].update({"format": control_format})
@@ -123,7 +137,8 @@ class MunicipalRetentionXlsx(models.AbstractModel):
         cells = xlsxwriter.utility.xl_range(24, 0, col2, col3)
         worksheet2.hide_gridlines(2)
         worksheet2.add_table(
-            cells, {"data": data, "total_row": True, "columns": columns2, "autofilter": False}
+            cells,
+            {"data": data, "total_row": True, "columns": columns2, "autofilter": False},
         )
         worksheet2.write("I" + str(col2 + 1), total_retained, money_format)
         boldWithBorderTop = workbook.add_format({"bold": 1, "top": 1})
@@ -133,14 +148,18 @@ class MunicipalRetentionXlsx(models.AbstractModel):
         )
         worksheet2.write("C" + str(col2 + 12), "", boldWithBorderTop)
 
-        worksheet2.write("F" + str(col2 + 12), "Firma del Beneficiario", boldWithBorderTop)
+        worksheet2.write(
+            "F" + str(col2 + 12), "Firma del Beneficiario", boldWithBorderTop
+        )
 
         signature = self.env["signature.config"].search(
             [("active", "=", True)], limit=1, order="id asc"
         )
 
         if any(signature) and signature.signature:
-            logo = tools.image_process(base64.b64decode(signature.signature), (200, 200))
+            logo = tools.image_process(
+                base64.b64decode(signature.signature), (200, 200)
+            )
             image_signature = BytesIO(logo)
             worksheet2.insert_image(
                 "F" + str(col2 + 5), "image.png", {"image_data": image_signature}
@@ -178,7 +197,9 @@ class MunicipalRetentionXlsx(models.AbstractModel):
             rows = OrderedDict()
             rows.update(cols)
             rows["Nº de la Op"] = index + 1
-            rows["Fecha de Factura"] = retention_line.move_id.invoice_date.strftime("%d-%m-%Y")
+            rows["Fecha de Factura"] = retention_line.move_id.invoice_date.strftime(
+                "%d-%m-%Y"
+            )
             rows["Nº de Factura"] = retention_line.move_id.name
             rows["Nº de Control"] = retention_line.move_id.correlative
             rows["Base Imponible"] = invoice_amount

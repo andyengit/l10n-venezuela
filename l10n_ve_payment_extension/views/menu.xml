@@ -49,7 +49,6 @@
             action="action_configurate_signature"
         />
 
-
         <menuitem
             name="IVA Retention percentage"
             id="menu_retention_type_withholdings"
@@ -186,19 +185,25 @@
         <!--     sequence="1" -->
         <!--     name="Municipal supplier retention report" -->
         <!-- /> -->
-        <menuitem id="l10n_ve_payment_extension_concept_payment"
+        <menuitem
+            id="l10n_ve_payment_extension_concept_payment"
             name="Concept Payment"
             action="action_payment_concept_l10n_ve_payment_extension"
-            parent="l10n_ve_seniat.l10n_ve_menu_no_one" />
+            parent="l10n_ve_seniat.l10n_ve_menu_no_one"
+        />
 
-        <menuitem id="l10n_ve_payment_extension_economy_branch"
+        <menuitem
+            id="l10n_ve_payment_extension_economy_branch"
             name="Economy Branch"
             action="action_economic_activity"
-            parent="l10n_ve_seniat.l10n_ve_menu_no_one" />
+            parent="l10n_ve_seniat.l10n_ve_menu_no_one"
+        />
 
-        <menuitem id="l10n_ve_payment_extension_economy_activity"
+        <menuitem
+            id="l10n_ve_payment_extension_economy_activity"
             name="Economy Activity"
             action="action_economic_branch"
-            parent="l10n_ve_seniat.l10n_ve_menu_no_one" />
+            parent="l10n_ve_seniat.l10n_ve_menu_no_one"
+        />
     </data>
 </odoo>

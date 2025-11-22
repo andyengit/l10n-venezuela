@@ -1,13 +1,12 @@
 /** @odoo-module **/
-import { registry } from "@web/core/registry";
-import { Component, onWillRender, toRaw} from "@odoo/owl";
-import { standardFieldProps } from "@web/views/fields/standard_field_props";
-import { formatMonetary } from "@web/views/fields/formatters";
-
+import {registry} from "@web/core/registry";
+import {Component, onWillRender, toRaw} from "@odoo/owl";
+import {standardFieldProps} from "@web/views/fields/standard_field_props";
+import {formatMonetary} from "@web/views/fields/formatters";
 
 export class TotalCurrenciesWidget extends Component {
-    static props = {...standardFieldProps,};
-    static template = 'currency_account.TotalCurrenciesWidget';
+    static props = {...standardFieldProps};
+    static template = "currency_account.TotalCurrenciesWidget";
 
     setup() {
         super.setup();
@@ -36,7 +35,8 @@ export class TotalCurrenciesWidget extends Component {
     formatAmount(total, key) {
         return formatMonetary(total[key], {currencyId: total["currency_id"]});
     }
-
 }
 
-registry.category("fields").add("total_currencies_widget",{component: TotalCurrenciesWidget} );
+registry
+    .category("fields")
+    .add("total_currencies_widget", {component: TotalCurrenciesWidget});

@@ -1,4 +1,4 @@
-from odoo import api, models, fields, _
+from odoo import fields, models
 
 
 class EconomicActivity(models.Model):
@@ -10,7 +10,11 @@ class EconomicActivity(models.Model):
             "unique (name,municipality_id)",
             "There cannot be two records with the same code for the selected municipality.",
         ),
-        ("aliquot_mayor_cero", "check (aliquot > 0)", "The aliquot must be greater than zero"),
+        (
+            "aliquot_mayor_cero",
+            "check (aliquot > 0)",
+            "The aliquot must be greater than zero",
+        ),
     ]
 
     name = fields.Char("Code", required=True, store=True)
@@ -31,6 +35,14 @@ class EconomicActivity(models.Model):
     def name_get(self):
         res = []
         for activity in self:
-            res.append((activity.id, activity.name + " - " + activity.branch_id.name + " - " + activity.municipality_id.name))
+            res.append(
+                (
+                    activity.id,
+                    activity.name
+                    + " - "
+                    + activity.branch_id.name
+                    + " - "
+                    + activity.municipality_id.name,
+                )
+            )
         return res
-

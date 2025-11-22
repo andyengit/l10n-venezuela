@@ -1,10 +1,12 @@
-from odoo import models, fields, _
-from datetime import date
-import xlsxwriter
-from io import BytesIO
-import pandas
 from collections import OrderedDict
+from datetime import date
+from io import BytesIO
+
+import pandas
+import xlsxwriter
 from dateutil.relativedelta import relativedelta
+
+from odoo import _, fields, models
 
 
 class MunicipalRetentionPatentReport(models.TransientModel):
@@ -20,7 +22,8 @@ class MunicipalRetentionPatentReport(models.TransientModel):
     def print_xlsx(self):
         return {
             "type": "ir.actions.act_url",
-            "url": "/web/get_xlsx_municipal_retention_report_patent?report_id=%s" % self.id,
+            "url": "/web/get_xlsx_municipal_retention_report_patent?report_id=%s"
+            % self.id,
             "target": "self",
         }
 
@@ -47,9 +50,9 @@ class MunicipalRetentionPatentReport(models.TransientModel):
         columnas = list(table.columns.values)
         columns2 = [{"header": r} for r in columnas]
         currency_symbol = self.env.ref("base.VEF").symbol
-        money_format = workbook.add_format({"num_format": '#,##0.00 "' + currency_symbol + '"'})
-
-
+        money_format = workbook.add_format(
+            {"num_format": '#,##0.00 "' + currency_symbol + '"'}
+        )
 
         for i, col in enumerate(columnas):
             if col in [
@@ -89,42 +92,78 @@ class MunicipalRetentionPatentReport(models.TransientModel):
 
         worksheet2.hide_gridlines(2)
         worksheet2.add_table(
-            cells, {"data": data, "total_row": True, "columns": columns2, "autofilter": False}
+            cells,
+            {"data": data, "total_row": True, "columns": columns2, "autofilter": False},
         )
 
         worksheet2.write("F" + str(col2 + 1), nc_financial, money_format)
         worksheet2.write("G" + str(col2 + 1), nd_financial, money_format)
 
-        worksheet2.write_array_formula("D" + str(col2 + 1), f"=SUM(D2:D{col2})", money_format)
-        worksheet2.write_array_formula("E" + str(col2 + 1), f"=SUM(E2:E{col2})", money_format)
-        worksheet2.write_array_formula("H" + str(col2 + 1), f"=SUM(H2:H{col2})", money_format)
-
+        worksheet2.write_array_formula(
+            "D" + str(col2 + 1), f"=SUM(D2:D{col2})", money_format
+        )
+        worksheet2.write_array_formula(
+            "E" + str(col2 + 1), f"=SUM(E2:E{col2})", money_format
+        )
+        worksheet2.write_array_formula(
+            "H" + str(col2 + 1), f"=SUM(H2:H{col2})", money_format
+        )
 
         if not self.env.company.hide_patent_columns_extra:
-            worksheet2.write_array_formula("I" + str(col2 + 1), f"=SUM(I2:I{col2})", money_format)
-            worksheet2.write_array_formula("J" + str(col2 + 1), f"=SUM(J2:J{col2})", money_format)
-            worksheet2.write_array_formula("L" + str(col2 + 1), f"=SUM(L2:L{col2})", money_format)
-            worksheet2.write_array_formula("N" + str(col2 + 1), f"=SUM(N2:N{col2})", money_format)
-            worksheet2.write_array_formula("O" + str(col2 + 1), f"=SUM(O2:O{col2})", money_format)
-            worksheet2.write_array_formula("P" + str(col2 + 1), f"=SUM(P2:P{col2})", money_format)
+            worksheet2.write_array_formula(
+                "I" + str(col2 + 1), f"=SUM(I2:I{col2})", money_format
+            )
+            worksheet2.write_array_formula(
+                "J" + str(col2 + 1), f"=SUM(J2:J{col2})", money_format
+            )
+            worksheet2.write_array_formula(
+                "L" + str(col2 + 1), f"=SUM(L2:L{col2})", money_format
+            )
+            worksheet2.write_array_formula(
+                "N" + str(col2 + 1), f"=SUM(N2:N{col2})", money_format
+            )
+            worksheet2.write_array_formula(
+                "O" + str(col2 + 1), f"=SUM(O2:O{col2})", money_format
+            )
+            worksheet2.write_array_formula(
+                "P" + str(col2 + 1), f"=SUM(P2:P{col2})", money_format
+            )
 
         for line in range(2, col2 + 1):
-            worksheet2.write_array_formula(f"C{line}", f"=D{line}/D{str(col2+1)}", money_format)
-            worksheet2.write_array_formula(f"F{line}", f"=C{line}*F{str(col2+1)}", money_format)
+            worksheet2.write_array_formula(
+                f"C{line}", f"=D{line}/D{str(col2+1)}", money_format
+            )
+            worksheet2.write_array_formula(
+                f"F{line}", f"=C{line}*F{str(col2+1)}", money_format
+            )
             worksheet2.write_array_formula(
                 f"H{line}", f"=D{line}-E{line}-F{line}+G{line}", money_format
             )
 
             if not self.env.company.hide_patent_columns_extra:
-                worksheet2.write_array_formula(f"I{line}", f"=H{line}*0.9", money_format)
-                worksheet2.write_array_formula(f"J{line}", f"=H{line}-I{line}", money_format)
-                worksheet2.write_array_formula(f"L{line}", f"=H{line}*K{line}/100", money_format)
-                worksheet2.write_array_formula(f"N{line}", f"=IF(L{line}>M{line},L{line},M{line})", money_format)
-                worksheet2.write_array_formula(f"O{line}", f"=J{line}*K{line}/1000", money_format)
+                worksheet2.write_array_formula(
+                    f"I{line}", f"=H{line}*0.9", money_format
+                )
+                worksheet2.write_array_formula(
+                    f"J{line}", f"=H{line}-I{line}", money_format
+                )
+                worksheet2.write_array_formula(
+                    f"L{line}", f"=H{line}*K{line}/100", money_format
+                )
+                worksheet2.write_array_formula(
+                    f"N{line}", f"=IF(L{line}>M{line},L{line},M{line})", money_format
+                )
+                worksheet2.write_array_formula(
+                    f"O{line}", f"=J{line}*K{line}/1000", money_format
+                )
                 worksheet2.write_formula(f"P{line}", f"=N{line}", money_format)
             else:
-                worksheet2.write_array_formula(f"J{line}", f"=H{line}*I{line}/100", money_format)
-                worksheet2.write_array_formula("J" + str(col2 + 1), f"=SUM(J2:J{col2})", money_format)
+                worksheet2.write_array_formula(
+                    f"J{line}", f"=H{line}*I{line}/100", money_format
+                )
+                worksheet2.write_array_formula(
+                    "J" + str(col2 + 1), f"=SUM(J2:J{col2})", money_format
+                )
 
         workbook.close()
         return result.getvalue()
@@ -151,12 +190,16 @@ class MunicipalRetentionPatentReport(models.TransientModel):
 
             price_subtotal = line.price_subtotal
             ciu = line.ciu_id
-            if not ((ciu.name, line.product_id.categ_id.name) in groups.keys()):
+            if (ciu.name, line.product_id.categ_id.name) not in groups.keys():
                 groups[ciu.name, line.product_id.categ_id.name] = {
                     "category_name": line.product_id.categ_id.name,
                     "CIU": ciu.name,
-                    "sales_total": price_subtotal if line.move_id.move_type == "out_invoice" else 0,
-                    "refund_total": price_subtotal if line.move_id.move_type == "out_refund" else 0,
+                    "sales_total": price_subtotal
+                    if line.move_id.move_type == "out_invoice"
+                    else 0,
+                    "refund_total": price_subtotal
+                    if line.move_id.move_type == "out_refund"
+                    else 0,
                     "aliquot": ciu.aliquot,
                     "minimum_monthly": ciu.minimum_monthly,
                 }

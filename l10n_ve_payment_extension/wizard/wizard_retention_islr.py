@@ -1,15 +1,17 @@
-from odoo import models, fields, api, _
-from odoo.exceptions import UserError,ValidationError
-import xlsxwriter
-from datetime import datetime, date
-from io import BytesIO
-from dateutil.relativedelta import relativedelta
-from collections import OrderedDict
-import pandas as pd
-from odoo.http import request
-import os
-
 import logging
+import os
+from collections import OrderedDict
+from datetime import date, datetime
+from io import BytesIO
+
+import pandas as pd
+import xlsxwriter
+from dateutil.relativedelta import relativedelta
+
+from odoo import _, api, fields, models
+from odoo.exceptions import UserError, ValidationError
+from odoo.http import request
+
 _logger = logging.getLogger(__name__)
 
 
@@ -27,11 +29,14 @@ class RetentionIslrReport(models.TransientModel):
     )
     date_start = fields.Date("Date start", default=date.today().replace(day=1))
     date_end = fields.Date(
-        "Date end", default=date.today().replace(day=1) + relativedelta(months=1, days=-1)
+        "Date end",
+        default=date.today().replace(day=1) + relativedelta(months=1, days=-1),
     )
     file = fields.Binary(readonly=True)
     filename = fields.Char()
-    company_id = fields.Many2one("res.company", default=lambda self: self.env.user.company_id.id)
+    company_id = fields.Many2one(
+        "res.company", default=lambda self: self.env.user.company_id.id
+    )
 
     def download_format(self):
         ext = ""
@@ -89,7 +94,13 @@ class RetentionIslrReport(models.TransientModel):
         data2 = BytesIO()
         workbook = xlsxwriter.Workbook(data2, {"in_memory": True})
         merge_format = workbook.add_format(
-            {"bold": 1, "border": 1, "align": "center", "valign": "vcenter", "fg_color": "gray"}
+            {
+                "bold": 1,
+                "border": 1,
+                "align": "center",
+                "valign": "vcenter",
+                "fg_color": "gray",
+            }
         )
         datos = table
         company_vat = company.vat if company.vat else ""
@@ -117,13 +128,16 @@ class RetentionIslrReport(models.TransientModel):
         for record in columns2[6:8]:
             record.update({"format": currency_format})
         cells = xlsxwriter.utility.xl_range(3, 0, col2, col3)
-        worksheet2.add_table(cells, {"data": data, "total_row": False, "columns": columns2})
+        worksheet2.add_table(
+            cells, {"data": data, "total_row": False, "columns": columns2}
+        )
         # macro
         url = os.path.dirname(os.path.abspath(__file__))
 
         workbook.add_vba_project(url + "/vbaProject.bin")
         worksheet2.insert_button(
-            "I2", {"macro": "MakeXML", "caption": "Generar XML", "width": 120, "height": 30}
+            "I2",
+            {"macro": "MakeXML", "caption": "Generar XML", "width": 120, "height": 30},
         )
 
         workbook.close()
@@ -132,7 +146,6 @@ class RetentionIslrReport(models.TransientModel):
 
     @api.model
     def _get_retention_islr_excel_model_row(self):
-
         new_model_row = OrderedDict(
             [
                 ("ID Sec", 0),
@@ -150,7 +163,6 @@ class RetentionIslrReport(models.TransientModel):
 
     @api.model
     def _get_retention_islr_excel_row(self, row_idx, ret_line_id):
-
         new_row = self._get_retention_islr_excel_model_row()
 
         ret_id = ret_line_id.retention_id
@@ -163,11 +175,15 @@ class RetentionIslrReport(models.TransientModel):
 
         fpi = datetime.strptime(pi, "%Y-%m-%d")
 
-        invoice_number = ret_line_id.move_id.name.replace('-', '')
-        new_row["Número factura"] = invoice_number[-10:] if len(invoice_number) > 10 else invoice_number
+        invoice_number = ret_line_id.move_id.name.replace("-", "")
+        new_row["Número factura"] = (
+            invoice_number[-10:] if len(invoice_number) > 10 else invoice_number
+        )
 
-        control_number = ret_line_id.move_id.correlative.replace('-', '')
-        new_row["Control Número"] = control_number[-10:] if len(control_number) > 10 else control_number
+        control_number = ret_line_id.move_id.correlative.replace("-", "")
+        new_row["Control Número"] = (
+            control_number[-10:] if len(control_number) > 10 else control_number
+        )
 
         new_row["Fecha Operación"] = fpi.strftime("%d/%m/%Y")
 
@@ -175,16 +191,21 @@ class RetentionIslrReport(models.TransientModel):
         alicuota = ""
 
         for l_pay_concept_id in ret_line_id.payment_concept_id.line_payment_concept_ids:
-            if l_pay_concept_id.type_person_id.name == ret_id.partner_id.type_person_id.name:
+            if (
+                l_pay_concept_id.type_person_id.name
+                == ret_id.partner_id.type_person_id.name
+            ):
                 concept = l_pay_concept_id.code
-                alicuota = l_pay_concept_id.tariff_id.percentage if l_pay_concept_id.tariff_id else ""
+                alicuota = (
+                    l_pay_concept_id.tariff_id.percentage
+                    if l_pay_concept_id.tariff_id
+                    else ""
+                )
                 break
 
         new_row["Código Concepto"] = concept
 
-        new_row["Monto Operación"] = (
-            ret_line_id.invoice_amount
-        )
+        new_row["Monto Operación"] = ret_line_id.invoice_amount
 
         new_row["Porcentaje de retención"] = alicuota
 
@@ -199,15 +220,21 @@ class RetentionIslrReport(models.TransientModel):
             ("state", "in", ["emitted"]),
         ]
 
-        retention_ids = self.env["account.retention"].search(search_domain, order="id asc")
+        retention_ids = self.env["account.retention"].search(
+            search_domain, order="id asc"
+        )
 
         return retention_ids
 
-    def _get_retention_islr_excel_rows(self, table_rows, row_idx, current_company=False):
+    def _get_retention_islr_excel_rows(
+        self, table_rows, row_idx, current_company=False
+    ):
         retention_ids = self._get_retention_ids(current_company)
 
         if not retention_ids:
-            raise ValidationError(_("No withholdings have been found in the selected period"))
+            raise ValidationError(
+                _("No withholdings have been found in the selected period")
+            )
 
         retention_line_ids = retention_ids.mapped("retention_line_ids")
 
@@ -221,12 +248,17 @@ class RetentionIslrReport(models.TransientModel):
         return table_rows, row_idx
 
     def _get_table_rows_sorted(self, table_rows):
-        table_rows = sorted(table_rows, key=lambda row: datetime.strptime(row['Fecha Operación'], "%d/%m/%Y"))
+        table_rows = sorted(
+            table_rows,
+            key=lambda row: datetime.strptime(row["Fecha Operación"], "%d/%m/%Y"),
+        )
 
         return table_rows
 
     def _retention_islr_excel(self, current_company=False):
-        table_rows, table_rows_count = self._get_retention_islr_excel_rows([], 0, current_company)
+        table_rows, table_rows_count = self._get_retention_islr_excel_rows(
+            [], 0, current_company
+        )
 
         table_rows = self._get_table_rows_sorted(table_rows)
 

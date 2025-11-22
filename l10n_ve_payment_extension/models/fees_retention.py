@@ -1,5 +1,5 @@
-from odoo import api, models, fields, _
-from odoo.exceptions import UserError, ValidationError
+from odoo import _, api, fields, models
+from odoo.exceptions import ValidationError
 
 
 class FeesRetention(models.Model):
@@ -12,14 +12,20 @@ class FeesRetention(models.Model):
     amount_subtract = fields.Float(
         string="Subtract mount", compute="_compute_amount_subtract", store=True
     )
-    apply_subtracting = fields.Boolean(string="Subtract apply?", default=False, store=True)
-    accumulated_rate = fields.Boolean(string="Rate accumulated?", default=False, store=True)
+    apply_subtracting = fields.Boolean(
+        string="Subtract apply?", default=False, store=True
+    )
+    accumulated_rate = fields.Boolean(
+        string="Rate accumulated?", default=False, store=True
+    )
     status = fields.Boolean(default=True, string="Is active?")
     tax_unit_ids = fields.Many2one(
         "tax.unit", string="Tax Unit", required=True, domain=[("status", "=", True)]
     )
     accumulated_rate_ids = fields.One2many(
-        comodel_name="accumulated.fees", inverse_name="fees_id", string="Accumulated fees"
+        comodel_name="accumulated.fees",
+        inverse_name="fees_id",
+        string="Accumulated fees",
     )
 
     @api.constrains("accumulated_rate_ids", "percentage")
@@ -45,7 +51,9 @@ class FeesRetention(models.Model):
             return {
                 "warning": {
                     "title": _("Error in the fees percentage field"),
-                    "message": _("The percentage of fees cannot be greater than 100%.\n"),
+                    "message": _(
+                        "The percentage of fees cannot be greater than 100%.\n"
+                    ),
                 },
                 "value": {"percentage": 0},
             }

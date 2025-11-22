@@ -1,5 +1,6 @@
-from odoo import fields, models, _
 from collections import defaultdict
+
+from odoo import fields, models
 
 
 class ArcvReport(models.TransientModel):
@@ -15,9 +16,9 @@ class ArcvReport(models.TransientModel):
             self._get_islr_retention_lines_grouped_by_year_month_and_percentage_fees()
         )
         data = self._construct_report_data(retentions_by_month_and_percentage_fees)
-        return self.env.ref("l10n_ve_payment_extension.action_report_arcv").report_action(
-            None, data=data
-        )
+        return self.env.ref(
+            "l10n_ve_payment_extension.action_report_arcv"
+        ).report_action(None, data=data)
 
     def _get_islr_retention_lines_grouped_by_year_month_and_percentage_fees(self):
         """
@@ -126,7 +127,9 @@ class ArcvReport(models.TransientModel):
                         lines.get_invoice_paid_amount_not_related_with_retentions()
                     ),
                     "total_invoice_amount": sum(line.invoice_amount for line in lines),
-                    "total_retention_amount": sum(line.retention_amount for line in lines),
+                    "total_retention_amount": sum(
+                        line.retention_amount for line in lines
+                    ),
                 }
             )
         data = {

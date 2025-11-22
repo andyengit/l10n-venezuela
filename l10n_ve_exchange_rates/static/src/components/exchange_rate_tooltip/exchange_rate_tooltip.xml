@@ -1,9 +1,9 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <templates>
     <t t-name="l10n_ve_exchange_rates.ExchangeRateTooltip" owl="xml">
         <Dropdown>
             <button class="btn btn-light">
-                <i class="fa fa-money" role="img" title="Tasas de Cambio Activas"/>
+                <i class="fa fa-money" role="img" title="Tasas de Cambio Activas" />
                 <span class="ms-1">Tasas</span>
             </button>
 
@@ -17,21 +17,31 @@
 
                     <t t-elif="state.rates.length">
                         <div class="fw-bold px-3 py-1">
-                            Fecha: <t t-esc="currentDate"/>
+                            Fecha: <t t-esc="currentDate" />
                         </div>
                         <div class="fw-bold px-3 py-1">
-                            Tasas de Cambio (Ref: <t t-esc="state.company_currency"/>)
+                            Tasas de Cambio (Ref: <t t-esc="state.company_currency" />)
                         </div>
                         <div class="px-3">
                             <table class="table table-sm table-borderless m-0">
                                 <tbody>
-                                    <t t-foreach="state.rates" t-as="rate" t-key="rate_index">
+                                    <t
+                                        t-foreach="state.rates"
+                                        t-as="rate"
+                                        t-key="rate_index"
+                                    >
                                         <tr>
                                             <td class="p-1">
-                                                <t t-esc="rate.name"/> (<t t-esc="rate.symbol"/>)
+                                                <t t-esc="rate.name" /> (<t
+                                                t-esc="rate.symbol"
+                                            />)
                                             </td>
                                             <td class="p-1 text-end">
-                                                1 <t t-esc="rate.symbol"/>  ≈ <t t-esc="rate.rate"/> <t t-esc="rate.company_currency_symbol"/>
+                                                1 <t t-esc="rate.symbol" />  ≈ <t
+                                                t-esc="rate.rate"
+                                            /> <t
+                                                t-esc="rate.company_currency_symbol"
+                                            />
                                             </td>
                                         </tr>
                                     </t>

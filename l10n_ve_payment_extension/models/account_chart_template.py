@@ -1,8 +1,8 @@
-from odoo import api, fields, models, _
-from odoo.addons.account.models.chart_template import template
-
-
 import logging
+
+from odoo import _, models
+
+from odoo.addons.account.models.chart_template import template
 
 _logger = logging.getLogger(__name__)
 
@@ -14,10 +14,18 @@ class AccountChartTemplate(models.AbstractModel):
         res = super()._post_load_data(template_code, company, template_data)
         company = company or self.env.company
         if template_code == "ve_seniat":
-            company.iva_supplier_retention_journal_id = self.ref("rip", raise_if_not_found=False)
-            company.iva_customer_retention_journal_id = self.ref("ric", raise_if_not_found=False)
-            company.islr_supplier_retention_journal_id = self.ref("islrp", raise_if_not_found=False)
-            company.islr_customer_retention_journal_id = self.ref("islrc", raise_if_not_found=False)
+            company.iva_supplier_retention_journal_id = self.ref(
+                "rip", raise_if_not_found=False
+            )
+            company.iva_customer_retention_journal_id = self.ref(
+                "ric", raise_if_not_found=False
+            )
+            company.islr_supplier_retention_journal_id = self.ref(
+                "islrp", raise_if_not_found=False
+            )
+            company.islr_customer_retention_journal_id = self.ref(
+                "islrc", raise_if_not_found=False
+            )
 
         return res
 

@@ -1,7 +1,6 @@
-from odoo import api, fields, models, Command
-from odoo.tools.float_utils import float_round
-
 import logging
+
+from odoo import Command, fields, models
 
 _logger = logging.getLogger(__name__)
 

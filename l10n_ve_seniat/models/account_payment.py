@@ -1,5 +1,4 @@
-from odoo.tools.float_utils import float_round
-from odoo import api, fields, models, Command
+from odoo import fields, models
 
 
 class AccountPayment(models.Model):

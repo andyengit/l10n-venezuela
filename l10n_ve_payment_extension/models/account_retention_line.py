@@ -1,6 +1,7 @@
-from odoo import models, fields, api, _
-from odoo.exceptions import UserError, ValidationError
 import logging
+
+from odoo import _, api, fields, models
+from odoo.exceptions import ValidationError
 
 _logger = logging.getLogger(__name__)
 
@@ -10,7 +11,13 @@ class AccountRetentionLine(models.Model):
     _description = "Retention Line"
     _check_company_auto = True
 
-    name = fields.Char(string="Description", required=True, compute="_compute_name", store=True, readonly=False)
+    name = fields.Char(
+        string="Description",
+        required=True,
+        compute="_compute_name",
+        store=True,
+        readonly=False,
+    )
     company_id = fields.Many2one(
         "res.company",
         string="Company",
@@ -19,7 +26,9 @@ class AccountRetentionLine(models.Model):
     )
     state = fields.Selection(related="retention_id.state")
     company_currency_id = fields.Many2one(related="retention_id.company_currency_id")
-    retention_id = fields.Many2one("account.retention", string="Retention", ondelete="cascade")
+    retention_id = fields.Many2one(
+        "account.retention", string="Retention", ondelete="cascade"
+    )
     invoice_type = fields.Selection(
         selection=[
             ("out_invoice", "Out invoice"),
@@ -38,7 +47,9 @@ class AccountRetentionLine(models.Model):
     retention_rate = fields.Float(store=True, digits="Tasa")
     move_id = fields.Many2one("account.move", "move", ondelete="cascade", store=True)
     is_client_retention = fields.Boolean(default=True)
-    display_invoice_number = fields.Char(string="Invoice Number", compute="_compute_display_invoice_number", store=True)
+    display_invoice_number = fields.Char(
+        string="Invoice Number", compute="_compute_display_invoice_number", store=True
+    )
     invoice_amount = fields.Float(
         string="Taxable income",
         digits="Tasa",
@@ -48,9 +59,13 @@ class AccountRetentionLine(models.Model):
     invoice_total = fields.Float(string="Total invoiced", digits="Tasa", store=True)
     iva_amount = fields.Float(string="IVA", digits=(16, 2))
 
-    retention_amount = fields.Float(digits="Tasa", compute="_compute_retention_amount", store=True, readonly=False)
+    retention_amount = fields.Float(
+        digits="Tasa", compute="_compute_retention_amount", store=True, readonly=False
+    )
 
-    payment_concept_id = fields.Many2one("payment.concept", "Payment concept", ondelete="cascade", index=True)
+    payment_concept_id = fields.Many2one(
+        "payment.concept", "Payment concept", ondelete="cascade", index=True
+    )
     code = fields.Char(related="payment_concept_id.line_payment_concept_ids.code")
     code_visible = fields.Boolean(related="company_id.code_visible")
     economic_activity_id = fields.Many2one(
@@ -126,8 +141,13 @@ class AccountRetentionLine(models.Model):
             if line.economic_activity_id:
                 continue
             if line.retention_id and line.retention_id.type_retention == "municipal":
-                line.economic_activity_id = line.retention_id.partner_id.economic_activity_id
-            if line.move_id and line.id in line.move_id.retention_municipal_line_ids.ids:
+                line.economic_activity_id = (
+                    line.retention_id.partner_id.economic_activity_id
+                )
+            if (
+                line.move_id
+                and line.id in line.move_id.retention_municipal_line_ids.ids
+            ):
                 line.economic_activity_id = line.move_id.partner_id.economic_activity_id
 
     def unlink(self):
@@ -143,7 +163,8 @@ class AccountRetentionLine(models.Model):
         to generate the ISLR retention line
         """
         lines_from_islr_retention = self.filtered(
-            lambda l: l.payment_concept_id and (not l.retention_id or l.retention_id.type_retention == "islr")
+            lambda l: l.payment_concept_id
+            and (not l.retention_id or l.retention_id.type_retention == "islr")
         )
         for record in lines_from_islr_retention:
             # Payment concept of the line
@@ -152,7 +173,10 @@ class AccountRetentionLine(models.Model):
                 # if not record.move_id.partner_id.type_person_id:
                 #     raise UserError(_("The partner does not have a type of person"))
 
-                if record.move_id.partner_id.type_person_id.id == line.type_person_id.id:
+                if (
+                    record.move_id.partner_id.type_person_id.id
+                    == line.type_person_id.id
+                ):
                     # compare the type_person_id of the partner with the type_person_id of the
                     # payment concept and set the related fields.
                     record.invoice_total = record.move_id.tax_totals["total_amount"]
@@ -161,7 +185,10 @@ class AccountRetentionLine(models.Model):
                     record.related_percentage_fees = line.tariff_id.percentage
                     record.related_amount_subtract_fees = line.tariff_id.amount_subtract
 
-                    if not record.retention_id or record.retention_id.type == "in_invoice":
+                    if (
+                        not record.retention_id
+                        or record.retention_id.type == "in_invoice"
+                    ):
                         # We don't want this fields to be computed when the retention is
                         # created from a customer invoice since they are filled by the user.
                         record.invoice_amount = record.move_id.tax_totals["base_amount"]
@@ -187,7 +214,10 @@ class AccountRetentionLine(models.Model):
 
         islr_supplier_retention_lines = self.filtered(
             lambda l: (not l.retention_id and l.payment_concept_id)
-            or (l.retention_id.type_retention == "islr" and l.retention_id.type == "in_invoice")
+            or (
+                l.retention_id.type_retention == "islr"
+                and l.retention_id.type == "in_invoice"
+            )
         )
         for record in islr_supplier_retention_lines:
             record.retention_amount = (
@@ -203,7 +233,9 @@ class AccountRetentionLine(models.Model):
         of municipal type.
         """
         municipal_retention_lines_with_economic_activity_and_invoice = self.filtered(
-            lambda l: (not l.retention_id or (l.retention_id.type_retention == "municipal"))
+            lambda l: (
+                not l.retention_id or (l.retention_id.type_retention == "municipal")
+            )
             and l.economic_activity_id
             and l.move_id
         )
@@ -226,7 +258,8 @@ class AccountRetentionLine(models.Model):
         retentions of municipal type.
         """
         for record in self.filtered(
-            lambda l: (not l.retention_id and l.economic_activity_id) or l.retention_id.type_retention == "municipal"
+            lambda l: (not l.retention_id and l.economic_activity_id)
+            or l.retention_id.type_retention == "municipal"
         ):
             record.retention_amount = record.invoice_amount * record.aliquot / 100
 
@@ -244,9 +277,13 @@ class AccountRetentionLine(models.Model):
                     record.invoice_amount == 0,
                 )
             ):
-                raise ValidationError(_("You can not create a retention with 0 amount."))
+                raise ValidationError(
+                    _("You can not create a retention with 0 amount.")
+                )
 
-            is_vef_the_base_currency = self.env.company.currency_id == self.env.ref("base.VEF")
+            is_vef_the_base_currency = self.env.company.currency_id == self.env.ref(
+                "base.VEF"
+            )
             is_client_retention = record.retention_id.type == "out_invoice"
             if (
                 is_vef_the_base_currency
@@ -254,7 +291,10 @@ class AccountRetentionLine(models.Model):
                 and record.retention_amount > record.move_id.amount_residual
             ):
                 raise ValidationError(
-                    _("The total amount of the retention is greater than the residual amount of" " the invoice.")
+                    _(
+                        "The total amount of the retention is greater than the residual amount of"
+                        " the invoice."
+                    )
                 )
 
     def get_invoice_paid_amount_not_related_with_retentions(self):
@@ -265,7 +305,9 @@ class AccountRetentionLine(models.Model):
         # We need to get the lines without duplicate invoices because the invoice can have more
         # than one retention line.
         lines_without_duplicate_invoices = self.env[self._name]
-        for line in self.filtered(lambda l: l.retention_id and l.retention_id.type_retention == "islr"):
+        for line in self.filtered(
+            lambda l: l.retention_id and l.retention_id.type_retention == "islr"
+        ):
             if line.move_id in lines_without_duplicate_invoices.mapped("move_id"):
                 continue
             lines_without_duplicate_invoices |= line
@@ -277,7 +319,8 @@ class AccountRetentionLine(models.Model):
                         "credit_move_id",
                         "=",
                         line.move_id.line_ids.filtered(
-                            lambda l: l.account_id.account_type == "liability_payable" and l.credit > 0
+                            lambda l: l.account_id.account_type == "liability_payable"
+                            and l.credit > 0
                         )[0].id,
                     )
                 ]
@@ -293,7 +336,8 @@ class AccountRetentionLine(models.Model):
             invoice_paid_amount_not_related_with_retentions = sum(
                 partial.debit_amount_currency
                 for partial in partials.filtered(
-                    lambda p: p.debit_move_id not in retention_payments.mapped("move_id.line_ids")
+                    lambda p: p.debit_move_id
+                    not in retention_payments.mapped("move_id.line_ids")
                 )
             )
             return invoice_paid_amount_not_related_with_retentions

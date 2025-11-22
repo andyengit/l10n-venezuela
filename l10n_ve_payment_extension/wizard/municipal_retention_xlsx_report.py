@@ -1,12 +1,15 @@
-from odoo import api, models, fields, _
-from datetime import date
-from dateutil.relativedelta import relativedelta
-import xlsxwriter
-from odoo.exceptions import MissingError, ValidationError
-from io import BytesIO
 import base64
-import pandas
 from collections import OrderedDict
+from datetime import date
+from io import BytesIO
+
+import pandas
+import xlsxwriter
+from dateutil.relativedelta import relativedelta
+
+from odoo import _, fields, models
+from odoo.exceptions import MissingError, ValidationError
+
 from ..utils.utils_retention import get_current_date_format
 
 
@@ -38,7 +41,9 @@ class MunicipalRetentionXlsxReport(models.TransientModel):
 
         if not retentions_count:
             raise MissingError(
-                _("There are no supplier municipal retentions for the given date range.")
+                _(
+                    "There are no supplier municipal retentions for the given date range."
+                )
             )
         return {
             "type": "ir.actions.act_url",
@@ -65,11 +70,19 @@ class MunicipalRetentionXlsxReport(models.TransientModel):
         company = self.env.company
         tax_authorities_record = self._get_tax_authorities_record(company)
         if tax_authorities_record.tax_authorities_logo:
-            tax_authorities_logo = BytesIO(base64.b64decode(tax_authorities_record.tax_authorities_logo))
-            worksheet2.insert_image("A1", "image.png", {"image_data": tax_authorities_logo})
-        worksheet2.write("C2", "RENDICIÓN INFORMATIVA MENSUAL DEL AGENTE DE RETENCIÓN", bold)
+            tax_authorities_logo = BytesIO(
+                base64.b64decode(tax_authorities_record.tax_authorities_logo)
+            )
+            worksheet2.insert_image(
+                "A1", "image.png", {"image_data": tax_authorities_logo}
+            )
+        worksheet2.write(
+            "C2", "RENDICIÓN INFORMATIVA MENSUAL DEL AGENTE DE RETENCIÓN", bold
+        )
         if tax_authorities_record.tax_authorities_name:
-            worksheet2.write("D4", tax_authorities_record.tax_authorities_name.upper(), bold)
+            worksheet2.write(
+                "D4", tax_authorities_record.tax_authorities_name.upper(), bold
+            )
         worksheet2.write("A8", "AGENTE DE RETENCIÓN:", bold)
         worksheet2.write("C8", company.name)
         worksheet2.write("A9", "NUMERO DE REGISTRO UNICO DE INFORMACION FISCAL:", bold)
@@ -90,7 +103,9 @@ class MunicipalRetentionXlsxReport(models.TransientModel):
         columnas = list(table.columns.values)
         columns2 = [{"header": r} for r in columnas]
         currency_symbol = self.env.ref("base.VEF").symbol
-        money_format = workbook.add_format({"num_format": '#,##0.00 "' + currency_symbol + '"'})
+        money_format = workbook.add_format(
+            {"num_format": '#,##0.00 "' + currency_symbol + '"'}
+        )
         # control_format = workbook.add_format({'align': 'center'})
         porcent_format = workbook.add_format({"num_format": "0.0 %"})
         # columns2[0].update({'format': control_format})
@@ -113,7 +128,8 @@ class MunicipalRetentionXlsxReport(models.TransientModel):
             total = col[9] + total
         worksheet2.hide_gridlines(2)
         worksheet2.add_table(
-            cells, {"data": data, "total_row": True, "columns": columns2, "autofilter": False}
+            cells,
+            {"data": data, "total_row": True, "columns": columns2, "autofilter": False},
         )
         worksheet2.write("L" + str(col2 + 1), total_retained, money_format)
         worksheet2.write("J" + str(col2 + 1), total, money_format)
@@ -128,10 +144,14 @@ class MunicipalRetentionXlsxReport(models.TransientModel):
             bold,
         )
         worksheet2.write(
-            "A" + str(col2 + 6), "Cédula de Identidad ___________________________________", bold
+            "A" + str(col2 + 6),
+            "Cédula de Identidad ___________________________________",
+            bold,
         )
         worksheet2.write(
-            "A" + str(col2 + 7), "Cargo: ______________________________________________", bold
+            "A" + str(col2 + 7),
+            "Cargo: ______________________________________________",
+            bold,
         )
         worksheet2.write("F" + str(col2 + 9), "Firma y sello", bold)
         workbook.close()
@@ -143,7 +163,9 @@ class MunicipalRetentionXlsxReport(models.TransientModel):
 
     def _get_xlsx_municipal_retention_report(self):
         domain = self._get_municipal_retention_domain()
-        retentions = self.env["account.retention"].search(domain, order="date_accounting asc")
+        retentions = self.env["account.retention"].search(
+            domain, order="date_accounting asc"
+        )
 
         lista = []
         cols = OrderedDict(
@@ -164,7 +186,9 @@ class MunicipalRetentionXlsxReport(models.TransientModel):
         )
         number = 1
         for retention in retentions:
-            retention_lines = self._get_filtered_retention_lines(retention.retention_line_ids)
+            retention_lines = self._get_filtered_retention_lines(
+                retention.retention_line_ids
+            )
             for retention_line in retention_lines:
                 invoice_amount = 0
                 retention_amount = 0
@@ -185,7 +209,9 @@ class MunicipalRetentionXlsxReport(models.TransientModel):
                 rows["Tipo de Instrumento"] = invoice_type
                 rows["Monto Bruto"] = invoice_amount
                 rows["Nº de Instrumento"] = retention.name
-                rows["Fecha de Emision"] = retention.date_accounting.strftime("%d-%m-%Y")
+                rows["Fecha de Emision"] = retention.date_accounting.strftime(
+                    "%d-%m-%Y"
+                )
                 rows["Contribuyente"] = retention.partner_id.name
                 rows["R.I.F."] = str(retention.partner_id.prefix_vat) + str(
                     retention.partner_id.vat

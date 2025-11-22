@@ -1,4 +1,4 @@
-from odoo import models, fields
+from odoo import fields, models
 
 
 class ResPartner(models.Model):
@@ -11,13 +11,9 @@ class ResPartner(models.Model):
         tracking=True,
     )
 
-    iva_account = fields.Many2one(
-        "account.account", string="IVA Account"
-    )
+    iva_account = fields.Many2one("account.account", string="IVA Account")
 
-    islr_account = fields.Many2one(
-        "account.account", string="ISLR Account"
-    )
+    islr_account = fields.Many2one("account.account", string="ISLR Account")
 
     type_person_id = fields.Many2one(
         "type.person", "Type Person", store=True, tracking=True

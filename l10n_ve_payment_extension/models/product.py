@@ -1,4 +1,4 @@
-from odoo import api, fields, models, _
+from odoo import _, api, fields, models
 from odoo.exceptions import ValidationError
 
 
@@ -28,5 +28,7 @@ class Product(models.Model):
         for product in self:
             if len(product.ciu_ids) > 1:
                 raise ValidationError(
-                    _("You cannot select more than one CIU when you have just one subsidiary")
+                    _(
+                        "You cannot select more than one CIU when you have just one subsidiary"
+                    )
                 )

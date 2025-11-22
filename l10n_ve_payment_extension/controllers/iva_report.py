@@ -1,6 +1,7 @@
+from io import StringIO
+
 from odoo import http
 from odoo.http import request
-from io import StringIO
 
 
 class GenerateTxt(http.Controller):

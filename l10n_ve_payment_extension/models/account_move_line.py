@@ -5,7 +5,11 @@ class AccountMoveLine(models.Model):
     _inherit = "account.move.line"
 
     ciu_id = fields.Many2one(
-        "economic.activity", string="CIU", compute="_compute_ciu_id", store=True, readonly=False
+        "economic.activity",
+        string="CIU",
+        compute="_compute_ciu_id",
+        store=True,
+        readonly=False,
     )
 
     @api.depends("product_id.ciu_ids")

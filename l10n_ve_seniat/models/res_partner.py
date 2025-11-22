@@ -1,9 +1,8 @@
+import logging
 import re
 
-from odoo import api, models, fields, _
+from odoo import _, api, fields, models
 from odoo.exceptions import ValidationError
-
-import logging
 
 _logger = logging.getLogger(__name__)
 
@@ -94,7 +93,9 @@ class ResPartner(models.Model):
     @api.constrains("country_id", "taxpayer_type")
     def _check_taxpayer_type_country(self):
         for rec in self:
-            if rec.taxpayer_type and (not rec.country_id or rec.country_id.code != VE_CODE):
+            if rec.taxpayer_type and (
+                not rec.country_id or rec.country_id.code != VE_CODE
+            ):
                 raise ValidationError(
                     _(
                         "The taxpayer type can only be set for Venezuelan partners "

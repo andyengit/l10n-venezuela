@@ -1,6 +1,6 @@
-from odoo import models, fields, api
-
 import logging
+
+from odoo import api, models
 
 _logger = logging.getLogger(__name__)
 
@@ -10,7 +10,9 @@ class ResCurrency(models.Model):
 
     def write(self, vals):
         res = super().write(vals)
-        pricelist_items = self.env["product.pricelist.item"].search([("currency_to_rate_id", "=", self.id)])
+        pricelist_items = self.env["product.pricelist.item"].search(
+            [("currency_to_rate_id", "=", self.id)]
+        )
         if pricelist_items:
             pricelist_items.calculate_discount()
         return res

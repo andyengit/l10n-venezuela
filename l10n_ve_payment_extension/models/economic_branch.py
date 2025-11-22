@@ -1,5 +1,5 @@
-from odoo import api, models, fields, _
-from odoo.exceptions import UserError, ValidationError
+from odoo import _, api, fields, models
+from odoo.exceptions import ValidationError
 
 
 class EconomicBranch(models.Model):
@@ -18,7 +18,7 @@ class EconomicBranch(models.Model):
     status = fields.Selection(
         selection=[("active", "Active"), ("inactive", "Inactive")],
         default="active",
-        store=True
+        store=True,
     )
 
     @api.onchange("name")

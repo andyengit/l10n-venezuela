@@ -1,5 +1,4 @@
-from odoo import models, fields, api, Command, _
-from odoo.exceptions import UserError, ValidationError
+from odoo import Command, _
 
 
 def search_invoices_with_taxes(AccountMove, domain):
@@ -69,5 +68,5 @@ def get_current_date_format(date):
     )
     month = months[date.month - 1]
     year = date.year
-    message = "{} {}".format(month, year)
+    message = f"{month} {year}"
     return message
