@@ -8,7 +8,7 @@ class EconomicActivity(models.Model):
         (
             "code_uniq",
             "unique (name,municipality_id)",
-            "There cannot be two records with the same code for the selected municipality.",
+            "There cannot be two records with the same code for the selected municipality.",  # noqa: E501
         ),
         (
             "aliquot_mayor_cero",

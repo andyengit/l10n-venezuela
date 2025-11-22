@@ -6,6 +6,7 @@
     "sequence": 10,
     "summary": "",
     "author": "Andyengit,Odoo Community Association (OCA)",
+    "website": "https://github.com/OCA/l10n-venezuela",
     "license": "LGPL-3",
     "images": [],
     "depends": [
@@ -15,8 +16,7 @@
         "views/product_template_views.xml",
         "security/product_currency_security.xml",
     ],
-    "demo": [
-    ],
+    "demo": [],
     "installable": True,
     "auto_install": False,
     "application": False,

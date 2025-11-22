@@ -36,12 +36,15 @@ class AccountPaymentRegister(models.TransientModel):
                 wizard.show_payment_difference = False
                 wizards |= wizard
 
-        super(AccountPaymentRegister, self - wizards)._compute_show_payment_difference()
+        return super(
+            AccountPaymentRegister, self - wizards
+        )._compute_show_payment_difference()
 
     @api.depends("payment_type", "company_id", "can_edit_wizard")
     def _compute_available_journal_ids(self):
         """
-        Ensure that the supplier retention journals are not selectable for customer payments.
+        Ensure that the supplier retention journals are not selectable for
+        customer payments.
         """
         res = super()._compute_available_journal_ids()
         supplier_retention_journal_ids = (
@@ -58,10 +61,11 @@ class AccountPaymentRegister(models.TransientModel):
     @api.onchange("is_retention")
     def _onchange_retention(self):
         """
-        Sets the journal for iva customer retentions and loads the retention lines from the
-        invoices.
+        Sets the journal for iva customer retentions and loads the retention
+        lines from the invoices.
 
-        If the payment is not a retention, we clear the retention lines and set the edit_retention
+        If the payment is not a retention, we clear the retention lines and set
+        the edit_retention
         fields to True, so the user can edit the payment fields.
         """
         if not self.is_retention:
@@ -83,13 +87,14 @@ class AccountPaymentRegister(models.TransientModel):
 
     def _load_iva_retention_lines(self, invoices):
         """
-        Loads the retention lines from the invoices when the retention payment to register is of
-        type IVA.
+        Loads the retention lines from the invoices when the retention payment
+        to register is of type IVA.
 
-        If any of the invoices selected has a retention line in a draft or emitted retention, we
-        raise an error.
+        If any of the invoices selected has a retention line in a draft or
+        emitted retention, we raise an error.
 
-        If any of the invoices selected doesn't have any tax line, we raise an error.
+        If any of the invoices selected doesn't have any tax line, we raise an
+        error.
 
         Parameters
         ----------
@@ -107,7 +112,7 @@ class AccountPaymentRegister(models.TransientModel):
         )
         if any(invoices_without_taxes):
             error = _(
-                "You can't create a retention payment for the invoices selected because "
+                "You can't create a retention payment for the invoices selected because "  # noqa: E501
                 "one or more of them don't have any tax line."
             )
             return {
@@ -118,13 +123,13 @@ class AccountPaymentRegister(models.TransientModel):
         invoices_with_emitted_retention = invoices.filtered(
             lambda i: any(
                 i.retention_iva_line_ids.filtered(
-                    lambda l: l.state in ("draft", "emitted")
+                    lambda line: line.state in ("draft", "emitted")
                 )
             )
         )
         if any(invoices_with_emitted_retention):
             error = _(
-                "You can't create a retention payment for the invoices selected because "
+                "You can't create a retention payment for the invoices selected because "  # noqa: E501
                 "one or more of them already have an emitted retention."
             )
             return {
@@ -142,13 +147,14 @@ class AccountPaymentRegister(models.TransientModel):
     @api.onchange("retention_line_ids")
     def _onchange_retention_line_ids(self):
         """
-        If the retention lines change, we compute the amount of the payment using their retention
-        amounts.
+        If the retention lines change, we compute the amount of the payment
+        using their retention amounts.
 
-        This is made just for the user to see the amount of the payment before posting it, as we
-        compute the amount of the payment from the retention lines in the _init_payments method
-        (this is due the fact that it can create multiple payments, if that wasn't the case, this
-        onchange would suffice to compute the payment amount).
+        This is made just for the user to see the amount of the payment before
+        posting it, as we compute the amount of the payment from the retention
+        lines in the _init_payments method (this is due the fact that it can
+        create multiple payments, if that wasn't the case, this onchange would
+        suffice to compute the payment amount).
         """
         if not self.retention_line_ids:
             return
@@ -156,9 +162,10 @@ class AccountPaymentRegister(models.TransientModel):
 
     def _init_payments(self, to_process, edit_mode=False):
         """
-        If the payment is a retention, we add the retention lines to the payment record, compute
-        its amount with them, create the retention record and post it. This handles the payment
-        post and reconciliation with the invoices.
+        If the payment is a retention, we add the retention lines to the payment
+        record, compute its amount with them, create the retention record and
+        post it. This handles the payment post and reconciliation with the
+        invoices.
 
         Returns
         -------
@@ -185,8 +192,8 @@ class AccountPaymentRegister(models.TransientModel):
 
     def _post_payments(self, to_process, edit_mode=False):
         """
-        If the payment is a retention, we avoid the post of the payment because we manage that
-        in the retention action_post method.
+        If the payment is a retention, we avoid the post of the payment because
+        we manage that in the retention action_post method.
         """
         return (
             super()._post_payments(to_process, edit_mode)
@@ -196,8 +203,9 @@ class AccountPaymentRegister(models.TransientModel):
 
     def _reconcile_payments(self, to_process, edit_mode=False):
         """
-        If the payment is a retention, we avoid the reconciliation of the payment with the invoices
-        because we manage that in the retention action_post method.
+        If the payment is a retention, we avoid the reconciliation of the
+        payment with the invoices because we manage that in the retention
+        action_post method.
         """
         if self.is_retention:
             return
@@ -207,8 +215,9 @@ class AccountPaymentRegister(models.TransientModel):
         """
         Creates the retention record from the payments records.
 
-        Its retention type its iva and its type is out_invoice, as it will always be a customer
-        iva retention payment the one that is created through this wizard.
+        Its retention type its iva and its type is out_invoice, as it will
+        always be a customer iva retention payment the one that is created
+        through this wizard.
 
         Parameters
         ----------

@@ -29,6 +29,6 @@ class Product(models.Model):
             if len(product.ciu_ids) > 1:
                 raise ValidationError(
                     _(
-                        "You cannot select more than one CIU when you have just one subsidiary"
+                        "You cannot select more than one CIU when you have just one subsidiary"  # noqa: E501
                     )
                 )

@@ -30,10 +30,11 @@
         >
             <attribute name="class">mb-2</attribute>
         </xpath>
-        <xpath
+        <!-- <xpath
             expr="//p[hasclass('tax_computation_company_currency')]"
+            priority="100"
             position="replace"
-        />
+        /> -->
     </template>
 
     <template id="report_invoice_document_ve">
@@ -116,7 +117,6 @@
                                     t-field="o.name"
                                 >INV/2023/0001</span>
                             </t>
-                            <div class="oe_structure" />
                             <div
                                 id="informations"
                                 class="row mb-4"
@@ -196,7 +196,6 @@
                                 t-set="display_discount"
                                 t-value="any(l.discount for l in o.invoice_line_ids)"
                             />
-                            <div class="oe_structure" />
                             <t
                                 t-set="has_long_desc"
                                 t-value="any(line.name and line.name.count('\n') > 30 for line in o.invoice_line_ids if line.name)"
@@ -560,7 +559,6 @@
                                     <div
                                         t-if="not show_qr"
                                         name="qr_code_placeholder"
-                                        class="oe_structure"
                                     />
                                     <div
                                         id="qrcode"

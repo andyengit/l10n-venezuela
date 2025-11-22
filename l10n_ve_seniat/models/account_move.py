@@ -10,7 +10,6 @@ class AccountMove(models.Model):
     _inherit = "account.move"
 
     reception_date = fields.Date(
-        "Reception Date",
         help="Indicates when the invoice was received by the client/company",
         tracking=True,
     )
@@ -54,9 +53,9 @@ class AccountMove(models.Model):
             return super().button_draft()
 
         raise ValidationError(
-            """You cannot reset to draft an invoice in the Venezuelan localization.
+            _("""You cannot reset to draft an invoice in the Venezuelan localization.
 Please create a credit note instead.
-        """
+        """)
         )
 
     def _post(self, soft=True):

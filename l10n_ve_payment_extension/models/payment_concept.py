@@ -131,7 +131,7 @@ class PaymentConcept(models.Model):
         id_concept = (
             "l10n_ve_payment_extension.payment_concept_three_l10n_ve_payment_extension"
         )
-        name_concept = "(Contratista) Ejecución de obras y prestación de servicios en Venezuela pagadas a:"
+        name_concept = "(Contratista) Ejecución de obras y prestación de servicios en Venezuela pagadas a:"  # noqa: E501
 
         concept_lines = [
             {
@@ -253,7 +253,7 @@ class PaymentConcept(models.Model):
         id_concept = (
             "l10n_ve_payment_extension.payment_concept_five_l10n_ve_payment_extension"
         )
-        name_concept = "Arrendamiento o cesión de uso de bienes inmuebles, pagados al arrendador por personas jurídicas, comunidades o los administradores:"
+        name_concept = "Arrendamiento o cesión de uso de bienes inmuebles, pagados al arrendador por personas jurídicas, comunidades o los administradores:"  # noqa: E501
 
         concept_lines = [
             {

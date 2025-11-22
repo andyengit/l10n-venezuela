@@ -13,7 +13,7 @@ class AccountMove(models.Model):
         string="Totales por Moneda",
         compute="_compute_total_currencies",
         store=True,
-        help="Almacena el total de la factura y el residuo pendiente en cada moneda habilitada.",
+        help="Almacena el total de la factura y el residuo pendiente en cada moneda habilitada.",  # noqa: E501
     )
 
     @api.depends(
@@ -63,7 +63,6 @@ class AccountMoveLine(models.Model):
 
     subtotal_company_currency = fields.Monetary(
         compute="_compute_subtotal_company_currency",
-        string="Subtotal Company Currency",
         currency_field="company_currency_id",
     )
 

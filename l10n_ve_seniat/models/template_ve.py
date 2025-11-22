@@ -26,9 +26,9 @@ class AccountChartTemplate(models.AbstractModel):
                 "bank_account_code_prefix": "1113",
                 "cash_account_code_prefix": "1111",
                 "transfer_account_code_prefix": "1129003",
-                "account_default_pos_receivable_account_id": "account_activa_account_1122003",
-                "income_currency_exchange_account_id": "account_activa_account_9212003",
-                "expense_currency_exchange_account_id": "account_activa_account_9113006",
+                "account_default_pos_receivable_account_id": "account_activa_account_1122003",  # noqa: E501
+                "income_currency_exchange_account_id": "account_activa_account_9212003",  # noqa: E501
+                "expense_currency_exchange_account_id": "account_activa_account_9113006",  # noqa: E501
                 "tax_calculation_rounding_method": "round_globally",
                 "account_sale_tax_id": "tax1sale",
                 "account_purchase_tax_id": "tax1purchase",

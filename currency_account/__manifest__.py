@@ -4,6 +4,7 @@
     "category": "Extra Tools",
     "summary": "Multimoneda",
     "author": "Andyengit,Odoo Community Association (OCA)",
+    "website": "https://github.com/OCA/l10n-venezuela",
     "depends": ["account"],
     "data": ["views/account_move_views.xml"],
     "license": "LGPL-3",

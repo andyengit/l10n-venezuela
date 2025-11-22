@@ -66,10 +66,10 @@ class AccountMoveRetention(models.Model):
                 retention = move._create_supplier_retention("municipal")
                 retention.with_context(skip_is_manually_modified=True).action_post()
 
-            # The IVA retention will not be generated if the invoice already has a retention that
-            # is not cancelled
+            # The IVA retention will not be generated if the invoice already has
+            # a retention that is not cancelled
             if move.generate_iva_retention and not move.retention_iva_line_ids.filtered(
-                lambda l: l.state != "cancel"
+                lambda line: line.state != "cancel"
             ):
                 move._validate_iva_retention()
                 retention = move._create_supplier_retention("iva")
@@ -100,9 +100,9 @@ class AccountMoveRetention(models.Model):
 
     def _validate_islr_retention(self):
         """
-        Validate that the company has a journal for ISLR supplier retention, the partner a type of
-        person and that the amount of the retention is greater than zero, in order for the ISLR
-        retention to be created.
+        Validate that the company has a journal for ISLR supplier retention, the
+        partner a type of person and that the amount of the retention is greater
+        than zero, in order for the ISLR retention to be created.
         """
         self.ensure_one()
         if not self.env.company.islr_supplier_retention_journal_id:
@@ -118,7 +118,7 @@ class AccountMoveRetention(models.Model):
         if sum_invoice_amount > self.tax_totals["base_amount"]:
             raise UserError(
                 _(
-                    "The amount of the retention is greater than the total amount of the invoice."
+                    "The amount of the retention is greater than the total amount of the invoice."  # noqa: E501
                 )
             )
         if not self.partner_id.type_person_id:
@@ -128,9 +128,9 @@ class AccountMoveRetention(models.Model):
 
     def _validate_iva_retention(self):
         """
-        Validate that the company has a journal for IVA supplier
-        retention and that the invoice has
-        at least one tax, in order for the IVA retention to be created.
+        Validate that the company has a journal for IVA supplier retention and
+        that the invoice has at least one tax, in order for the IVA retention to
+        be created.
         """
         self.ensure_one()
         if not self.env.company.iva_supplier_retention_journal_id:
@@ -144,8 +144,8 @@ class AccountMoveRetention(models.Model):
 
     def _validate_municipal_retention(self):
         """
-        Validate that the company has a journal for municipal supplier retention in order for the
-        municipal retention to be created.
+        Validate that the company has a journal for municipal supplier retention
+        in order for the municipal retention to be created.
         """
         self.ensure_one()
         if not self.env.company.municipal_supplier_retention_journal_id:
@@ -156,8 +156,8 @@ class AccountMoveRetention(models.Model):
     @api.model
     def _create_supplier_retention(self, type_retention):
         """
-        Calls the method to create the payment for the retention of the type specified in the
-        type_retention parameter.
+        Calls the method to create the payment for the retention of the type
+        specified in the type_retention parameter.
 
         Params
         ------
@@ -246,11 +246,12 @@ class AccountMoveRetention(models.Model):
 
     def action_register_payment(self):
         """
-        Override the action_register_payment method to send the is_out_invoice context to the
-        payment wizard.
+        Override the action_register_payment method to send the is_out_invoice
+        context to the payment wizard.
 
-        This is used to know if the invoice is an outgoing invoice, in order to know if the
-        option to create a retention should be displayed in the payment wizard.
+        This is used to know if the invoice is an outgoing invoice, in order to
+        know if the option to create a retention should be displayed in the
+        payment wizard.
         """
         res = super().action_register_payment()
         res["context"]["default_is_out_invoice"] = any(
@@ -278,7 +279,8 @@ class AccountMoveRetention(models.Model):
 
     @api.model
     def validate_payment(self, payment):
-        """This function is used to not add withholding in the calculation of the last payment date"""
+        """This function is used to not add withholding in the calculation of
+        the last payment date"""
         if payment.get("is_retention", False):
             return False
         return True

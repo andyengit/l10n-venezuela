@@ -159,12 +159,12 @@ class AccountRetentionLine(models.Model):
     @api.depends("payment_concept_id", "move_id")
     def _compute_related_fields(self):
         """
-        This compute is used to get the related fields from the payment concept of the partner
-        to generate the ISLR retention line
+        This compute is used to get the related fields from the payment concept
+        of the partner to generate the ISLR retention line
         """
         lines_from_islr_retention = self.filtered(
-            lambda l: l.payment_concept_id
-            and (not l.retention_id or l.retention_id.type_retention == "islr")
+            lambda line: line.payment_concept_id
+            and (not line.retention_id or line.retention_id.type_retention == "islr")
         )
         for record in lines_from_islr_retention:
             # Payment concept of the line
@@ -177,8 +177,9 @@ class AccountRetentionLine(models.Model):
                     record.move_id.partner_id.type_person_id.id
                     == line.type_person_id.id
                 ):
-                    # compare the type_person_id of the partner with the type_person_id of the
-                    # payment concept and set the related fields.
+                    # compare the type_person_id of the partner with the
+                    # type_person_id of the payment concept and set the related
+                    # fields.
                     record.invoice_total = record.move_id.tax_totals["total_amount"]
                     record.related_pay_from = line.pay_from
                     record.related_percentage_tax_base = line.percentage_tax_base
@@ -189,8 +190,9 @@ class AccountRetentionLine(models.Model):
                         not record.retention_id
                         or record.retention_id.type == "in_invoice"
                     ):
-                        # We don't want this fields to be computed when the retention is
-                        # created from a customer invoice since they are filled by the user.
+                        # We don't want this fields to be computed when the
+                        # retention is created from a customer invoice since
+                        # they are filled by the user.
                         record.invoice_amount = record.move_id.tax_totals["base_amount"]
 
     @api.onchange(
@@ -208,15 +210,15 @@ class AccountRetentionLine(models.Model):
     )
     def _compute_retention_amount(self):
         """
-        This compute is used to get the retention amount from the payment concept of the partner
-        to generate the ISLR retention line.
+        This compute is used to get the retention amount from the payment
+        concept of the partner to generate the ISLR retention line.
         """
 
         islr_supplier_retention_lines = self.filtered(
-            lambda l: (not l.retention_id and l.payment_concept_id)
+            lambda line: (not line.retention_id and line.payment_concept_id)
             or (
-                l.retention_id.type_retention == "islr"
-                and l.retention_id.type == "in_invoice"
+                line.retention_id.type_retention == "islr"
+                and line.retention_id.type == "in_invoice"
             )
         )
         for record in islr_supplier_retention_lines:
@@ -234,11 +236,12 @@ class AccountRetentionLine(models.Model):
         of municipal type.
         """
         municipal_retention_lines_with_economic_activity_and_invoice = self.filtered(
-            lambda l: (
-                not l.retention_id or (l.retention_id.type_retention == "municipal")
+            lambda line: (
+                not line.retention_id
+                or (line.retention_id.type_retention == "municipal")
             )
-            and l.economic_activity_id
-            and l.move_id
+            and line.economic_activity_id
+            and line.move_id
         )
 
         for record in municipal_retention_lines_with_economic_activity_and_invoice:
@@ -255,12 +258,12 @@ class AccountRetentionLine(models.Model):
     @api.onchange("invoice_amount", "aliquot")
     def onchange_municipal_invoice_amount(self):
         """
-        Computes the retention amount when the invoice amount or the aliquot are changed for the
-        retentions of municipal type.
+        Computes the retention amount when the invoice amount or the aliquot are
+        changed for the retentions of municipal type.
         """
         for record in self.filtered(
-            lambda l: (not l.retention_id and l.economic_activity_id)
-            or l.retention_id.type_retention == "municipal"
+            lambda line: (not line.retention_id and line.economic_activity_id)
+            or line.retention_id.type_retention == "municipal"
         ):
             record.retention_amount = record.invoice_amount * record.aliquot / 100
 
@@ -293,21 +296,22 @@ class AccountRetentionLine(models.Model):
             ):
                 raise ValidationError(
                     _(
-                        "The total amount of the retention is greater than the residual amount of"
+                        "The total amount of the retention is greater than the residual amount of"  # noqa: E501
                         " the invoice."
                     )
                 )
 
     def get_invoice_paid_amount_not_related_with_retentions(self):
         """
-        Returns the amount paid on the invoice that is not related with the retentions for the ISLR
-        supplier retention lines.
+        Returns the amount paid on the invoice that is not related with the
+        retentions for the ISLR supplier retention lines.
         """
-        # We need to get the lines without duplicate invoices because the invoice can have more
-        # than one retention line.
+        # We need to get the lines without duplicate invoices because the
+        # invoice can have more than one retention line.
         lines_without_duplicate_invoices = self.env[self._name]
         for line in self.filtered(
-            lambda l: l.retention_id and l.retention_id.type_retention == "islr"
+            lambda line: line.retention_id
+            and line.retention_id.type_retention == "islr"
         ):
             if line.move_id in lines_without_duplicate_invoices.mapped("move_id"):
                 continue
@@ -320,8 +324,9 @@ class AccountRetentionLine(models.Model):
                         "credit_move_id",
                         "=",
                         line.move_id.line_ids.filtered(
-                            lambda l: l.account_id.account_type == "liability_payable"
-                            and l.credit > 0
+                            lambda line: line.account_id.account_type
+                            == "liability_payable"
+                            and line.credit > 0
                         )[0].id,
                     )
                 ]
@@ -336,13 +341,14 @@ class AccountRetentionLine(models.Model):
                     ("is_retention", "=", True),
                 ]
             )
-            # The invoice paid amount not related with retentions is the sum of the debit amounts
-            # of the partials that are not related with the retention payments.
+            # The invoice paid amount not related with retentions is the sum of
+            # the debit amounts of the partials that are not related with the
+            # retention payments.
             invoice_paid_amount_not_related_with_retentions = sum(
                 partial.debit_amount_currency
                 for partial in partials.filtered(
                     lambda p: p.debit_move_id
-                    not in retention_payments.mapped("move_id.line_ids")
+                    not in retention_payments.mapped("move_id.line_ids")  # noqa: B023
                 )
             )
             return invoice_paid_amount_not_related_with_retentions

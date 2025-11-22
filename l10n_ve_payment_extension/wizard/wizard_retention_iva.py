@@ -32,14 +32,7 @@ class TxtWizard(models.TransientModel):
         if retention_count == 0:
             raise UserError(_("No retentions found for the selected period"))
 
-        url = (
-            "/web/binary/download_retention_iva_txt?&date_start=%s&date_end=%s&company_id=%s"
-            % (
-                self.date_start,
-                self.date_end,
-                str(company_id),
-            )
-        )
+        url = f"/web/binary/download_retention_iva_txt?&date_start={self.date_start}&date_end={self.date_end}&company_id={str(company_id)}"  # noqa: E501
         return {"type": "ir.actions.act_url", "url": url, "target": "self"}
 
     def _retention_iva(self, retentions):
@@ -88,7 +81,7 @@ class TxtWizard(models.TransientModel):
             line_data["Alícuota"] = line.aliquot
             exempt_amount = sum(
                 line.move_id.invoice_line_ids.filtered(
-                    lambda l: l.tax_ids.amount == 0
+                    lambda line: line.tax_ids.amount == 0
                 ).mapped("price_subtotal")
             )
             line_data["Monto total del documento"] = (

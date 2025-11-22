@@ -42,12 +42,12 @@ class MunicipalRetentionXlsxReport(models.TransientModel):
         if not retentions_count:
             raise MissingError(
                 _(
-                    "There are no supplier municipal retentions for the given date range."
+                    "There are no supplier municipal retentions for the given date range."  # noqa: E501
                 )
             )
         return {
             "type": "ir.actions.act_url",
-            "url": "/web/get_xlsx_municipal_retentions_report?report_id=%s" % self.id,
+            "url": f"/web/get_xlsx_municipal_retentions_report?report_id={self.id}",  # noqa: E501
             "target": "self",
         }
 
@@ -94,7 +94,7 @@ class MunicipalRetentionXlsxReport(models.TransientModel):
         worksheet2.write("C11", date)
         worksheet2.write(
             "A12",
-            "FACTURA, ORDEN DE PAGO U OTRO INSTRUMENTO CONTABLE DONDE SE VERIFIQUE EL PAGO O ABONO EN CUENTA",
+            "FACTURA, ORDEN DE PAGO U OTRO INSTRUMENTO CONTABLE DONDE SE VERIFIQUE EL PAGO O ABONO EN CUENTA",  # noqa: E501
             bold,
         )
 
@@ -135,12 +135,12 @@ class MunicipalRetentionXlsxReport(models.TransientModel):
         worksheet2.write("J" + str(col2 + 1), total, money_format)
         worksheet2.write(
             "A" + str(col2 + 4),
-            "Declaro, bajo juramento la veracidad de los datos contenidos en el presente formulario, quedando sometidos a las sanciones establecidas por la ley en   caso que determiné la falsedad de algún dato suministrado.",
+            "Declaro, bajo juramento la veracidad de los datos contenidos en el presente formulario, quedando sometidos a las sanciones establecidas por la ley en   caso que determiné la falsedad de algún dato suministrado.",  # noqa: E501
             bold,
         )
         worksheet2.write(
             "A" + str(col2 + 5),
-            "Agente de retención Responsable de la Declaración ____________________________________",
+            "Agente de retención Responsable de la Declaración ____________________________________",  # noqa: E501
             bold,
         )
         worksheet2.write(

@@ -4,6 +4,7 @@
     "version": "18.0.1.1.2",
     "category": "Financial Management/Configuration",
     "author": "Anderson Armeya, Odoo Community Association (OCA)",
+    "website": "https://github.com/OCA/l10n-venezuela",
     "maintainers": ["andyengit"],
     "license": "AGPL-3",
     "application": False,

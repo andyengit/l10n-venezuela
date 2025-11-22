@@ -26,7 +26,6 @@ class MunicipalRetentionXlsx(models.AbstractModel):
                 "valign": "vcenter",
                 "fg_color": "#D3D3D3",
                 "text_wrap": 1,
-                "valign": "top",
             }
         )
         bold = workbook.add_format({"bold": 1})
@@ -55,17 +54,17 @@ class MunicipalRetentionXlsx(models.AbstractModel):
 
         worksheet2.write(
             "C2",
-            "A fin de cumplir con el art. 136 de la Ordenanza de Impuestos a las Actividades Economicas, Comercios, Servicios",
+            "A fin de cumplir con el art. 136 de la Ordenanza de Impuestos a las Actividades Economicas, Comercios, Servicios",  # noqa: E501
             bold,
         )
         worksheet2.write(
             "C3",
-            "o de indole similar y el Decreto A-05-01-2016   Art. 8 Reglamento de Retenciones sobre Retenciones Actividades Econòmicas",
+            "o de indole similar y el Decreto A-05-01-2016   Art. 8 Reglamento de Retenciones sobre Retenciones Actividades Econòmicas",  # noqa: E501
             bold,
         )
         worksheet2.write(
             "C5",
-            f"COMPROBANTE DE RETENCION IMPUESTO ACTIVIDADES ECONOMICAS {tax_authorities_name.upper()}",
+            f"COMPROBANTE DE RETENCION IMPUESTO ACTIVIDADES ECONOMICAS {tax_authorities_name.upper()}",  # noqa: E501
             bold,
         )
         worksheet2.write("D7", "AGENTE DE RETENCIÓN", bold)

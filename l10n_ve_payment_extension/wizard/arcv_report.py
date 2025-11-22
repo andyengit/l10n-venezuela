@@ -35,7 +35,8 @@ class ArcvReport(models.TransientModel):
             - State: Emitted.
             - Date accounting: Between the start and end date selected in the wizard.
 
-        This is useful to group the retention lines by year, month and percentage fees, which is
+        This is useful to group the retention lines by year,
+        month and percentage fees, which is
         the way they are displayed in the report.
 
         Returns
@@ -55,7 +56,8 @@ class ArcvReport(models.TransientModel):
             order="date_accounting",
         )
 
-        # We use a defaultdict to avoid having to check if the key exists before adding a new
+        # We use a defaultdict to avoid having
+        # to check if the key exists before adding a new
         # element to the list.
         def get_empty_retention_line():
             return self.env["account.retention.line"]
@@ -74,28 +76,22 @@ class ArcvReport(models.TransientModel):
 
     def _construct_report_data(self, retentions_by_month_and_percentage_fees):
         """
-        Returns a dictionary with the data that will be used to generate the report.
+        Returns a dictionary with the data that will be used to generate the
+        report.
 
-        This is the structure of the dictionary:
-        {
+        This is the structure of the dictionary: {
             "period": {
-                "start": "01/01/2020",
-                "end": "31/01/2020",
-            },
-            "partner": {
-                "name": "Partner Name",
-                "street": "Partner Street",
-                "street2": "Partner Street 2",
-                "phone": "Partner Phone",
-                "vat": "Partner VAT",
-            },
-            "retentions": [
+                "start": "01/01/2020", "end": "31/01/2020",
+            }, "partner": {
+                "name": "Partner Name", "street": "Partner Street", "street2":
+                "Partner Street 2", "phone": "Partner Phone", "vat": "Partner
+                VAT",
+            }, "retentions": [
                 {
-                    "period": "01/2020",
-                    "percentage_fees": 0.75,
+                    "period": "01/2020", "percentage_fees": 0.75,
                     "invoice_paid_amount_not_related_with_retentions": 900.0,
-                    "total_invoice_amount": 10000.0,
-                    "total_retention_amount": 100.0,
+                    "total_invoice_amount": 10000.0, "total_retention_amount":
+                    100.0,
                 },
                 ...
             ],
@@ -104,8 +100,8 @@ class ArcvReport(models.TransientModel):
         Parameters
         ----------
         retentions_by_month_and_percentage_fees : dict
-            Dictionary with the corresponding retention lines grouped by year, month and percentage
-            fees.
+            Dictionary with the corresponding retention lines grouped by year,
+            month and percentage fees.
 
         Returns
         -------

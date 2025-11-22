@@ -25,7 +25,6 @@ class ResCurrencyRateProvider(models.Model):
     p2p_transaction_type = fields.Selection(
         selection=[("BUY", "Buy"), ("SELL", "Sell")],
         default="BUY",
-        string="P2P Transaction Type",
     )
 
     def _get_supported_currencies(self):

@@ -78,14 +78,7 @@ class RetentionIslrReport(models.TransientModel):
             raise UserError(_("No data to export"))
         return {
             "type": "ir.actions.act_url",
-            "url": "/web/download_islr_report?report=%s&wizard=%s&start=%s&end=%s&current_company_id=%s"
-            % (
-                self.report,
-                self.id,
-                str(self.date_start),
-                str(self.date_end),
-                str(current_company.id),
-            ),
+            "url": f"/web/download_islr_report?report={self.report}&wizard={self.id}&start={str(self.date_start)}&end={self.date_end}&current_company_id={(str(current_company.id))}",  # noqa: E501
             "target": "self",
         }
 

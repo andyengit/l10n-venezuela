@@ -22,8 +22,7 @@ class MunicipalRetentionPatentReport(models.TransientModel):
     def print_xlsx(self):
         return {
             "type": "ir.actions.act_url",
-            "url": "/web/get_xlsx_municipal_retention_report_patent?report_id=%s"
-            % self.id,
+            "url": f"/web/get_xlsx_municipal_retention_report_patent?report_id={self.id}",  # noqa: E501
             "target": "self",
         }
 
@@ -74,7 +73,7 @@ class MunicipalRetentionPatentReport(models.TransientModel):
 
         invoice_lines = self.env["account.move.line"].search(domain)
 
-        invoice_lines = invoice_lines.filtered(lambda l: l.price_unit > 0)
+        invoice_lines = invoice_lines.filtered(lambda line: line.price_unit > 0)
 
         nc_financial = 0
         nd_financial = 0
@@ -181,7 +180,7 @@ class MunicipalRetentionPatentReport(models.TransientModel):
         domain = self._get_xlsx_municipality_retention_report_domain()
         invoice_lines = self.env["account.move.line"].search(domain)
 
-        invoice_lines = invoice_lines.filtered(lambda l: any(l.ciu_id))
+        invoice_lines = invoice_lines.filtered(lambda line: any(line.ciu_id))
 
         groups = {}
 

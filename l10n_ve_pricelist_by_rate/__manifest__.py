@@ -6,6 +6,7 @@
     "summary": "",
     "license": "LGPL-3",
     "author": "Andyengit,Odoo Community Association (OCA)",
+    "website": "https://github.com/OCA/l10n-venezuela",
     "images": [],
     "depends": [
         "product",
