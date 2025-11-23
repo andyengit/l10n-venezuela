@@ -1,12 +1,10 @@
 /** @odoo-module **/
 
-import {Component, useState} from "@odoo/owl";
+import {Component, onWillStart, useState} from "@odoo/owl";
 import {useService} from "@web/core/utils/hooks";
 import {Dropdown} from "@web/core/dropdown/dropdown";
 import {DropdownItem} from "@web/core/dropdown/dropdown_item";
-
 import {registry} from "@web/core/registry";
-import {onWillStart} from "@odoo/owl";
 
 export class ExchangeRateTooltip extends Component {
     static components = {Dropdown, DropdownItem};
@@ -18,7 +16,7 @@ export class ExchangeRateTooltip extends Component {
             loading: false,
             showTooltip: false,
         });
-        let d = new Date();
+        const d = new Date();
         this.currentDate = d.toLocaleString();
 
         onWillStart(() => this.getRates());

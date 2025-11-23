@@ -1,8 +1,9 @@
 /** @odoo-module **/
-import {registry} from "@web/core/registry";
-import {Component, onWillRender, toRaw} from "@odoo/owl";
-import {standardFieldProps} from "@web/views/fields/standard_field_props";
+
+import {Component, onWillRender} from "@odoo/owl";
 import {formatMonetary} from "@web/views/fields/formatters";
+import {registry} from "@web/core/registry";
+import {standardFieldProps} from "@web/views/fields/standard_field_props";
 
 export class TotalCurrenciesWidget extends Component {
     static props = {...standardFieldProps};
@@ -16,7 +17,7 @@ export class TotalCurrenciesWidget extends Component {
     }
 
     formatData(props) {
-        let totals = JSON.parse(props.record.data[this.props.name]);
+        const totals = JSON.parse(props.record.data[this.props.name]);
         if (!totals) {
             return;
         }
@@ -33,7 +34,7 @@ export class TotalCurrenciesWidget extends Component {
     }
 
     formatAmount(total, key) {
-        return formatMonetary(total[key], {currencyId: total["currency_id"]});
+        return formatMonetary(total[key], {currencyId: total.currency_id});
     }
 }
 
