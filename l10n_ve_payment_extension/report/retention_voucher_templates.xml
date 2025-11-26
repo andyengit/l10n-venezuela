@@ -116,7 +116,7 @@
                     <div>
                         <span
                             style="text-transform:uppercase"
-                            t-esc="retention.partner_id.prefix_vat+retention.partner_id.vat"
+                            t-esc="retention.partner_id.vat"
                         />
                     </div>
                 </div>
@@ -650,7 +650,7 @@
                     <div class="col-12">
                         <span
                             style="text-transform:uppercase"
-                            t-esc="retention.partner_id.prefix_vat+retention.partner_id.vat"
+                            t-esc="retention.partner_id.vat"
                         />
                     </div>
                 </div>
