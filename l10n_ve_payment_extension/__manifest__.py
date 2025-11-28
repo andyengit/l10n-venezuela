@@ -6,7 +6,7 @@
     "license": "LGPL-3",
     "icon": "/account/static/description/l10n.png",
     "countries": ["ve"],
-    "author": "Mauricio Istúriz, Anderson Armeya, Odoo Community Association (OCA)",
+    "author": "BinauralDev, Anderson Armeya, Odoo Community Association (OCA)",
     "website": "https://github.com/OCA/l10n-venezuela",
     "category": "Accountant/Accountant",
     "version": "18.0.1.0.0",
