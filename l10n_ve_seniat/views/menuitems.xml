@@ -18,5 +18,12 @@
             action="action_res_country_parish"
             sequence="3"
         />
+
+        <menuitem
+            name="N° de Control"
+            id="menu_l10n_ve_control_number_sequence"
+            action="action_l10n_ve_control_number_sequence"
+            sequence="10"
+        />
     </menuitem>
 </odoo>

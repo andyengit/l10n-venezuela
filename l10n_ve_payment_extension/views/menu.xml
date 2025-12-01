@@ -42,6 +42,22 @@
     />
 
     <menuitem
+        name="Payment Concept Lines"
+        id="menu_payment_concept_line"
+        parent="l10n_ve_payment_extension.retention_configuration"
+        action="action_payment_concept_line_l10n_ve_payment_extension"
+        sequence="10"
+    />
+
+    <menuitem
+        name="Tax Units"
+        id="menu_tax_unit"
+        parent="l10n_ve_payment_extension.retention_configuration"
+        action="action_tax_unit_l10n_ve_payment_extension"
+        sequence="5"
+    />
+
+    <menuitem
         id="menu_retention_signature_config"
         name="signature"
         parent="l10n_ve_payment_extension.retention_configuration"
@@ -139,33 +155,33 @@
         sequence="7"
     />
 
-    <!-- <menuitem -->
-    <!-- id="menu_retention_line_report" -->
-    <!-- action="action_retention_line_report" -->
-    <!-- parent="account.account_reports_management_menu" -->
-    <!-- /> -->
+    <!-- <menuitem
+    id="menu_retention_line_report"
+    action="action_retention_line_report"
+    parent="account.account_reports_management_menu"
+    /> -->
 
-    <!-- <menuitem -->
-    <!-- action="action_generate_txt" -->
-    <!-- id="txt_report" -->
-    <!-- parent="l10n_ve_payment_extension.seniat_reports" -->
-    <!-- groups="account.group_account_manager" -->
-    <!-- /> -->
+    <menuitem
+    action="action_generate_txt"
+    id="txt_report"
+    parent="l10n_ve_payment_extension.seniat_reports"
+    groups="account.group_account_manager"
+    />
 
-    <!-- <menuitem -->
-    <!-- id="xml_retention_islr" -->
-    <!-- name="XML ISLR Retention" -->
-    <!-- parent="l10n_ve_payment_extension.seniat_reports" -->
-    <!-- action="action_retention_islr" -->
-    <!-- /> -->
+    <menuitem
+    id="xml_retention_islr"
+    name="XML ISLR Retention"
+    parent="l10n_ve_payment_extension.seniat_reports"
+    action="action_retention_islr"
+    />
 
-    <!-- <menuitem -->
-    <!-- id="menu_arcv_report" -->
-    <!-- action="action_arcv_report" -->
-    <!-- parent="l10n_ve_payment_extension.seniat_reports" -->
-    <!-- groups="account.group_account_manager" -->
-    <!-- name="ARCV Report" -->
-    <!-- /> -->
+    <menuitem
+    id="menu_arcv_report"
+    action="action_arcv_report"
+    parent="l10n_ve_payment_extension.seniat_reports"
+    groups="account.group_account_manager"
+    name="ARCV Report"
+    />
 
     <menuitem
         id="wizard_report_municipal_retention_report_patent_menu"

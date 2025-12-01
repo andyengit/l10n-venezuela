@@ -14,6 +14,10 @@ class AccountMove(models.Model):
         tracking=True,
     )
     l10n_ve_invoice_date = fields.Datetime("Invoice Datetime", readonly=True)
+    l10n_ve_control_number = fields.Char(
+        "Control Number",
+        copy=False,
+    )
 
     def action_post(self):
         for move_id in self:
@@ -63,4 +67,76 @@ Please create a credit note instead.
         for rec in self:
             if rec.state == "posted":
                 rec.l10n_ve_invoice_date = fields.Datetime.now()
+                # Generar número de control solo para facturas y notas de crédito/débito de cliente
+                if (
+                    rec.country_code == self.env.ref("base.ve").code
+                    and rec.move_type in ("out_invoice", "out_refund")
+                    and not rec.l10n_ve_control_number
+                ):
+                    rec._generate_control_number()
+        return res
+
+    def _generate_control_number(self):
+        """Genera el número de control según los estándares venezolanos"""
+        self.ensure_one()
+        if self.l10n_ve_control_number:
+            return
+
+        sequence_code = "l10n_ve_control_number"
+        # Generar el número usando la secuencia con el contexto de la compañía
+        # Odoo maneja automáticamente la multicompañía buscando primero una secuencia
+        # específica de la compañía y luego una global
+        self.l10n_ve_control_number = (
+            self.env["ir.sequence"]
+            .with_company(self.company_id.id)
+            .next_by_code(sequence_code)
+        )
+
+        if not self.l10n_ve_control_number:
+            raise UserError(
+                _(
+                    "No se pudo generar el número de control para la compañía '%s'. "
+                    "Por favor, verifique que la secuencia 'l10n_ve_control_number' esté configurada."
+                )
+                % self.company_id.name
+            )
+
+        # Validar que no exista duplicado en la misma compañía
+        self._check_control_number_unique()
+
+    def _check_control_number_unique(self):
+        """Valida que el número de control sea único por compañía"""
+        self.ensure_one()
+        if not self.l10n_ve_control_number:
+            return
+
+        # Solo validar para facturas y notas de crédito/débito
+        if self.move_type not in ("out_invoice", "out_refund"):
+            return
+
+        domain = [
+            ("l10n_ve_control_number", "=", self.l10n_ve_control_number),
+            ("company_id", "=", self.company_id.id),
+            ("move_type", "in", ("out_invoice", "out_refund")),
+            ("id", "!=", self.id),
+        ]
+
+        existing = self.search(domain, limit=1)
+        if existing:
+            raise ValidationError(
+                _(
+                    "El número de control '%s' ya existe en la compañía '%s'. "
+                    "Por favor, verifique la secuencia o corrija el número manualmente."
+                )
+                % (self.l10n_ve_control_number, self.company_id.name)
+            )
+
+    def write(self, vals):
+        """Sobrescribir write para validar el número de control al editar manualmente"""
+        res = super().write(vals)
+        if "l10n_ve_control_number" in vals:
+            for rec in self:
+                # Solo validar para facturas y notas de crédito/débito
+                if rec.l10n_ve_control_number and rec.move_type in ("out_invoice", "out_refund"):
+                    rec._check_control_number_unique()
         return res

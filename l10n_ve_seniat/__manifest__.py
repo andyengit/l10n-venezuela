@@ -6,7 +6,7 @@
     "countries": ["ve"],
     "author": "Anderson Armeya, Odoo Community Association (OCA)",
     "category": "Accounting/Localizations/Account Charts",
-    "depends": ["base", "account"],
+    "depends": ["base", "account", "account_debit_note"],
     "excludes": ["web_studio"],
     "demo": [
         "demo/demo_company.xml",
@@ -18,7 +18,9 @@
         "data/res.country.state.csv",
         "data/res.country.municipality.csv",
         "data/res.country.parish.csv",
+        "data/ir_sequence_data.xml",
         "views/account_move_views.xml",
+        "views/ir_sequence_views.xml",
         "views/res_country_municipality_views.xml",
         "views/res_country_parish_views.xml",
         "views/res_partner_views.xml",

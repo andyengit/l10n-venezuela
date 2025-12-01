@@ -173,7 +173,7 @@ class RetentionIslrReport(models.TransientModel):
             invoice_number[-10:] if len(invoice_number) > 10 else invoice_number
         )
 
-        control_number = ret_line_id.move_id.correlative.replace("-", "")
+        control_number = ret_line_id.move_id.l10n_ve_control_number.replace("-", "")
         new_row["Control Número"] = (
             control_number[-10:] if len(control_number) > 10 else control_number
         )

@@ -66,4 +66,77 @@
         <field name="view_mode">list,kanban,form</field>
         <field name="context">{"search_default_status":True}</field>
     </record>
+
+    <!-- Payment Concept Line Views -->
+    <record id="view_payment_concept_line_list_l10n_ve_payment_extension" model="ir.ui.view">
+        <field name="name">view.payment.concept.line.list.l10n.ve.payment.extension</field>
+        <field name="model">payment.concept.line</field>
+        <field name="arch" type="xml">
+            <list string="Payment Concept Lines" delete="false">
+                <field name="payment_concept_id" />
+                <field name="code" />
+                <field name="type_person_id" />
+                <field name="pay_from" />
+                <field name="percentage_tax_base" />
+                <field name="tariff_id" />
+            </list>
+        </field>
+    </record>
+
+    <record id="view_payment_concept_line_form_l10n_ve_payment_extension" model="ir.ui.view">
+        <field name="name">view.payment.concept.line.form.l10n.ve.payment.extension</field>
+        <field name="model">payment.concept.line</field>
+        <field name="arch" type="xml">
+            <form string="Payment Concept Line">
+                <sheet string="Payment Concept Line">
+                    <group>
+                        <group>
+                            <field name="payment_concept_id" />
+                            <field name="code" />
+                            <field name="type_person_id" />
+                        </group>
+                        <group>
+                            <field name="pay_from" />
+                            <field name="percentage_tax_base" />
+                            <field name="tariff_id" />
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record
+        id="view_payment_concept_line_search_l10n_ve_payment_extension"
+        model="ir.ui.view"
+    >
+        <field name="name">view.payment.concept.line.search.l10n.ve.payment.extension</field>
+        <field name="model">payment.concept.line</field>
+        <field name="arch" type="xml">
+            <search string="Payment Concept Line">
+                <field name="code" />
+                <field name="payment_concept_id" />
+                <field name="type_person_id" />
+                <field name="tariff_id" />
+                <filter name="by_concept" domain="[]" string="All" />
+                <separator />
+                <group expand="0" string="Group By">
+                    <filter name="group_by_concept" context="{'group_by': 'payment_concept_id'}" string="Payment Concept" />
+                    <filter name="group_by_type_person" context="{'group_by': 'type_person_id'}" string="Type Person" />
+                    <filter name="group_by_tariff" context="{'group_by': 'tariff_id'}" string="Tariff" />
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record
+        id="action_payment_concept_line_l10n_ve_payment_extension"
+        model="ir.actions.act_window"
+    >
+        <field name="name">Payment Concept Lines</field>
+        <field name="res_model">payment.concept.line</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="view_mode">list,form</field>
+        <field name="view_id" ref="view_payment_concept_line_list_l10n_ve_payment_extension"/>
+    </record>
 </odoo>
