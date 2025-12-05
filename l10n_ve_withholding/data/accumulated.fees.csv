@@ -1,0 +1,5 @@
+"id","name","start","stop","percentage","subtract_ut","fees_id/id"
+"accumulated_fees_l10n_ve_withholding","0.15","0.00","2000.00","15.00","0.00","fees_retention_data_percentage_five_l10n_ve_withholding"
+"accumulated_fees_two_l10n_ve_withholding","0.22","2001.00","3000.00","22.00","140.00","fees_retention_data_percentage_five_l10n_ve_withholding"
+"accumulated_fees_three_l10n_ve_withholding","0.34","3001.00","0.00","34.00","500.00","fees_retention_data_percentage_five_l10n_ve_withholding"
+

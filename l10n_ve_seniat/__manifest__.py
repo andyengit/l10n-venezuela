@@ -25,6 +25,7 @@
         "views/res_country_parish_views.xml",
         "views/res_partner_views.xml",
         "views/report_layout.xml",
+        "views/res_config_settings.xml",
         "views/menuitems.xml",
     ],
     "license": "AGPL-3",
