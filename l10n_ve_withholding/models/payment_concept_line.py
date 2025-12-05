@@ -9,7 +9,9 @@ class PaymentConceptLine(models.Model):
         ("unique_code", "UNIQUE(code)", "The concept code already exists")
     ]
 
-    pay_from = fields.Float(string="Payments greater than:", compute="_compute_pay_from", store=True)
+    pay_from = fields.Float(
+        string="Payments greater than:", compute="_compute_pay_from", store=True
+    )
 
     type_person_id = fields.Many2one(
         "type.person",
@@ -44,10 +46,10 @@ class PaymentConceptLine(models.Model):
                 "value": {"percentage_tax_base": 0},
             }
 
-    @api.depends("tariff_id.tax_unit_id.value","tariff_id.amount_subtract")
+    @api.depends("tariff_id.tax_unit_id.value", "tariff_id.amount_subtract")
     def _compute_pay_from(self):
         for record in self:
             if record.tariff_id.amount_subtract:
-                record.pay_from = (record.tariff_id.tax_unit_id.value * 1000) / 12 
+                record.pay_from = (record.tariff_id.tax_unit_id.value * 1000) / 12
             else:
                 record.pay_from = 0

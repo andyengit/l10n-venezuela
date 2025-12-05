@@ -162,25 +162,25 @@
     /> -->
 
     <menuitem
-    action="action_generate_txt"
-    id="txt_report"
-    parent="l10n_ve_withholding.seniat_reports"
-    groups="account.group_account_manager"
+        action="action_generate_txt"
+        id="txt_report"
+        parent="l10n_ve_withholding.seniat_reports"
+        groups="account.group_account_manager"
     />
 
     <menuitem
-    id="xml_retention_islr"
-    name="XML ISLR Retention"
-    parent="l10n_ve_withholding.seniat_reports"
-    action="action_retention_islr"
+        id="xml_retention_islr"
+        name="XML ISLR Retention"
+        parent="l10n_ve_withholding.seniat_reports"
+        action="action_retention_islr"
     />
 
     <menuitem
-    id="menu_arcv_report"
-    action="action_arcv_report"
-    parent="l10n_ve_withholding.seniat_reports"
-    groups="account.group_account_manager"
-    name="ARCV Report"
+        id="menu_arcv_report"
+        action="action_arcv_report"
+        parent="l10n_ve_withholding.seniat_reports"
+        groups="account.group_account_manager"
+        name="ARCV Report"
     />
 
     <menuitem

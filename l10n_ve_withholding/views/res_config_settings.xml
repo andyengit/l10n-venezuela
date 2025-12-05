@@ -2,43 +2,106 @@
     <record id="res_config_settings_l10n_ve_withholding" model="ir.ui.view">
         <field name="name">res.config.settings.l10n.ve.payment.extension</field>
         <field name="model">res.config.settings</field>
-        <field name="inherit_id" ref="l10n_ve_seniat.res_config_settings_l10n_ve_seniat" />
+        <field
+            name="inherit_id"
+            ref="l10n_ve_seniat.res_config_settings_l10n_ve_seniat"
+        />
         <field name="arch" type="xml">
             <xpath expr="//block[@name='l10n_ve_seniat_block']" position="inside">
-                <setting name="condition_withholding_settings" string="Condición de Retención" help="Condición utilizada para registrar las retenciones">
-                    <label for="condition_withholding_id" string="Condición de Retención" class="col-lg-6 o_light_label" />
+                <setting
+                    name="condition_withholding_settings"
+                    string="Condición de Retención"
+                    help="Condición utilizada para registrar las retenciones"
+                >
+                    <label
+                        for="condition_withholding_id"
+                        string="Condición de Retención"
+                        class="col-lg-6 o_light_label"
+                    />
                     <field name="condition_withholding_id" />
                 </setting>
-                <setting name="code_visible_settings" string="Mostrar Código en Reportes" help="Mostrar el código en los reportes de ISLR">
+                <setting
+                    name="code_visible_settings"
+                    string="Mostrar Código en Reportes"
+                    help="Mostrar el código en los reportes de ISLR"
+                >
                     <field name="code_visible" />
                 </setting>
-                <setting name="retention_iva_journals_settings" string="Retenciones de IVA" help="Configuraciones necesarias para registrar las retenciones de IVA">
+                <setting
+                    name="retention_iva_journals_settings"
+                    string="Retenciones de IVA"
+                    help="Configuraciones necesarias para registrar las retenciones de IVA"
+                >
                     <div class="content-group">
                         <div class="row mt16">
-                            <label for="iva_supplier_retention_journal_id" string="Supplier Journal" class="col-lg-6 o_light_label" />
-                            <field name="iva_supplier_retention_journal_id" class="col-lg-6" />
+                            <label
+                                for="iva_supplier_retention_journal_id"
+                                string="Supplier Journal"
+                                class="col-lg-6 o_light_label"
+                            />
+                            <field
+                                name="iva_supplier_retention_journal_id"
+                                class="col-lg-6"
+                            />
                         </div>
                         <div class="row mt16">
-                            <label for="iva_customer_retention_journal_id" string="Customer Journal" class="col-lg-6 o_light_label" />
-                            <field name="iva_customer_retention_journal_id" class="col-lg-6" />
+                            <label
+                                for="iva_customer_retention_journal_id"
+                                string="Customer Journal"
+                                class="col-lg-6 o_light_label"
+                            />
+                            <field
+                                name="iva_customer_retention_journal_id"
+                                class="col-lg-6"
+                            />
                         </div>
                     </div>
                 </setting>
-                <setting name="retention_islr_journals_settings" string="Retenciones de ISLR" help="Configuraciones necesarias para registrar las retenciones de ISLR">
+                <setting
+                    name="retention_islr_journals_settings"
+                    string="Retenciones de ISLR"
+                    help="Configuraciones necesarias para registrar las retenciones de ISLR"
+                >
                     <div class="content-group">
                         <div class="row mt16">
-                            <label for="islr_supplier_retention_journal_id" string="Supplier Journal" class="col-lg-6 o_light_label" />
-                            <field name="islr_supplier_retention_journal_id" class="col-lg-6" />
+                            <label
+                                for="islr_supplier_retention_journal_id"
+                                string="Supplier Journal"
+                                class="col-lg-6 o_light_label"
+                            />
+                            <field
+                                name="islr_supplier_retention_journal_id"
+                                class="col-lg-6"
+                            />
                         </div>
                         <div class="row mt16">
-                            <label for="islr_customer_retention_journal_id" string="Customer Journal" class="col-lg-6 o_light_label" />
-                            <field name="islr_customer_retention_journal_id" class="col-lg-6" />
+                            <label
+                                for="islr_customer_retention_journal_id"
+                                string="Customer Journal"
+                                class="col-lg-6 o_light_label"
+                            />
+                            <field
+                                name="islr_customer_retention_journal_id"
+                                class="col-lg-6"
+                            />
                         </div>
                         <div class="d-flex mt4 align-items-center">
-                            <button type="object" name="action_open_payment_concepts" class="btn-link ml-2" string="Conceptos de Pago" icon="oi-arrow-right"/>
+                            <button
+                                type="object"
+                                name="action_open_payment_concepts"
+                                class="btn-link ml-2"
+                                string="Conceptos de Pago"
+                                icon="oi-arrow-right"
+                            />
                         </div>
                         <div class="d-flex align-items-center">
-                            <button type="object" name="action_open_tax_units" class="btn-link" string="Unidades Tributarias" icon="oi-arrow-right"/>
+                            <button
+                                type="object"
+                                name="action_open_tax_units"
+                                class="btn-link"
+                                string="Unidades Tributarias"
+                                icon="oi-arrow-right"
+                            />
                         </div>
                     </div>
                 </setting>

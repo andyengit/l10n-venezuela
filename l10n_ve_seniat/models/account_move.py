@@ -137,6 +137,9 @@ Please create a credit note instead.
         if "l10n_ve_control_number" in vals:
             for rec in self:
                 # Solo validar para facturas y notas de crédito/débito
-                if rec.l10n_ve_control_number and rec.move_type in ("out_invoice", "out_refund"):
+                if rec.l10n_ve_control_number and rec.move_type in (
+                    "out_invoice",
+                    "out_refund",
+                ):
                     rec._check_control_number_unique()
         return res

@@ -1,8 +1,5 @@
 <odoo>
-    <record
-        id="view_economic_activity_tree_l10n_ve_withholding"
-        model="ir.ui.view"
-    >
+    <record id="view_economic_activity_tree_l10n_ve_withholding" model="ir.ui.view">
         <field name="name">view.economic.activity.list.l10n.ve.payment.extension</field>
         <field name="model">economic.activity</field>
         <field name="arch" type="xml">
@@ -17,10 +14,7 @@
         </field>
     </record>
 
-    <record
-        id="view_economic_activity_from_l10n_ve_withholding"
-        model="ir.ui.view"
-    >
+    <record id="view_economic_activity_from_l10n_ve_withholding" model="ir.ui.view">
         <field name="name">view.economic.activity.from.l10n.ve.payment.extension</field>
         <field name="model">economic.activity</field>
         <field name="arch" type="xml">

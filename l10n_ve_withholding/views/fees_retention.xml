@@ -28,7 +28,7 @@
                             <field name="percentage" />
                             <field name="subtract_money" />
                             <field name="tax_unit_id" />
-                            <field name="currency_id" readonly="1"/>
+                            <field name="currency_id" readonly="1" />
                         </group>
                         <group>
                             <field name="apply_subtracting" />
@@ -56,10 +56,7 @@
         </field>
     </record>
 
-    <record
-        id="view_fees_retention_search_l10n_ve_withholding"
-        model="ir.ui.view"
-    >
+    <record id="view_fees_retention_search_l10n_ve_withholding" model="ir.ui.view">
         <field name="name">view.fees.retention.search</field>
         <field name="model">fees.retention</field>
         <field name="arch" type="xml">

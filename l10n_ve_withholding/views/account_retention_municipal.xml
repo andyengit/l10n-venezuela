@@ -1,8 +1,5 @@
 <odoo>
-    <record
-        id="view_retention_municipal_form_l10n_ve_withholding"
-        model="ir.ui.view"
-    >
+    <record id="view_retention_municipal_form_l10n_ve_withholding" model="ir.ui.view">
         <field name="name">Retention Municipal client form</field>
         <field name="model">account.retention</field>
         <field name="type">form</field>
@@ -151,10 +148,7 @@
             </form>
         </field>
     </record>
-    <record
-        id="view_retention_municipal_tree_l10n_ve_withholding"
-        model="ir.ui.view"
-    >
+    <record id="view_retention_municipal_tree_l10n_ve_withholding" model="ir.ui.view">
         <field name="name">Retention Municipal client list</field>
         <field name="model">account.retention</field>
         <field name="type">list</field>
@@ -176,10 +170,7 @@
     </record>
     <!--View:
         Search: Retenciones client-->
-    <record
-        id="view_retention_municipal_search_l10n_ve_withholding"
-        model="ir.ui.view"
-    >
+    <record id="view_retention_municipal_search_l10n_ve_withholding" model="ir.ui.view">
         <field name="name">Municipal Retention</field>
         <field name="model">account.retention</field>
         <field name="arch" type="xml">

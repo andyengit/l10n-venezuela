@@ -1,8 +1,5 @@
 <odoo>
-    <record
-        id="account_payment_register_form_l10n_ve_withholding"
-        model="ir.ui.view"
-    >
+    <record id="account_payment_register_form_l10n_ve_withholding" model="ir.ui.view">
         <field name="name">account.payment.register.form</field>
         <field name="model">account.payment.register</field>
         <field name="inherit_id" ref="account.view_account_payment_register_form" />
