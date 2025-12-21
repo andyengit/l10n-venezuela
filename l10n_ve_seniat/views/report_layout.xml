@@ -71,7 +71,7 @@
                                 <span t-if="o.name and o.name != '/'" t-field="o.name">INV/2023/0001</span>
                             </t>
                             <div id="informations" class="row mb-1" t-if="o.invoice_date or (o.invoice_date_due and o.move_type == 'out_invoice' and o.state == 'posted') or o.delivery_date or o.invoice_origin or o.partner_id.ref or o.ref or o.invoice_incoterm_id">
-                                <div class="col" t-if="o.invoice_date" name="invoice_date">
+                                <div class="col" t-if="o.invoice_date or o.l10n_ve_invoice_date" name="invoice_date">
                                     <t t-if="o.move_type == 'out_invoice'">
                                         <strong>Invoice Date</strong>
                                     </t>
@@ -84,7 +84,8 @@
                                     <t t-else="">
                                         <strong>Date</strong>
                                     </t>
-                                    <div t-field="o.invoice_date">2023-09-12</div>
+                                    <div t-if="o.l10n_ve_invoice_date and o.country_code == 'VE'" t-field="o.l10n_ve_invoice_date">2023-09-12 10:30:00</div>
+                                    <div t-else="" t-field="o.invoice_date">2023-09-12</div>
                                 </div>
                                 <div class="col" t-if="o.invoice_date_due and o.move_type == 'out_invoice' and o.state == 'posted'" name="due_date">
                                     <strong>Due Date</strong>

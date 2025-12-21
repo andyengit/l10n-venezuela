@@ -5,11 +5,12 @@
         <field name="inherit_id" ref="account.view_account_payment_form" />
         <field name="arch" type="xml">
             <xpath expr="//div[@name='amount_div']" position="after">
+                <field name="country_code" invisible="1" />
                 <field name="l10n_ve_show_apply_igtf" invisible="1" />
-                <field name="l10n_ve_apply_igtf" invisible="not l10n_ve_show_apply_igtf" readonly="1" />
-                <field name="l10n_ve_igtf_included" invisible="not l10n_ve_apply_igtf or not l10n_ve_show_apply_igtf" readonly="1" />
-                <field name="l10n_ve_igtf_amount_currency" widget="monetary" readonly="1" invisible="not l10n_ve_apply_igtf or not l10n_ve_show_apply_igtf" />
-                <field name="l10n_ve_igtf_amount_company_currency" widget="monetary" readonly="1" invisible="not l10n_ve_apply_igtf or not l10n_ve_show_apply_igtf" />
+                <field name="l10n_ve_apply_igtf" invisible="country_code != 'VE' or not l10n_ve_show_apply_igtf" readonly="1" />
+                <field name="l10n_ve_igtf_included" invisible="country_code != 'VE' or not l10n_ve_apply_igtf or not l10n_ve_show_apply_igtf" readonly="1" />
+                <field name="l10n_ve_igtf_amount_currency" widget="monetary" readonly="1" invisible="country_code != 'VE' or not l10n_ve_apply_igtf or not l10n_ve_show_apply_igtf" />
+                <field name="l10n_ve_igtf_amount_company_currency" widget="monetary" readonly="1" invisible="country_code != 'VE' or not l10n_ve_apply_igtf or not l10n_ve_show_apply_igtf" />
             </xpath>
         </field>
     </record>

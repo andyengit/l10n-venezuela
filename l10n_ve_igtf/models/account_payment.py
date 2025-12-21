@@ -123,6 +123,9 @@ class AccountPayment(models.Model):
     @api.depends("currency_id", "company_id", "company_id.l10n_ve_igtf_currency_ids")
     def _compute_l10n_ve_show_apply_igtf(self):
         for payment in self:
+            if payment.country_code != 'VE':
+                payment.l10n_ve_show_apply_igtf = False
+                continue
             allowed = payment.company_id.l10n_ve_igtf_currency_ids
             if not allowed:
                 allowed = payment.env.ref("base.USD", raise_if_not_found=False) or payment.env["res.currency"]
@@ -151,6 +154,9 @@ class AccountPayment(models.Model):
         None
         """
         for payment in self:
+            if payment.country_code != 'VE':
+                payment.l10n_ve_igtf_amount_currency = 0.0
+                continue
             percent = payment.company_id.l10n_ve_igtf_percent or 0.0
             if not payment.l10n_ve_apply_igtf or percent <= 0.0 or not payment.currency_id:
                 payment.l10n_ve_igtf_amount_currency = 0.0
@@ -180,6 +186,9 @@ class AccountPayment(models.Model):
         None
         """
         for payment in self:
+            if payment.country_code != 'VE':
+                payment.l10n_ve_igtf_amount_company_currency = 0.0
+                continue
             igtf_amount_currency = payment.l10n_ve_igtf_amount_currency
             if not payment.currency_id or payment.currency_id.is_zero(igtf_amount_currency):
                 payment.l10n_ve_igtf_amount_company_currency = 0.0
@@ -223,6 +232,9 @@ class AccountPayment(models.Model):
             write_off_line_vals=write_off_line_vals,
             force_balance=force_balance,
         )
+
+        if self.country_code != 'VE':
+            return line_vals_list
 
         company = self.company_id
         igtf_account = company.l10n_ve_igtf_account_id

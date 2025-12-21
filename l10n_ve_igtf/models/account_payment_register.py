@@ -61,6 +61,9 @@ class AccountPaymentRegister(models.TransientModel):
     @api.depends("currency_id", "company_id", "company_id.l10n_ve_igtf_currency_ids")
     def _compute_l10n_ve_show_apply_igtf(self):
         for wiz in self:
+            if wiz.company_id.account_fiscal_country_id.code != 'VE':
+                wiz.l10n_ve_show_apply_igtf = False
+                continue
             allowed = wiz.company_id.l10n_ve_igtf_currency_ids
             if not allowed:
                 allowed = (
@@ -101,6 +104,9 @@ class AccountPaymentRegister(models.TransientModel):
         IGTF when the user enters an amount larger than the invoice total.
         """
         for wiz in self:
+            if wiz.company_id.account_fiscal_country_id.code != 'VE':
+                wiz.l10n_ve_igtf_amount_currency = 0.0
+                continue
             percent = wiz.company_id.l10n_ve_igtf_percent or 0.0
             if not wiz.l10n_ve_apply_igtf or percent <= 0.0 or not wiz.currency_id:
                 wiz.l10n_ve_igtf_amount_currency = 0.0
@@ -155,6 +161,9 @@ class AccountPaymentRegister(models.TransientModel):
         None
         """
         for wiz in self:
+            if wiz.company_id.account_fiscal_country_id.code != 'VE':
+                wiz.l10n_ve_igtf_amount_company_currency = 0.0
+                continue
             igtf_amount_currency = wiz.l10n_ve_igtf_amount_currency
             if not wiz.currency_id or wiz.currency_id.is_zero(igtf_amount_currency):
                 wiz.l10n_ve_igtf_amount_company_currency = 0.0
@@ -284,6 +293,8 @@ class AccountPaymentRegister(models.TransientModel):
             If the amount exceeds the computed maximum allowed amount.
         """
         self.ensure_one()
+        if self.company_id.account_fiscal_country_id.code != 'VE':
+            return
         if (
             not self.l10n_ve_apply_igtf
             or not self.currency_id

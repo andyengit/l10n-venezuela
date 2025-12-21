@@ -1,5 +1,6 @@
 from odoo import fields, models, _
 from odoo.exceptions import UserError
+from odoo import Command
 
 
 class L10nVeIgtfUnreconcilePaymentWizard(models.TransientModel):
@@ -46,45 +47,58 @@ class L10nVeIgtfUnreconcilePaymentWizard(models.TransientModel):
         """
         self.ensure_one()
 
-        if not self.move_id or not self.partial_id or not self.payment_id:
+        move_id = self.move_id.id
+        partial_id = self.partial_id.id
+        payment_id = self.payment_id.id
+        action = self.action
+
+        if not move_id or not partial_id or not payment_id:
             raise UserError(_("Missing data to process the request."))
 
-        self.move_id.js_remove_outstanding_partial(self.partial_id.id)
+        move = self.env["account.move"].browse(move_id)
+        payment = self.env["account.payment"].browse(payment_id)
 
-        if self.action == "cancel":
-            self.payment_id.action_cancel()
+        move.js_remove_outstanding_partial(partial_id)
+
+        if action == "cancel":
+            payment.action_cancel()
             return {"type": "ir.actions.act_window_close"}
 
-        company = self.payment_id.company_id
+        company = payment.company_id
         igtf_account = company.l10n_ve_igtf_account_id
         if not igtf_account:
             raise UserError(_("No IGTF account is configured for the company."))
 
-        igtf_lines = self.payment_id.move_id.line_ids.filtered(lambda l: l.account_id == igtf_account)
+        igtf_lines = payment.move_id.line_ids.filtered(lambda l: l.account_id == igtf_account)
         if not igtf_lines:
-            self.payment_id.with_context(l10n_ve_igtf_from_register_payment=True).write(
+            payment.with_context(l10n_ve_igtf_from_register_payment=True).write(
                 {"l10n_ve_apply_igtf": False, "l10n_ve_igtf_included": False}
             )
             return {"type": "ir.actions.act_window_close"}
 
         igtf_amount_currency_abs = sum(abs(l.amount_currency) for l in igtf_lines)
 
-        self.payment_id.action_draft()
+        payment.action_draft()
 
-        new_amount = self.payment_id.currency_id.round(self.payment_id.amount - igtf_amount_currency_abs)
+        new_amount = payment.currency_id.round(payment.amount - igtf_amount_currency_abs)
         if new_amount < 0:
             raise UserError(_("The payment amount would become negative after removing IGTF."))
 
-        self.payment_id.with_context(l10n_ve_igtf_from_register_payment=True).write(
-            {
-                "l10n_ve_apply_igtf": False,
-                "l10n_ve_igtf_included": False,
-                "amount": new_amount,
-            }
+        self.env.cr.execute(
+            "UPDATE account_payment SET l10n_ve_apply_igtf = FALSE, l10n_ve_igtf_included = FALSE, amount = %s WHERE id = %s",
+            (new_amount, payment.id),
         )
+        payment.invalidate_recordset(["l10n_ve_apply_igtf", "l10n_ve_igtf_included", "amount"])
 
-        self.payment_id.move_id.action_post()
-        self.payment_id.action_post()
+        old_line_ids = payment.move_id.line_ids.ids
+        line_vals_list = payment._prepare_move_line_default_vals()
+        
+        payment.move_id.write({
+            "line_ids": [Command.delete(line_id) for line_id in old_line_ids] + [Command.create(vals) for vals in line_vals_list],
+        })
+
+        payment.move_id.action_post()
+        payment.action_post()
         return {"type": "ir.actions.act_window_close"}
 
 

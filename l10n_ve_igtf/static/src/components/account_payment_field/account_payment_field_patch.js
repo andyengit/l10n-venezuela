@@ -13,8 +13,19 @@ patch(AccountPaymentField.prototype, {
         );
         if (action) {
             this.popover.close();
-            await this.action.doAction(action);
-            await this.props.record.model.root.load();
+            let reloaded = false;
+            await this.action.doAction(action, {
+                onClose: async () => {
+                    if (!reloaded) {
+                        reloaded = true;
+                        await this.props.record.model.root.load();
+                    }
+                },
+            });
+            if (!reloaded) {
+                await new Promise((resolve) => setTimeout(resolve, 100));
+                await this.props.record.model.root.load();
+            }
             return;
         }
         this.popover.close();

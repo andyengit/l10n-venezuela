@@ -40,6 +40,9 @@ class AccountMove(models.Model):
         """
         self.ensure_one()
 
+        if self.country_code != 'VE':
+            return 0.0, 0.0
+
         if not self.is_sale_document(include_receipts=True):
             return 0.0, 0.0
 
@@ -147,6 +150,10 @@ class AccountMove(models.Model):
         None
         """
         for move in self:
+            if move.country_code != 'VE':
+                move.l10n_ve_igtf_collected_amount_currency = 0.0
+                move.l10n_ve_igtf_collected_amount_company_currency = 0.0
+                continue
             amt_cur, amt_comp = move._l10n_ve_igtf_get_collected_amounts()
             move.l10n_ve_igtf_collected_amount_currency = amt_cur
             move.l10n_ve_igtf_collected_amount_company_currency = amt_comp
@@ -168,6 +175,9 @@ class AccountMove(models.Model):
         """
         self.ensure_one()
 
+        if self.country_code != 'VE':
+            return False
+
         partial = self.env["account.partial.reconcile"].browse(partial_id)
         if not partial.exists():
             return False
@@ -184,6 +194,7 @@ class AccountMove(models.Model):
             "name": _("IGTF Payment"),
             "res_model": "l10n_ve_igtf.unreconcile.payment.wizard",
             "view_mode": "form",
+            "views": [(False, "form")],
             "target": "new",
             "context": {
                 "default_move_id": self.id,
@@ -225,6 +236,8 @@ class AccountMove(models.Model):
         """
         super()._compute_tax_totals()
         for move in self:
+            if move.country_code != 'VE':
+                continue
             if not move.tax_totals or not move.is_invoice(include_receipts=True):
                 continue
             igtf_amount_currency = move.l10n_ve_igtf_collected_amount_currency
@@ -276,6 +289,8 @@ class AccountMove(models.Model):
         Payment = self.env["account.payment"]
 
         for move in self:
+            if move.country_code != 'VE':
+                continue
             widget = move.invoice_payments_widget
             if not widget or not isinstance(widget, dict) or not widget.get("content"):
                 continue

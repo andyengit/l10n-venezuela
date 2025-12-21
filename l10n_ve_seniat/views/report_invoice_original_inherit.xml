@@ -6,6 +6,11 @@
             </div>
         </xpath>
 
+        <xpath expr="//div[@name='invoice_date']//div[@t-field='o.invoice_date']" position="replace">
+            <div t-if="o.l10n_ve_invoice_date and o.country_code == 'VE'" t-field="o.l10n_ve_invoice_date">2023-09-12 10:30:00</div>
+            <div t-else="" t-field="o.invoice_date">2023-09-12</div>
+        </xpath>
+
         <xpath expr="//div[@id='right-elements']" position="attributes">
             <attribute name="t-attf-class">
                 #{'col-7 mt-5' if (report_type == 'pdf' and o.tax_totals and o.tax_totals.get('display_in_company_currency') and o.company_currency_id != o.currency_id) else ('col-5 mt-5' if report_type == 'pdf' else 'col-12 col-md-5')} ms-5 d-inline-block float-end
@@ -82,13 +87,6 @@
                 <t t-set="tax_totals" t-value="o.tax_totals" />
                 <t t-set="currency" t-value="o.currency_id" />
             </t>
-        </xpath>
-
-        <xpath expr="//t[@t-else][preceding-sibling::t[1][@t-if=&quot;o.tax_totals.get('display_in_company_currency')&quot;]]" position="replace">
-            <t />
-        </xpath>
-        <xpath expr="//t[@t-if=&quot;o.tax_totals.get('display_in_company_currency')&quot;]" position="replace">
-            <t />
         </xpath>
     </template>
 </odoo>

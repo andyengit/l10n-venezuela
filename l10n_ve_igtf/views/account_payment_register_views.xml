@@ -5,6 +5,7 @@
         <field name="inherit_id" ref="account.view_account_payment_register_form" />
         <field name="arch" type="xml">
             <xpath expr="//div[@name='amount_div']" position="after">
+                <field name="company_id" invisible="1" />
                 <field name="l10n_ve_show_apply_igtf" invisible="1" />
                 <field name="l10n_ve_apply_igtf" invisible="not l10n_ve_show_apply_igtf" />
                 <field
