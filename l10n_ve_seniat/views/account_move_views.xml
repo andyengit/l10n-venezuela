@@ -40,6 +40,13 @@
                     invisible="country_code != 'VE' or (country_code == 'VE' and (move_type == 'entry' or move_type != 'out_invoice' or state != 'posted'))"
                     confirm="This action will cancel the document. Are you sure you want to proceed?"
                 />
+                <button
+                    name="action_print_invoice_ve_free_form"
+                    string="Imprimir Factura Forma Libre"
+                    type="object"
+                    groups="account.group_account_invoice"
+                    invisible="country_code != 'VE' or move_type not in ('out_invoice', 'out_refund') or state != 'posted' or l10n_ve_ve_invoice_original_printed"
+                />
 
             </xpath>
             <xpath expr="//group[@id='header_left_group']/*[1]" position="before">

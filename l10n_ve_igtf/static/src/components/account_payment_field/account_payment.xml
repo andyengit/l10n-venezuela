@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-inherit="account.AccountPaymentField" t-inherit-mode="extension">
+        <xpath expr="//tr[1]" position="after">
+            <t t-if="line.l10n_ve_igtf_amount_formatted">
+                <tr class="text-muted text-end">
+                    <td colspan="3">
+                        <span>IGTF - </span>
+                        <t t-out="line.l10n_ve_igtf_amount_formatted" />
+                        <t t-if="line.l10n_ve_igtf_amount_company_currency_formatted">
+                            <span> (</span>
+                            <t t-out="line.l10n_ve_igtf_amount_company_currency_formatted" />
+                            <span>)</span>
+                        </t>
+                    </td>
+                </tr>
+            </t>
+        </xpath>
+    </t>
+
+    <t t-inherit="account.AccountPaymentPopOver" t-inherit-mode="extension">
+        <xpath expr="//div[contains(@class, 'px-2')]//table/tr[1]" position="after">
+            <tr t-if="props.l10n_ve_igtf_amount_formatted">
+                <td class="fw-bolder">IGTF:</td>
+                <td class="ps-1">
+                    <t t-out="props.l10n_ve_igtf_amount_formatted" />
+                    <t t-if="props.l10n_ve_igtf_amount_company_currency_formatted">
+                        <span> (</span>
+                        <t t-out="props.l10n_ve_igtf_amount_company_currency_formatted" />
+                        <span>)</span>
+                    </t>
+                </td>
+            </tr>
+            <tr t-if="props.l10n_ve_net_amount_formatted">
+                <td class="fw-bolder">Net reconciled:</td>
+                <td class="ps-1">
+                    <t t-out="props.l10n_ve_net_amount_formatted" />
+                </td>
+            </tr>
+        </xpath>
+    </t>
+</templates>
+
+

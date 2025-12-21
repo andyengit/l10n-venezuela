@@ -6,7 +6,7 @@
     "countries": ["ve"],
     "author": "Anderson Armeya, Odoo Community Association (OCA)",
     "category": "Accounting/Localizations/Account Charts",
-    "depends": ["base", "account", "account_debit_note"],
+    "depends": ["base", "web", "account", "account_debit_note"],
     "excludes": ["web_studio"],
     "demo": [
         "demo/demo_company.xml",
@@ -25,8 +25,14 @@
         "views/res_country_parish_views.xml",
         "views/res_partner_views.xml",
         "views/report_layout.xml",
+        "views/report_invoice_original_inherit.xml",
         "views/res_config_settings.xml",
         "views/menuitems.xml",
     ],
+    "assets": {
+        "web.report_assets_common": [
+            "l10n_ve_seniat/static/src/css/report_invoice_ve.css",
+        ],
+    },
     "license": "AGPL-3",
 }

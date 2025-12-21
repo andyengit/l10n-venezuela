@@ -1,12 +1,28 @@
 import logging
 
-from odoo import Command, _, api, models
+from odoo import Command, _, api, models, fields
 
 _logger = logging.getLogger(__name__)
 
 
 class AccountMoveLine(models.Model):
     _inherit = "account.move.line"
+
+    subtotal_company_currency = fields.Monetary(
+        compute="_compute_subtotal_company_currency",
+        currency_field="company_currency_id",
+    )
+
+    @api.depends("balance")
+    def _compute_subtotal_company_currency(self):
+        for line in self:
+            if line.move_id.move_type in ["out_invoice", "in_invoice"]:
+                line.subtotal_company_currency = abs(line.balance)
+                continue
+            if line.move_id.move_type in ["out_refund", "in_refund"]:
+                line.subtotal_company_currency = abs(line.balance)
+                continue
+            line.subtotal_company_currency = 0.0
 
     @api.model_create_multi
     def create(self, vals_list):

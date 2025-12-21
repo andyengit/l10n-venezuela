@@ -9,6 +9,13 @@ _logger = logging.getLogger(__name__)
 class AccountMove(models.Model):
     _inherit = "account.move"
 
+    l10n_ve_ve_invoice_original_printed = fields.Boolean(
+        string="VE Invoice Original Printed",
+        copy=False,
+        readonly=True,
+        help="Technical flag used by the VE invoice report to determine if a printed copy should display a 'faithful copy' label.",
+    )
+
     reception_date = fields.Date(
         help="Indicates when the invoice was received by the client/company",
         tracking=True,
@@ -140,3 +147,10 @@ Please create a credit note instead.
                 if rec.l10n_ve_control_number and rec.move_type in ("out_invoice", "out_refund"):
                     rec._check_control_number_unique()
         return res
+
+    def action_print_invoice_ve_free_form(self):
+        self.ensure_one()
+        if self.company_id.account_fiscal_country_id.code == "VE" and self.move_type in ("out_invoice", "out_refund"):
+            self.sudo().write({"l10n_ve_ve_invoice_original_printed": True})
+        report = self.env.ref("l10n_ve_seniat.account_invoices_ve")
+        return report.with_context(l10n_ve_ve_free_form=True).report_action(self)

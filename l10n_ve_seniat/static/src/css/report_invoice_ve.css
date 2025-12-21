@@ -1,0 +1,42 @@
+.l10n_ve_totals_grid {
+    width: 100%;
+    border: 0;
+    border-collapse: separate;
+    border-spacing: 20px 0;
+}
+
+.l10n_ve_totals_grid td {
+    width: 50%;
+    vertical-align: top;
+    padding: 0;
+    border: 0;
+}
+
+.l10n_ve_totals_table {
+    width: 100%;
+    border: 0 !important;
+    outline: 0;
+    box-shadow: none;
+}
+
+.l10n_ve_totals_table tr td {
+    background: #fff !important;
+    color: #000 !important;
+    border-left: 0 !important;
+    border-right: 0 !important;
+}
+
+.o_table_striped .l10n_ve_totals_table tr:nth-child(odd) td {
+    background: #fff !important;
+}
+
+.l10n_ve_totals_table tr.o_total td {
+    border-top: 1px solid #000 !important;
+    padding-top: 6px;
+}
+
+.l10n_ve_totals_table tr.o_total td strong {
+    color: #000 !important;
+}
+
+
