@@ -2,9 +2,9 @@
     <record id="res_config_settings_l10n_ve_withholding" model="ir.ui.view">
         <field name="name">res.config.settings.l10n.ve.payment.extension</field>
         <field name="model">res.config.settings</field>
-        <field name="inherit_id" ref="l10n_ve_seniat.res_config_settings_l10n_ve_seniat" />
+        <field name="inherit_id" ref="account.res_config_settings_view_form" />
         <field name="arch" type="xml">
-            <xpath expr="//block[@name='l10n_ve_seniat_block']" position="inside">
+            <block id="default_accounts" position="inside">
                 <setting name="condition_withholding_settings" string="Condición de Retención" help="Condición utilizada para registrar las retenciones">
                     <label for="condition_withholding_id" string="Condición de Retención" class="col-lg-6 o_light_label" />
                     <field name="condition_withholding_id" />
@@ -42,7 +42,7 @@
                         </div>
                     </div>
                 </setting>
-            </xpath>
+            </block>
         </field>
     </record>
 </odoo>
