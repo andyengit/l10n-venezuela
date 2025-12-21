@@ -1,6 +1,7 @@
 import logging
 
 from odoo import Command, _, api, models, fields
+from odoo.exceptions import ValidationError
 
 _logger = logging.getLogger(__name__)
 
@@ -34,6 +35,7 @@ class AccountMoveLine(models.Model):
             if record.move_id.country_code != self.env.ref("base.ve").code:
                 continue
 
+            record._validate_price_not_zero()
             record._put_unique_tax_per_line()
         return res
 
@@ -45,8 +47,26 @@ class AccountMoveLine(models.Model):
             if record.move_id.country_code != self.env.ref("base.ve").code:
                 continue
 
+            # Validar precio si se está modificando price_unit o quantity
+            if "price_unit" in vals or "quantity" in vals:
+                record._validate_price_not_zero()
             record._put_unique_tax_per_line()
         return res
+
+    def _validate_price_not_zero(self):
+        """Valida que las líneas de factura no tengan precio en 0"""
+        self.ensure_one()
+        if self.display_type not in ("product", "discount"):
+            return
+        
+        if self.move_id.move_type == "entry":
+            return
+        
+        # Validar que el precio unitario no sea 0
+        if abs(self.price_unit or 0.0) < 0.01:
+            raise ValidationError(
+                _("No se permiten líneas con precio en 0. La línea '%s' tiene un precio de 0.") % (self.name or _("Sin nombre"))
+            )
 
     def _put_unique_tax_per_line(self):
         self.ensure_one()

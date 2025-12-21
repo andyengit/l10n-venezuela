@@ -58,12 +58,33 @@ class AccountPaymentRegister(models.TransientModel):
             or self.env["res.currency"]
         )
 
-    @api.depends("currency_id", "company_id", "company_id.l10n_ve_igtf_currency_ids")
+    @api.depends("currency_id", "company_id", "company_id.l10n_ve_igtf_currency_ids", "batches")
     def _compute_l10n_ve_show_apply_igtf(self):
         for wiz in self:
             if wiz.company_id.account_fiscal_country_id.code != 'VE':
                 wiz.l10n_ve_show_apply_igtf = False
                 continue
+            
+            # Verificar que los movimientos sean facturas de clientes o notas de crédito de clientes
+            # No mostrar IGTF para facturas de proveedor (in_invoice) o notas de crédito de proveedor (in_refund)
+            show_igtf = True
+            if wiz.batches:
+                # batches es una lista de diccionarios, cada uno con 'lines' que es un recordset de account.move.line
+                for batch in wiz.batches:
+                    lines = batch.get('lines', self.env['account.move.line'])
+                    if lines:
+                        moves = lines.move_id
+                        if moves:
+                            # Solo permitir IGTF para facturas de clientes (out_invoice) y notas de crédito de clientes (out_refund)
+                            allowed_move_types = ('out_invoice', 'out_refund')
+                            if any(move.move_type not in allowed_move_types for move in moves):
+                                show_igtf = False
+                                break
+            
+            if not show_igtf:
+                wiz.l10n_ve_show_apply_igtf = False
+                continue
+            
             allowed = wiz.company_id.l10n_ve_igtf_currency_ids
             if not allowed:
                 allowed = (

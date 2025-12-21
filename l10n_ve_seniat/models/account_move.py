@@ -22,14 +22,23 @@ class AccountMove(models.Model):
     )
     l10n_ve_invoice_date = fields.Datetime("Invoice Datetime", readonly=True)
     l10n_ve_control_number = fields.Char(
-        "Control Number",
+        string="Control Number",
         copy=False,
+        store=True,
+        tracking=True,
     )
 
     def action_post(self):
         for move_id in self:
             if move_id.country_code != self.env.ref("base.ve").code:
                 continue
+
+            # Validar que el total de la factura no sea 0
+            if move_id.move_type in ("out_invoice", "out_refund", "in_invoice", "in_refund"):
+                if abs(move_id.amount_total) < 0.01:
+                    raise ValidationError(
+                        _("No se puede facturar con un total de 0. Por favor, verifique las líneas de la factura.")
+                    )
 
             lines = []
             for line in self.line_ids:
@@ -49,6 +58,20 @@ class AccountMove(models.Model):
         return super().action_post()
 
     def button_cancel(self):
+        # No permitir cancelar facturas de clientes ni notas de crédito en Venezuela
+        for move in self:
+            if (
+                move.country_code == self.env.ref("base.ve").code
+                and move.move_type in ("out_invoice", "out_refund")
+            ):
+                if move.move_type == "out_invoice":
+                    raise ValidationError(
+                        _("No se pueden cancelar las facturas de clientes. Por favor, cree una nota de crédito en su lugar.")
+                    )
+                elif move.move_type == "out_refund":
+                    raise ValidationError(
+                        _("No se pueden cancelar las notas de crédito. Por favor, cree una nueva nota de crédito o factura en su lugar.")
+                    )
         self = self.with_context(force_draft=True)
         return super().button_cancel()
 
