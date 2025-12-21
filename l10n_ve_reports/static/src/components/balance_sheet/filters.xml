@@ -1,26 +1,16 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <templates>
-    <t t-name="l10n_ve_reports.AgedPartnerBalanceFilterExtraOptions" t-inherit="l10n_ve_reports.AccountReportFilterExtraOptions">
-        <xpath expr="//DropdownItem[contains(@class, 'filter_show_all_hook')]" position="after">
-            <DropdownItem
-                t-if="controller.options.multi_currency"
-                class="{ 'selected': controller.options.show_currency }"
-                onSelected="() => this.filterClicked({ optionKey: 'show_currency', reload: true})"
-                closingMode="'none'"
-            >
-                Show Currency
-            </DropdownItem>
-            <DropdownItem
-                class="{ 'selected': controller.options.show_account }"
-                onSelected="() => this.filterClicked({ optionKey: 'show_account', reload: true})"
-                closingMode="'none'"
-            >
-                Show Account
-            </DropdownItem>
+    <t t-name="l10n_ve_reports.BalanceSheetFilters" t-inherit="l10n_ve_reports.AccountReportFiltersCustomizable">
+        <xpath expr="//div[@id='filter_extra_options']" position="before">
+            <t t-if="controller.options.available_currencies and controller.options.available_currencies.length > 0">
+                <div id="filter_currency_conversion" class="d-flex align-items-center gap-2 p-2">
+                    <t t-call="l10n_ve_reports.BalanceSheetCurrencyConversion"/>
+                </div>
+            </t>
         </xpath>
     </t>
 
-    <t t-name="l10n_ve_reports.AgedPartnerBalanceCurrencyConversion">
+    <t t-name="l10n_ve_reports.BalanceSheetCurrencyConversion">
         <Dropdown>
             <button class="btn btn-secondary">
                 <i class="fa fa-exchange me-1"/>
@@ -60,9 +50,9 @@
                                 class="form-check-input"
                                 t-att-checked="controller.options.use_document_date || false"
                                 t-on-change="(ev) => this.onUseDocumentDateChange(ev)"
-                                id="use_document_date_checkbox"
+                                id="balance_sheet_use_document_date_checkbox"
                             />
-                            <label class="form-check-label mb-0" for="use_document_date_checkbox">
+                            <label class="form-check-label mb-0" for="balance_sheet_use_document_date_checkbox">
                                 Usar fecha del documento
                             </label>
                         </div>
@@ -84,3 +74,4 @@
         </Dropdown>
     </t>
 </templates>
+

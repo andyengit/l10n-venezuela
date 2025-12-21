@@ -2,15 +2,15 @@ from odoo import models, fields, _
 from dateutil.relativedelta import relativedelta
 
 
-class BalanceSheetCustomHandler(models.AbstractModel):
-    _name = 'account.balance.sheet.report.handler'
+class ProfitAndLossCustomHandler(models.AbstractModel):
+    _name = 'account.profit.and.loss.report.handler'
     _inherit = 'account.report.custom.handler'
-    _description = "Balance Sheet Custom Handler"
+    _description = "Profit and Loss Custom Handler"
 
     def _get_custom_display_config(self):
         return {
             'components': {
-                'AccountReportFilters': 'l10n_ve_reports.BalanceSheetFilters',
+                'AccountReportFilters': 'l10n_ve_reports.ProfitAndLossFilters',
             },
         }
 
@@ -86,7 +86,7 @@ class BalanceSheetCustomHandler(models.AbstractModel):
                         # Determinar la tasa a usar según el período de la columna
                         rate_date = currency_rate_date
                         if use_document_date:
-                            # Para Balance Sheet con fecha de documento, usar la fecha del período de la columna
+                            # Para Profit and Loss con fecha de documento, usar la fecha del período de la columna
                             # Las columnas tienen column_group_key que puede contener información del período
                             column_group_key = column.get('column_group_key')
                             if column_group_key and column_group_key in column_groups:
@@ -118,6 +118,3 @@ class BalanceSheetCustomHandler(models.AbstractModel):
         
         return lines
 
-    def _customize_warnings(self, report, options, all_column_groups_expression_totals, warnings):
-        if options['currency_table']['type'] == 'cta':
-            warnings['l10n_ve_reports.common_possibly_unbalanced_because_cta'] = {}

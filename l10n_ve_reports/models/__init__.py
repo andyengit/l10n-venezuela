@@ -28,6 +28,7 @@ from . import account_tax
 from . import executive_summary_report
 from . import budget
 from . import balance_sheet
+from . import profit_and_loss
 from . import account_fiscal_position
 from . import account_customer_statement
 from . import account_followup_report

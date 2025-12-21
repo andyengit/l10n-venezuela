@@ -21,6 +21,9 @@ class GeneralLedgerCustomHandler(models.AbstractModel):
             'templates': {
                 'AccountReportLineName': 'l10n_ve_reports.GeneralLedgerLineName',
             },
+            'components': {
+                'AccountReportFilters': 'l10n_ve_reports.GeneralLedgerFilters',
+            },
         }
 
     def _custom_options_initializer(self, report, options, previous_options):
@@ -36,6 +39,26 @@ class GeneralLedgerCustomHandler(models.AbstractModel):
 
         # Automatically unfold the report when printing it, unless some specific lines have been unfolded
         options['unfold_all'] = (options['export_mode'] == 'print' and not options.get('unfolded_lines')) or options['unfold_all']
+        
+        # Opciones de conversión de moneda
+        today = fields.Date.today()
+        options['convert_to_currency'] = (previous_options or {}).get('convert_to_currency', False)
+        options['currency_rate_date'] = (previous_options or {}).get('currency_rate_date', fields.Date.to_string(today))
+        options['use_document_date'] = (previous_options or {}).get('use_document_date', False)
+        
+        # Lista de monedas disponibles
+        currencies = report.env['res.currency'].search([('active', '=', True)], order='name')
+        options['available_currencies'] = [{
+            'id': currency.id,
+            'name': currency.name,
+            'symbol': currency.symbol,
+        } for currency in currencies]
+        
+        # Si hay conversión de moneda, establecer la moneda convertida como la moneda de formato por defecto
+        if options['convert_to_currency']:
+            target_currency = report.env['res.currency'].browse(options['convert_to_currency'])
+            if target_currency.exists():
+                options['forced_currency_id'] = target_currency.id
 
     def _dynamic_lines_generator(self, report, options, all_column_groups_expression_totals, warnings=None):
         lines = []
@@ -181,7 +204,61 @@ class GeneralLedgerCustomHandler(models.AbstractModel):
         groupby_companies = {}
 
         self._cr.execute(query)
-        for res in self._cr.dictfetchall():
+        query_results = self._cr.dictfetchall()
+        
+        # Aplicar conversión de moneda si está habilitada
+        target_currency = None
+        target_currency_id = options.get('convert_to_currency')
+        if target_currency_id:
+            target_currency = self.env['res.currency'].browse(target_currency_id)
+            if not target_currency.exists():
+                target_currency = None
+        
+        # Convertir resultados si hay moneda objetivo
+        if target_currency:
+            company_currency = self.env.company.currency_id
+            currency_rate_date = fields.Date.from_string(options.get('currency_rate_date', fields.Date.today()))
+            use_document_date = options.get('use_document_date', False)
+            
+            # Función helper para obtener tasa de conversión
+            def get_conversion_rate(from_currency, to_currency, date):
+                try:
+                    if hasattr(to_currency, '_get_conversion_rate'):
+                        return to_currency._get_conversion_rate(from_currency, to_currency, self.env.company, date)
+                    else:
+                        test_amount = 1.0
+                        converted = from_currency._convert(test_amount, to_currency, self.env.company, date)
+                        return converted / test_amount if test_amount != 0 else 1.0
+                except Exception:
+                    rate_obj = self.env['res.currency.rate'].search([
+                        ('currency_id', '=', to_currency.id),
+                        ('name', '<=', date),
+                        ('company_id', '=', self.env.company.id),
+                    ], order='name desc', limit=1)
+                    if rate_obj:
+                        return 1.0 / rate_obj.rate if rate_obj.rate != 0 else 1.0
+                    return 1.0
+            
+            # Obtener tasa de conversión base (si no usamos fecha del documento)
+            company_to_target_rate = 1.0
+            if target_currency != company_currency and not use_document_date:
+                company_to_target_rate = get_conversion_rate(company_currency, target_currency, currency_rate_date)
+            
+            # Aplicar conversión a los resultados
+            for res in query_results:
+                # Determinar tasa a usar
+                rate = company_to_target_rate
+                if use_document_date and target_currency != company_currency:
+                    # Para sums/initial_balance/unaffected_earnings, usar la fecha de tasa predeterminada
+                    # ya que no tenemos fecha de documento específica en estos resultados agregados
+                    rate = company_to_target_rate
+                
+                # Convertir valores monetarios
+                for field in ['debit', 'credit', 'balance', 'amount_currency']:
+                    if field in res:
+                        res[field] = res[field] * rate
+        
+        for res in query_results:
             # No result to aggregate.
             if res['groupby'] is None:
                 continue
@@ -367,6 +444,41 @@ class GeneralLedgerCustomHandler(models.AbstractModel):
         rslt = {account_id: {} for account_id in expanded_account_ids}
         aml_query = self._get_query_amls(report, options, expanded_account_ids, offset=offset, limit=limit)
         self._cr.execute(aml_query)
+        
+        # Obtener información de conversión de moneda
+        target_currency = None
+        target_currency_id = options.get('convert_to_currency')
+        if target_currency_id:
+            target_currency = self.env['res.currency'].browse(target_currency_id)
+            if not target_currency.exists():
+                target_currency = None
+        
+        # Función helper para conversión
+        def get_conversion_rate(from_currency, to_currency, date):
+            try:
+                if hasattr(to_currency, '_get_conversion_rate'):
+                    return to_currency._get_conversion_rate(from_currency, to_currency, self.env.company, date)
+                else:
+                    test_amount = 1.0
+                    converted = from_currency._convert(test_amount, to_currency, self.env.company, date)
+                    return converted / test_amount if test_amount != 0 else 1.0
+            except Exception:
+                rate_obj = self.env['res.currency.rate'].search([
+                    ('currency_id', '=', to_currency.id),
+                    ('name', '<=', date),
+                    ('company_id', '=', self.env.company.id),
+                ], order='name desc', limit=1)
+                if rate_obj:
+                    return 1.0 / rate_obj.rate if rate_obj.rate != 0 else 1.0
+                return 1.0
+        
+        company_currency = self.env.company.currency_id
+        currency_rate_date = fields.Date.from_string(options.get('currency_rate_date', fields.Date.today()))
+        use_document_date = options.get('use_document_date', False)
+        company_to_target_rate = 1.0
+        if target_currency and target_currency != company_currency and not use_document_date:
+            company_to_target_rate = get_conversion_rate(company_currency, target_currency, currency_rate_date)
+        
         aml_results_number = 0
         has_more = False
         for aml_result in self._cr.dictfetchall():
@@ -374,6 +486,34 @@ class GeneralLedgerCustomHandler(models.AbstractModel):
             if aml_results_number == limit:
                 has_more = True
                 break
+
+            # Aplicar conversión de moneda si está habilitada
+            if target_currency:
+                # Determinar tasa a usar
+                rate = company_to_target_rate
+                line_date = currency_rate_date
+                
+                if use_document_date:
+                    # Usar fecha del documento (invoice_date o date)
+                    line_date_raw = aml_result.get('invoice_date') or aml_result.get('date')
+                    if line_date_raw:
+                        if isinstance(line_date_raw, str):
+                            line_date = fields.Date.from_string(line_date_raw)
+                        else:
+                            line_date = line_date_raw
+                        rate = get_conversion_rate(company_currency, target_currency, line_date)
+                
+                # Verificar si la moneda original es la misma que la objetivo
+                original_currency_id = aml_result.get('currency_id')
+                if original_currency_id and original_currency_id == target_currency.id:
+                    # Ya está en la moneda objetivo, revertir conversión previa
+                    original_currency = self.env['res.currency'].browse(original_currency_id)
+                    rate = get_conversion_rate(company_currency, original_currency, line_date)
+                
+                # Aplicar conversión
+                for field in ['debit', 'credit', 'balance', 'amount_currency']:
+                    if field in aml_result:
+                        aml_result[field] = aml_result[field] * rate
 
             # For asset_receivable the name will already contains the ref with the _compute_name
             if aml_result['ref'] and aml_result['account_type'] != 'asset_receivable':
@@ -533,12 +673,52 @@ class GeneralLedgerCustomHandler(models.AbstractModel):
             ))
 
         self._cr.execute(SQL(" UNION ALL ").join(queries))
+        query_results = self._cr.dictfetchall()
+        
+        # Aplicar conversión de moneda si está habilitada
+        target_currency = None
+        target_currency_id = options.get('convert_to_currency')
+        if target_currency_id:
+            target_currency = self.env['res.currency'].browse(target_currency_id)
+            if not target_currency.exists():
+                target_currency = None
+        
+        if target_currency:
+            company_currency = self.env.company.currency_id
+            currency_rate_date = fields.Date.from_string(options.get('currency_rate_date', fields.Date.today()))
+            
+            def get_conversion_rate(from_currency, to_currency, date):
+                try:
+                    if hasattr(to_currency, '_get_conversion_rate'):
+                        return to_currency._get_conversion_rate(from_currency, to_currency, self.env.company, date)
+                    else:
+                        test_amount = 1.0
+                        converted = from_currency._convert(test_amount, to_currency, self.env.company, date)
+                        return converted / test_amount if test_amount != 0 else 1.0
+                except Exception:
+                    rate_obj = self.env['res.currency.rate'].search([
+                        ('currency_id', '=', to_currency.id),
+                        ('name', '<=', date),
+                        ('company_id', '=', self.env.company.id),
+                    ], order='name desc', limit=1)
+                    if rate_obj:
+                        return 1.0 / rate_obj.rate if rate_obj.rate != 0 else 1.0
+                    return 1.0
+            
+            company_to_target_rate = 1.0
+            if target_currency != company_currency:
+                company_to_target_rate = get_conversion_rate(company_currency, target_currency, currency_rate_date)
+            
+            for result in query_results:
+                for field in ['debit', 'credit', 'balance', 'amount_currency']:
+                    if field in result:
+                        result[field] = result[field] * company_to_target_rate
 
         init_balance_by_col_group = {
             account_id: {column_group_key: {} for column_group_key in options['column_groups']}
             for account_id in account_ids
         }
-        for result in self._cr.dictfetchall():
+        for result in query_results:
             init_balance_by_col_group[result['groupby']][result['column_group_key']] = result
 
         accounts = self.env['account.account'].browse(account_ids)
@@ -627,19 +807,24 @@ class GeneralLedgerCustomHandler(models.AbstractModel):
             'expand_function': '_report_expand_unfoldable_line_general_ledger',
         }
 
-    def _get_aml_line(self, report, parent_line_id, options, eval_dict, init_bal_by_col_group):
+    def _get_aml_line(self, report, parent_line_id, options, eval_dict, next_progress, init_balance_by_col_group):
         line_columns = []
         for column in options['columns']:
             col_expr_label = column['expression_label']
-            col_value = eval_dict[column['column_group_key']].get(col_expr_label)
+            col_group_key = column['column_group_key']
+            col_value = eval_dict.get(col_group_key, {}).get(col_expr_label)
             col_currency = None
 
             if col_value is not None:
                 if col_expr_label == 'amount_currency':
-                    col_currency = self.env['res.currency'].browse(eval_dict[column['column_group_key']]['currency_id'])
+                    col_currency = self.env['res.currency'].browse(eval_dict[col_group_key].get('currency_id'))
                     col_value = None if col_currency == self.env.company.currency_id else col_value
                 elif col_expr_label == 'balance':
-                    col_value += (init_bal_by_col_group[column['column_group_key']] or 0)
+                    # next_progress contiene el balance acumulado hasta esta línea (desde la línea inicial)
+                    # Para la primera línea AML después del initial balance, next_progress ya incluye el initial balance
+                    # Así que solo necesitamos usar next_progress
+                    balance_init = next_progress.get(col_group_key, 0) if next_progress else 0
+                    col_value += balance_init
 
             line_columns.append(report._build_column_dict(
                 col_value,
@@ -707,6 +892,7 @@ class GeneralLedgerCustomHandler(models.AbstractModel):
         lines = []
 
         # Get initial balance
+        init_balance_by_col_group = {}
         if offset == 0:
             if unfold_all_batch_data:
                 account, init_balance_by_col_group = unfold_all_batch_data['initial_balances'][model_id]
@@ -732,7 +918,7 @@ class GeneralLedgerCustomHandler(models.AbstractModel):
 
         next_progress = progress
         for aml_result in aml_results.values():
-            new_line = self._get_aml_line(report, line_dict_id, options, aml_result, next_progress)
+            new_line = self._get_aml_line(report, line_dict_id, options, aml_result, next_progress, init_balance_by_col_group)
             lines.append(new_line)
             next_progress = init_load_more_progress(new_line)
 
@@ -742,3 +928,36 @@ class GeneralLedgerCustomHandler(models.AbstractModel):
             'has_more': has_more,
             'progress': next_progress,
         }
+
+    def _custom_line_postprocessor(self, report, options, lines):
+        """Post-procesar las líneas para actualizar la moneda en las columnas cuando hay conversión"""
+        target_currency_id = options.get('convert_to_currency')
+        forced_currency_id = options.get('forced_currency_id')
+        
+        if not target_currency_id and not forced_currency_id:
+            return lines
+        
+        # Usar forced_currency_id si está disponible, sino target_currency_id
+        currency_id_to_use = forced_currency_id or target_currency_id
+        
+        # Crear un mapa de expression_label por índice de columna
+        col_index_to_expr = {}
+        for idx, opt_col in enumerate(options.get('columns', [])):
+            col_index_to_expr[idx] = opt_col.get('expression_label')
+        
+        for line in lines:
+            if 'columns' in line:
+                for col_idx, column in enumerate(line['columns']):
+                    # Obtener el expression_label de esta columna
+                    expr_label = col_index_to_expr.get(col_idx)
+                    
+                    # Si es una columna monetaria, actualizar la moneda
+                    if expr_label in ['debit', 'credit', 'balance', 'amount_currency']:
+                        # Actualizar format_params
+                        if 'format_params' not in column:
+                            column['format_params'] = {}
+                        
+                        column['format_params']['currency_id'] = currency_id_to_use
+                        column['currency_id'] = currency_id_to_use
+        
+        return lines
