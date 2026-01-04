@@ -14,13 +14,11 @@ class AccountMoveAuditLog(models.Model):
     move_id = fields.Many2one(
         'account.move',
         string='Move',
-        ondelete='cascade',
+        ondelete='set null',
         index=True,
     )
     move_name = fields.Char(
         string='Move Name',
-        related='move_id.name',
-        store=True,
         readonly=True,
     )
     user_id = fields.Many2one(
@@ -71,6 +69,7 @@ class AccountMoveAuditLog(models.Model):
         ip_address = self._get_ip_address()
         vals = {
             'move_id': move.id,
+            'move_name': move.name or f'Move ID: {move.id}',
             'user_id': self.env.user.id,
             'action': action,
             'ip_address': ip_address or '',

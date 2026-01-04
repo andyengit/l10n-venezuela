@@ -82,20 +82,18 @@
         <field name="model">account.move</field>
         <field name="inherit_id" ref="account.view_move_form"/>
         <field name="arch" type="xml">
-            <xpath expr="//sheet" position="inside">
-                <notebook groups="base.group_no_one">
-                    <page string="Audit Log" name="audit_log">
-                        <field name="audit_log_ids" nolabel="1">
-                            <list create="0" edit="0" delete="0">
-                                <field name="user_id"/>
-                                <field name="action"/>
-                                <field name="ip_address"/>
-                                <field name="create_date"/>
-                                <field name="changes" widget="text"/>
-                            </list>
-                        </field>
-                    </page>
-                </notebook>
+            <xpath expr="//notebook" position="inside">
+                <page string="Audit Log" name="audit_log" groups="base.group_no_one">
+                    <field name="audit_log_ids" nolabel="1">
+                        <list create="0" edit="0" delete="0">
+                            <field name="user_id"/>
+                            <field name="action"/>
+                            <field name="ip_address"/>
+                            <field name="create_date"/>
+                            <field name="changes" widget="text"/>
+                        </list>
+                    </field>
+                </page>
             </xpath>
         </field>
     </record>

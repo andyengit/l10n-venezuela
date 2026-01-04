@@ -36,25 +36,43 @@ class AccountMove(models.Model):
         return res
 
     def unlink(self):
-        moves_data = []
-        for move in self:
-            moves_data.append({
-                'id': move.id,
-                'name': move.name or f'Move ID: {move.id}',
-            })
-        result = super().unlink()
         audit_log_model = self.env['account.move.audit.log']
-        for move_data in moves_data:
-            ip_address = audit_log_model._get_ip_address()
-            audit_log_model.create({
-                'move_id': move_data['id'],
-                'move_name': move_data['name'],
+        ip_address = audit_log_model._get_ip_address()
+        
+        for move in self:
+            move_data = {
+                'move_id': move.id,
+                'move_name': move.name or f'Move ID: {move.id}',
                 'user_id': self.env.user.id,
                 'action': 'unlink',
                 'ip_address': ip_address or '',
-                'changes': '',
-            })
-        return result
+                'changes': move._format_move_data_for_audit(),
+            }
+            audit_log_model.create(move_data)
+        
+        return super().unlink()
+    
+    def _format_move_data_for_audit(self):
+        """Formatea los datos del movimiento para el log de auditoría"""
+        self.ensure_one()
+        data = []
+        data.append(f"Tipo: {self.move_type}")
+        data.append(f"Fecha: {self.date or ''}")
+        data.append(f"Partner: {self.partner_id.name if self.partner_id else ''}")
+        data.append(f"Total: {self.amount_total}")
+        data.append(f"Estado: {self.state}")
+        
+        if self.line_ids:
+            data.append("\nLíneas:")
+            for line in self.line_ids[:10]:
+                line_info = f"  - {line.name or ''}: {line.balance}"
+                if line.partner_id:
+                    line_info += f" (Partner: {line.partner_id.name})"
+                data.append(line_info)
+            if len(self.line_ids) > 10:
+                data.append(f"  ... y {len(self.line_ids) - 10} líneas más")
+        
+        return "\n".join(data)
 
     def _format_changes(self, vals):
         """Format the changes dictionary into a readable string."""
