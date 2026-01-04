@@ -13,7 +13,7 @@ class TestTourAccountAnalyticFilters(AccountTestInvoicingHttpCommon):
 
         cls.env.user.groups_id += cls.env.ref(
             'analytic.group_analytic_accounting')
-        cls.report = cls.env.ref('l10n_ve_reports.profit_and_loss')
+        cls.report = cls.env.ref('account_reports.profit_and_loss')
         cls.report.write({'filter_analytic': True})
         cls.analytic_plan = cls.env['account.analytic.plan'].create({
             'name': 'Plan',
@@ -25,4 +25,4 @@ class TestTourAccountAnalyticFilters(AccountTestInvoicingHttpCommon):
         })
 
     def test_tour_account_report_analytic_filters(self):
-        self.start_tour("/odoo", 'l10n_ve_reports_analytic_filters', login=self.env.user.login)
+        self.start_tour("/odoo", 'account_reports_analytic_filters', login=self.env.user.login)

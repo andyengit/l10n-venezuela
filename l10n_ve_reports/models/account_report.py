@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
+# Part of Odoo. See LICENSE file for full copyright and licensing details.
 
 import ast
 import base64
 import datetime
 import io
 import json
-import logging
 import re
 from ast import literal_eval
 from collections import defaultdict
@@ -24,8 +24,6 @@ from odoo.tools import date_utils, get_lang, float_is_zero, float_repr, SQL, par
 from odoo.tools.float_utils import float_round, float_compare
 from odoo.tools.misc import file_path, format_date, formatLang, split_every, xlsxwriter
 from odoo.tools.safe_eval import expr_eval, safe_eval
-
-_logger = logging.getLogger(__name__)
 
 ACCOUNT_CODES_ENGINE_SPLIT_REGEX = re.compile(r"(?=[+-])")
 
@@ -589,8 +587,6 @@ class AccountReport(models.Model):
             date_from, date_to = self.env.company._get_tax_closing_period_boundaries(date_from + relativedelta(months=month_per_period * periods), self)
             return self._get_dates_period(date_from, date_to, mode, period_type='tax_period')
         if period_type in ('fiscalyear', 'today'):
-            # Don't pass the period_type to _get_dates_period to be able to retrieve the account.fiscal.year record if
-            # necessary.
             company_fiscalyear_dates = {}
             # This loop is needed because a fiscal year can be a month, quarter, etc
             for _ in range(abs(periods)):
@@ -1462,16 +1458,61 @@ class AccountReport(models.Model):
             )
 
     ####################################################
+    # OPTIONS: DISPLAY CURRENCY
+    ####################################################
+    def _init_options_display_currency(self, options, previous_options):
+        """ Initialize the display currency option. Allows showing report values in a different currency.
+        If not set, uses the company currency. The selection only persists during the current report session.
+        """
+        company_currency_id = self.env.company.currency_id.id
+        display_currency_id = previous_options.get('display_currency_id', company_currency_id)
+        
+        # Validate that the currency exists and is active
+        currency = self.env['res.currency'].browse(display_currency_id).exists()
+        if not currency or not currency.active:
+            display_currency_id = company_currency_id
+        
+        options['display_currency_id'] = display_currency_id
+        options['display_currency'] = self.env['res.currency'].browse(display_currency_id).read(['id', 'name', 'symbol'])[0]
+        
+        # List available currencies for the selector
+        available_currencies = self.env['res.currency'].search([('active', '=', True)])
+        options['available_currencies'] = available_currencies.read(['id', 'name', 'symbol'])
+        
+        # Currency rate date type: 'current' (default), 'document', or 'manual'
+        currency_rate_date_type = previous_options.get('currency_rate_date_type', 'current')
+        if currency_rate_date_type not in ('current', 'document', 'manual'):
+            currency_rate_date_type = 'current'
+        options['currency_rate_date_type'] = currency_rate_date_type
+        
+        # Manual date for currency rate (only used when currency_rate_date_type is 'manual')
+        if currency_rate_date_type == 'manual':
+            currency_rate_date = previous_options.get('currency_rate_date')
+            if currency_rate_date:
+                options['currency_rate_date'] = currency_rate_date
+            else:
+                # Default to today if manual date is selected but no date provided
+                options['currency_rate_date'] = fields.Date.today()
+        else:
+            options['currency_rate_date'] = None
+
+    ####################################################
     # OPTIONS: ROUNDING UNIT
     ####################################################
     def _init_options_rounding_unit(self, options, previous_options):
         default = 'decimals'
         options['rounding_unit'] = previous_options.get('rounding_unit', default)
-        options['rounding_unit_names'] = self._get_rounding_unit_names()
+        # Use display_currency if available, otherwise company currency
+        display_currency_id = options.get('display_currency_id', self.env.company.currency_id.id)
+        options['rounding_unit_names'] = self._get_rounding_unit_names(currency=display_currency_id)
 
-    def _get_rounding_unit_names(self):
-        currency_symbol = self.env.company.currency_id.symbol
-        currency_name = self.env.company.currency_id.name
+    def _get_rounding_unit_names(self, currency=None):
+        if currency is None:
+            currency = self.env.company.currency_id
+        elif isinstance(currency, int):
+            currency = self.env['res.currency'].browse(currency)
+        currency_symbol = currency.symbol
+        currency_name = currency.name
 
         rounding_unit_names = [
             ('decimals', (f'.{currency_symbol}', '')),
@@ -2047,6 +2088,7 @@ class AccountReport(models.Model):
             self._init_options_report_id: 17,
             self._init_options_fiscal_position: 20,
             self._init_options_date: 30,
+            self._init_options_display_currency: 35,
             self._init_options_horizontal_groups: 40,
             self._init_options_comparison: 50,
             self._init_options_export_mode: 60,
@@ -2987,7 +3029,12 @@ class AccountReport(models.Model):
 
         format_params = {}
         if figure_type == 'monetary' and currency:
-            format_params['currency_id'] = currency.id
+            # Use display currency if available in options, otherwise use the currency from the column
+            display_currency_id = options.get('display_currency_id')
+            if display_currency_id and display_currency_id != currency.id:
+                format_params['currency_id'] = display_currency_id
+            else:
+                format_params['currency_id'] = currency.id
         elif figure_type in ('float', 'percentage'):
             format_params['digits'] = digits
 
@@ -4709,44 +4756,6 @@ class AccountReport(models.Model):
         action['context'] = {}
         return action
 
-    def _get_generated_deferral_entries_domain(self, options):
-        """Get the search domain for the generated deferral entries of the current period.
-
-        :param options: the report's `options` dict containing `date_from`, `date_to` and `deferred_report_type`
-        :return: a search domain that can be used to get the deferral entries
-        """
-        if options.get('deferred_report_type') == 'expense':
-            account_types = ('expense', 'expense_depreciation', 'expense_direct_cost')
-        else:
-            account_types = ('income', 'income_other')
-        date_to = fields.Date.from_string(options['date']['date_to'])
-        date_to_next_reversal = fields.Date.to_string(date_to + datetime.timedelta(days=1))
-        return [
-            ('company_id', '=', self.env.company.id),
-            # We exclude the reversal entries of the previous period that fall on the first day of this period
-            ('date', '>', options['date']['date_from']),
-            # We include the reversal entries of the current period that fall on the first day of the next period
-            ('date', '<=', date_to_next_reversal),
-            ('deferred_original_move_ids', '!=', False),
-            ('line_ids.account_id.account_type', 'in', account_types),
-            ('state', '!=', 'cancel'),
-        ]
-
-    def open_deferral_entries(self, options, params):
-        domain = self._get_generated_deferral_entries_domain(options)
-        deferral_line_ids = self.env['account.move'].search(domain).line_ids.ids
-        return {
-            'type': 'ir.actions.act_window',
-            'name': _('Deferred Entries'),
-            'res_model': 'account.move.line',
-            'domain': [('id', 'in', deferral_line_ids)],
-            'views': [(False, 'list'), (False, 'form')],
-            'context': {
-                'search_default_group_by_move': True,
-                'expand': True,
-            }
-        }
-
     def action_modify_manual_value(self, line_id, options, column_group_key, new_value_str, target_expression_id, rounding, json_friendly_column_group_totals):
         """ Edit a manual value from the report, updating or creating the corresponding account.report.external.value object.
 
@@ -5103,14 +5112,6 @@ class AccountReport(models.Model):
         if options['date']['filter'] in {'today', 'custom'} and options['date']['mode'] == 'single':
             options_company_ids = [company['id'] for company in options['companies']]
             root_companies_ids = self.env['res.company'].browse(options_company_ids).root_id.ids
-            fiscal_year = self.env['account.fiscal.year'].search_fetch([
-                ('company_id', 'in', root_companies_ids),
-                ('date_from', '<=', options['date']['date_to']),
-                ('date_to', '>=', options['date']['date_to']),
-            ], limit=1, field_names=['date_from'])
-            if fiscal_year:
-                return datetime.datetime.combine(fiscal_year.date_from, datetime.time.min)
-
             period_date_from, _ = date_utils.get_fiscal_year(
                 datetime.datetime.strptime(options['date']['date_to'], '%Y-%m-%d'),
                 day=self.env.company.fiscalyear_last_day,
@@ -5241,7 +5242,8 @@ class AccountReport(models.Model):
                 'company_currency_symbol': self.env.company.currency_id.symbol,
                 'name': self.name,
                 'root_report_id': self.root_report_id,
-            }
+            },
+            'display_currency': options.get('display_currency', {}),
         }
 
     @api.readonly
@@ -5677,7 +5679,42 @@ class AccountReport(models.Model):
         }
 
         if figure_type == 'monetary':
-            currency = self.env['res.currency'].browse(format_params['currency_id']) if 'currency_id' in format_params else self.env.company.currency_id
+            # Get the currency from format_params or default to company currency
+            source_currency = self.env['res.currency'].browse(format_params['currency_id']) if 'currency_id' in format_params else self.env.company.currency_id
+            
+            # Check if we need to convert to display currency
+            display_currency_id = options.get('display_currency_id')
+            if display_currency_id and display_currency_id != source_currency.id:
+                display_currency = self.env['res.currency'].browse(display_currency_id)
+                # Convert value from source currency to display currency
+                # Determine which date to use for the conversion rate
+                currency_rate_date_type = options.get('currency_rate_date_type', 'current')
+                if currency_rate_date_type == 'manual':
+                    # Use manually selected date
+                    date = options.get('currency_rate_date') or fields.Date.today()
+                elif currency_rate_date_type == 'document':
+                    # Use document date from format_params if available
+                    # For document date, we typically use the date_to from options as a fallback
+                    # since individual document dates are not always available in format_params
+                    date = format_params.get('document_date')
+                    if not date:
+                        # Fallback to date_to from report options (end of period)
+                        date = options.get('date', {}).get('date_to') or fields.Date.today()
+                else:  # 'current'
+                    # Use current date (today)
+                    date = fields.Date.today()
+                
+                if isinstance(date, str):
+                    date = fields.Date.from_string(date)
+                try:
+                    value = source_currency._convert(value, display_currency, self.env.company, date)
+                    currency = display_currency
+                except Exception:
+                    # If conversion fails, use source currency
+                    currency = source_currency
+            else:
+                currency = source_currency
+            
             if options.get('multi_currency'):
                 formatLang_params['currency_obj'] = currency
             else:
@@ -6084,6 +6121,48 @@ class AccountReport(models.Model):
         y_offset = 0
         # 1 and not 0 to leave space for the line name. original_x_offset allows making place for the code column if needed.
         x_offset = original_x_offset + 1
+
+        # Add company header
+        company = self.env.company
+        report_name = self.name
+        date_from = options.get('date', {}).get('date_from')
+        date_to = options.get('date', {}).get('date_to')
+        
+        if date_from and date_to:
+            date_from_str = format_date(self.env, date_from)
+            date_to_str = format_date(self.env, date_to)
+            date_range_str = f"Desde {date_from_str} Hasta {date_to_str}"
+        else:
+            date_range_str = ""
+        
+        header_bold_format = workbook.add_format({'bold': True, 'font_size': 18, 'align': 'center', 'valign': 'vcenter'})
+        header_normal_format = workbook.add_format({'bold': True, 'align': 'center', 'valign': 'vcenter'})
+        
+        num_cols = len(options.get('columns', [])) + original_x_offset + 1
+        if num_cols < 10:
+            num_cols = 10
+        
+        if company.name:
+            company_info = f"{company.name}"
+            if company.partner_id and company.partner_id.vat:
+                company_info += f" - {company.partner_id.vat}"
+            sheet.merge_range(0, 0, 0, num_cols - 1, company_info, header_bold_format)
+            y_offset += 1
+        
+        if hasattr(company, 'street') and company.street:
+            street_info = f"Direccion: {company.street}"
+            sheet.merge_range(y_offset, 0, y_offset, num_cols - 1, street_info, header_normal_format)
+            y_offset += 1
+        
+        if report_name:
+            sheet.merge_range(y_offset, 0, y_offset, num_cols - 1, report_name, header_normal_format)
+            y_offset += 1
+        
+        if date_range_str:
+            sheet.merge_range(y_offset, 0, y_offset, num_cols - 1, date_range_str, header_normal_format)
+            y_offset += 1
+        
+        y_offset += 1
 
         # Add headers.
         # For this, iterate in the same way as done in main_table_header template

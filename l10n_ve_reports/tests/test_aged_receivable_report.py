@@ -125,8 +125,8 @@ class TestAgedReceivableReport(TestAccountReportsCommon):
         (move_3 + move_4).line_ids.filtered(lambda line: line.account_id == receivable_5).reconcile()
         cls.env['res.currency'].search([('name', '!=', 'USD')]).with_context(force_deactivate=True).active = False
         cls.env.companies = cls.company_data['company'] + cls.company_data_2['company']
-        cls.report = cls.env.ref('l10n_ve_reports.aged_receivable_report')
-        cls.parent_line_id = cls._get_basic_line_dict_id_from_report_line_ref("l10n_ve_reports.aged_receivable_line")
+        cls.report = cls.env.ref('account_reports.aged_receivable_report')
+        cls.parent_line_id = cls._get_basic_line_dict_id_from_report_line_ref("account_reports.aged_receivable_line")
 
     def test_aged_receivable_unfold_1_whole_report(self):
         """ Test unfolding a line when rendering the whole report. """

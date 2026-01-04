@@ -37,5 +37,5 @@ class TestTourAccountReports(AccountTestInvoicingHttpCommon):
         })
         cls.out_invoice_previous_year.action_post()
 
-    def test_tour_l10n_ve_reports(self):
-        self.start_tour("/odoo", 'l10n_ve_reports_widgets', login=self.env.user.login)
+    def test_tour_account_reports(self):
+        self.start_tour("/odoo", 'account_reports_widgets', login=self.env.user.login)

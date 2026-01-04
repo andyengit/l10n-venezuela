@@ -80,7 +80,7 @@ export class AccountReport extends Component {
     // Custom overrides
     // -----------------------------------------------------------------------------------------------------------------
     static registerCustomComponent(customComponent) {
-        registry.category("l10n_ve_reports_custom_components").add(customComponent.template, customComponent);
+        registry.category("account_reports_custom_components").add(customComponent.template, customComponent);
     }
 
     get cssCustomClass() {
@@ -91,7 +91,7 @@ export class AccountReport extends Component {
         const customComponents = this.controller.data.custom_display.components;
 
         if (customComponents && customComponents[name])
-            return registry.category("l10n_ve_reports_custom_components").get(customComponents[name]);
+            return registry.category("account_reports_custom_components").get(customComponents[name]);
 
         return AccountReport.defaultComponentsMap[name];
     }

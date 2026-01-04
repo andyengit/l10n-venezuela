@@ -87,7 +87,7 @@ class TestGeneralLedgerReport(TestAccountReportsCommon, odoo.tests.HttpCase):
         # Deactive all currencies to ensure group_multi_currency is disabled.
         cls.env['res.currency'].search([('name', '!=', 'USD')]).with_context(force_deactivate=True).active = False
 
-        cls.report = cls.env.ref('l10n_ve_reports.general_ledger_report')
+        cls.report = cls.env.ref('account_reports.general_ledger_report')
 
     # -------------------------------------------------------------------------
     # TESTS: General Ledger
@@ -616,7 +616,7 @@ class TestGeneralLedgerReport(TestAccountReportsCommon, odoo.tests.HttpCase):
         )
 
     @freeze_time('2017-07-11')
-    def test_tour_l10n_ve_reports_search(self):
+    def test_tour_account_reports_search(self):
         move_07_2017 = self.env['account.move'].create({
             'move_type': 'entry',
             'date': fields.Date.from_string('2017-07-10'),
@@ -630,7 +630,7 @@ class TestGeneralLedgerReport(TestAccountReportsCommon, odoo.tests.HttpCase):
         })
         move_07_2017.action_post()
 
-        self.start_tour("/odoo", 'l10n_ve_reports_search', login=self.env.user.login)
+        self.start_tour("/odoo", 'account_reports_search', login=self.env.user.login)
 
     def test_general_ledger_hierarchy_non_numerical_column_value(self):
         """
@@ -656,7 +656,7 @@ class TestGeneralLedgerReport(TestAccountReportsCommon, odoo.tests.HttpCase):
         self.env.company.account_sale_tax_id = None
         self.env.company.totals_below_sections = False
 
-        report = self.env.ref('l10n_ve_reports.general_ledger_report')
+        report = self.env.ref('account_reports.general_ledger_report')
         options = self._generate_options(report, fields.Date.from_string('2010-01-01'), fields.Date.from_string('2010-01-01'), default_options={'unfold_all': True})
 
         move_1 = self.init_invoice('out_invoice', invoice_date='2010-01-01', amounts=[100])

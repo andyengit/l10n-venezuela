@@ -28,7 +28,8 @@ Venezuela - Retenciones
 
 |badge1| |badge2| |badge3| |badge4| |badge5|
 
-Retenciones
+Retenciones Este modulo esta basado en el repositorio de
+https://github.com/binaural-dev/odoo-venezuela
 
 **Table of contents**
 
@@ -51,7 +52,7 @@ Credits
 Authors
 -------
 
-* Mauricio Istúriz
+* BinauralDev
 * Anderson Armeya
 
 Maintainers

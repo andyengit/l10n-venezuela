@@ -1,4 +1,4 @@
-
+# Part of Odoo. See LICENSE file for full copyright and licensing details.
 import io
 import datetime
 
@@ -183,7 +183,7 @@ class JournalReportCustomHandler(models.AbstractModel):
                     'columns': [],
                     'colspan': len(options['columns']) + 1,
                     'level': 4,
-                    'class': 'o_l10n_ve_reports_ja_subtable',
+                    'class': 'o_account_reports_ja_subtable',
                     **self._get_tax_summary_section(options)
                 }
                 new_lines.append(summary_line)

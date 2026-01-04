@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+# Part of Odoo. See LICENSE file for full copyright and licensing details.
 
 from . import res_partner
 from . import res_company
@@ -10,7 +11,6 @@ from . import account_general_ledger
 from . import account_generic_tax_report
 from . import account_journal_report
 from . import account_cash_flow_report
-from . import account_deferred_reports
 from . import account_multicurrency_revaluation_report
 from . import account_move_line
 from . import account_trial_balance_report
@@ -28,8 +28,10 @@ from . import account_tax
 from . import executive_summary_report
 from . import budget
 from . import balance_sheet
-from . import profit_and_loss
 from . import account_fiscal_position
 from . import account_customer_statement
 from . import account_followup_report
-
+from . import account_diary_book_report
+from . import account_sales_book_report
+from . import account_sales_book_fiscal_machine_report
+from . import account_purchase_book_report

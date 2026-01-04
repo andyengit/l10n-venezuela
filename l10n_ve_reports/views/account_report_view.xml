@@ -136,7 +136,7 @@
                                     no_label="1"
                                     options="{'no_create': True, 'no_quick_create': True}"
                                     domain="[('section_report_ids', '=', False)]"
-                                    context="{'list_view_ref': 'l10n_ve_reports.account_report_add_sections_tree', 'active_test': False}"
+                                    context="{'list_view_ref': 'account_reports.account_report_add_sections_tree', 'active_test': False}"
                                 />
                             </page>
 

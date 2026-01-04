@@ -73,7 +73,7 @@
             <head>
                  <base t-att-href="base_url"/>
                  <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
-                 <t t-call-assets="l10n_ve_reports.assets_pdf_export" t-js="False"/>
+                 <t t-call-assets="account_reports.assets_pdf_export" t-js="False"/>
              </head>
             <body t-att-dir="env['res.lang']._get_data(code=lang or env.user.lang).direction or 'ltr'">
                 <div t-att-class="options['css_custom_class']">

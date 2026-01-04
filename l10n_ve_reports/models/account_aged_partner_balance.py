@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-
+# Part of Odoo. See LICENSE file for full copyright and licensing details.
 
 import datetime
 
@@ -55,27 +55,6 @@ class AgedPartnerBalanceCustomHandler(models.AbstractModel):
         options['aging_based_on'] = previous_options.get('aging_based_on') or 'base_on_maturity_date'
         options['aging_interval'] = previous_options.get('aging_interval') or 30
 
-        # Opciones de conversión de moneda
-        today = fields.Date.today()
-        options['convert_to_currency'] = (previous_options or {}).get('convert_to_currency', False)
-        options['currency_rate_date'] = (previous_options or {}).get('currency_rate_date', fields.Date.to_string(today))
-        options['use_document_date'] = (previous_options or {}).get('use_document_date', False)
-        
-        # Lista de monedas disponibles
-        currencies = report.env['res.currency'].search([('active', '=', True)], order='name')
-        options['available_currencies'] = [{
-            'id': currency.id,
-            'name': currency.name,
-            'symbol': currency.symbol,
-        } for currency in currencies]
-        
-        # Si hay conversión de moneda, establecer la moneda convertida como la moneda de formato por defecto
-        if options['convert_to_currency']:
-            target_currency = report.env['res.currency'].browse(options['convert_to_currency'])
-            if target_currency.exists():
-                # Esto asegurará que el formato use la moneda convertida
-                options['forced_currency_id'] = target_currency.id
-
         # Set aging column names
         interval = options['aging_interval']
         for column in options['columns']:
@@ -86,30 +65,12 @@ class AgedPartnerBalanceCustomHandler(models.AbstractModel):
 
     def _custom_line_postprocessor(self, report, options, lines):
         partner_lines_map = {}
-        
-        # Obtener moneda convertida si existe
-        target_currency_id = options.get('convert_to_currency')
-        target_currency = None
-        if target_currency_id:
-            target_currency = self.env['res.currency'].browse(target_currency_id)
-            if not target_currency.exists():
-                target_currency = None
 
         # Sort line dicts by partner
         for line in lines:
             model, model_id = report._get_model_info_from_id(line['id'])
             if model == 'res.partner':
                 partner_lines_map[model_id] = line
-            
-            # Si hay conversión de moneda, actualizar el formato de las columnas
-            if target_currency and 'columns' in line:
-                for column in line.get('columns', []):
-                    if column.get('figure_type') == 'monetary' or column.get('expression_label', '').startswith('period'):
-                        # Actualizar format_params para usar la moneda convertida
-                        if 'format_params' not in column:
-                            column['format_params'] = {}
-                        column['format_params']['currency_id'] = target_currency.id
-                        column['format_params']['currency'] = target_currency
 
         if partner_lines_map:
             for partner, line_dict in zip(
@@ -129,17 +90,6 @@ class AgedPartnerBalanceCustomHandler(models.AbstractModel):
     def _aged_partner_report_custom_engine_common(self, options, internal_type, current_groupby, next_groupby, offset=0, limit=None):
         report = self.env['account.report'].browse(options['report_id'])
         report._check_groupby_fields((next_groupby.split(',') if next_groupby else []) + ([current_groupby] if current_groupby else []))
-        
-        # Inicializar la tabla de moneda si es necesario
-        if 'currency_table' in options:
-            report._init_currency_table(options)
-        
-        # Preparar conversión de moneda si está habilitada
-        convert_to_currency = options.get('convert_to_currency')
-        currency_rate_date = fields.Date.from_string(options.get('currency_rate_date', fields.Date.today()))
-        target_currency = None
-        if convert_to_currency:
-            target_currency = self.env['res.currency'].browse(convert_to_currency)
 
         def minus_days(date_obj, days):
             return fields.Date.to_string(date_obj - relativedelta(days=days))
@@ -156,73 +106,22 @@ class AgedPartnerBalanceCustomHandler(models.AbstractModel):
             end_date = minus_days(date_to, interval * (i + 1)) if i < nb_periods - 1 else False
             periods.append((start_date, end_date))
 
-        def build_result_dict(report, query_res_lines, target_currency_param=None):
+        def build_result_dict(report, query_res_lines):
             rslt = {f'period{i}': 0 for i in range(len(periods))}
-            
-            # Acumular amount_currency si todas las facturas están en la misma moneda objetivo
-            total_amount_currency = None
-            all_in_target_currency = False
-            if target_currency_param and query_res_lines:
-                # Verificar si todas las facturas están en la moneda objetivo
-                currency_ids_set = set()
-                amount_currency_values = []
-                for query_res in query_res_lines:
-                    if query_res.get('currency_id'):
-                        currency_ids = query_res['currency_id']
-                        if isinstance(currency_ids, list):
-                            currency_ids_set.update([c for c in currency_ids if c])
-                        elif isinstance(currency_ids, (int, float)):
-                            currency_ids_set.add(int(currency_ids))
-                    # Recopilar todos los amount_currency (puede haber uno por período)
-                    amt_curr = query_res.get('amount_currency')
-                    if amt_curr is not None:
-                        amount_currency_values.append(amt_curr)
-                
-                if len(currency_ids_set) == 1 and list(currency_ids_set)[0] == target_currency_param.id:
-                    all_in_target_currency = True
-                    if amount_currency_values:
-                        # Si hay múltiples valores, usar el que tenga mayor valor absoluto
-                        # (generalmente el amount_currency es el mismo para todos los períodos)
-                        # O sumar si son diferentes
-                        if len(set(amount_currency_values)) == 1:
-                            # Todos los valores son iguales, usar uno
-                            total_amount_currency = amount_currency_values[0]
-                        else:
-                            # Valores diferentes, sumar (puede haber pagos parciales)
-                            total_amount_currency = sum(amount_currency_values)
-                    else:
-                        # No hay amount_currency disponible en el query
-                        # Necesitamos calcularlo desde las facturas individuales
-                        total_amount_currency = None
 
             for query_res in query_res_lines:
                 for i in range(len(periods)):
                     period_key = f'period{i}'
                     rslt[period_key] += query_res[period_key]
 
-            # Determinar la moneda a usar (convertida si existe, sino la original)
-            result_currency = target_currency_param if target_currency_param else None
-            result_currency_id = result_currency.id if result_currency else None
-
             if current_groupby == 'id':
                 query_res = query_res_lines[0] # We're grouping by id, so there is only 1 element in query_res_lines anyway
-                original_currency = self.env['res.currency'].browse(query_res['currency_id'][0]) if len(query_res['currency_id']) == 1 else None
-                currency = result_currency if result_currency else original_currency
-                currency_id = currency.id if currency else (query_res['currency_id'][0] if len(query_res['currency_id']) == 1 else None)
-                
-                # Agregar campos _currency_ para cada período si hay conversión
-                currency_fields = {}
-                if result_currency_id:
-                    for i in range(len(periods)):
-                        currency_fields[f'_currency_period{i}'] = result_currency_id
-                    currency_fields['_currency_amount_currency'] = result_currency_id
-                    currency_fields['_currency_total'] = result_currency_id
-                
+                currency = self.env['res.currency'].browse(query_res['currency_id'][0]) if len(query_res['currency_id']) == 1 else None
                 rslt.update({
                     'invoice_date': query_res['invoice_date'][0] if len(query_res['invoice_date']) == 1 else None,
                     'due_date': query_res['due_date'][0] if len(query_res['due_date']) == 1 else None,
                     'amount_currency': query_res['amount_currency'],
-                    'currency_id': currency_id,
+                    'currency_id': query_res['currency_id'][0] if len(query_res['currency_id']) == 1 else None,
                     'currency': currency.display_name if currency else None,
                     'account_name': query_res['account_name'][0] if len(query_res['account_name']) == 1 else None,
                     'total': None,
@@ -230,48 +129,17 @@ class AgedPartnerBalanceCustomHandler(models.AbstractModel):
 
                     # Needed by the custom_unfold_all_batch_data_generator, to speed-up unfold_all
                     'partner_id': query_res['partner_id'][0] if query_res['partner_id'] else None,
-                    **currency_fields,
                 })
             else:
-                # Para líneas agregadas, usar la moneda convertida si existe
-                currency_id = result_currency_id
-                currency_display = result_currency.display_name if result_currency else None
-                
-                # Si todas las facturas están en la moneda objetivo, usar amount_currency total
-                # y redistribuir proporcionalmente entre períodos basado en los valores convertidos
-                if all_in_target_currency and total_amount_currency is not None and abs(total_amount_currency) > 0.01:
-                    total_periods_abs = sum(abs(rslt[f'period{i}']) for i in range(len(periods)))
-                    if total_periods_abs > 0.01:
-                        # Redistribuir amount_currency proporcionalmente según los períodos
-                        for i in range(len(periods)):
-                            period_key = f'period{i}'
-                            period_value = rslt[period_key]
-                            if abs(period_value) > 0.01:
-                                proportion = abs(period_value) / total_periods_abs
-                                sign = -1 if period_value < 0 else 1
-                                rslt[period_key] = sign * abs(total_amount_currency) * proportion
-                elif all_in_target_currency and total_amount_currency is None:
-                    # Si no hay amount_currency disponible, necesitamos calcularlo desde las facturas individuales
-                    # Esto requiere una consulta adicional, por ahora usamos la reversión de conversión
-                    pass
-                
-                # Agregar campos _currency_ para cada período si hay conversión
-                currency_fields = {}
-                if result_currency_id:
-                    for i in range(len(periods)):
-                        currency_fields[f'_currency_period{i}'] = result_currency_id
-                    currency_fields['_currency_total'] = result_currency_id
-                
                 rslt.update({
                     'invoice_date': None,
                     'due_date': None,
-                    'amount_currency': total_amount_currency if all_in_target_currency else None,
-                    'currency_id': currency_id,
-                    'currency': currency_display,
+                    'amount_currency': None,
+                    'currency_id': None,
+                    'currency': None,
                     'account_name': None,
                     'total': sum(rslt[f'period{i}'] for i in range(len(periods))),
                     'has_sublines': False,
-                    **currency_fields,
                 })
 
             return rslt
@@ -405,177 +273,9 @@ class AgedPartnerBalanceCustomHandler(models.AbstractModel):
 
         self._cr.execute(query)
         query_res_lines = self._cr.dictfetchall()
-        
-        # Debug: ver qué valores vienen del query (solo para desarrollo)
-        # import logging
-        # _logger = logging.getLogger(__name__)
-        # if query_res_lines and target_currency:
-        #     _logger.info(f"Query results sample: {query_res_lines[0] if query_res_lines else 'None'}")
-
-        # Aplicar conversión de moneda si está habilitada
-        # Los resultados ya están en la moneda de la compañía, pero necesitamos verificar
-        # la moneda original de cada línea para convertir solo si es necesario
-        use_document_date = options.get('use_document_date', False)
-        if target_currency:
-            company_currency = self.env.company.currency_id
-            
-            # Función helper para obtener tasa de conversión
-            def get_conversion_rate(from_currency, to_currency, date, company=None):
-                """Obtiene la tasa de conversión entre dos monedas para una fecha específica"""
-                if company is None:
-                    company = self.env.company
-                try:
-                    if hasattr(to_currency, '_get_conversion_rate'):
-                        return to_currency._get_conversion_rate(
-                            from_currency, to_currency,
-                            company, date
-                        )
-                    else:
-                        test_amount = 1.0
-                        converted_amount = from_currency._convert(
-                            test_amount, to_currency, 
-                            company, date
-                        )
-                        return converted_amount / test_amount if test_amount != 0 else 1.0
-                except Exception:
-                    rate_obj = self.env['res.currency.rate'].search([
-                        ('currency_id', '=', to_currency.id),
-                        ('name', '<=', date),
-                        ('company_id', '=', company.id),
-                    ], order='name desc', limit=1)
-                    if rate_obj:
-                        if from_currency == company_currency:
-                            return 1.0 / rate_obj.rate if rate_obj.rate != 0 else 1.0
-                        else:
-                            # Conversión desde otra moneda, usar método estándar
-                            test_amount = 1.0
-                            converted_amount = from_currency._convert(
-                                test_amount, to_currency, 
-                                company, date
-                            )
-                            return converted_amount / test_amount if test_amount != 0 else 1.0
-                    return 1.0
-            
-            # Obtener tasa de conversión desde moneda de compañía a moneda objetivo
-            # (solo si no usamos fecha del documento, ya que se calculará por línea)
-            company_to_target_rate = 1.0
-            if target_currency != company_currency and not use_document_date:
-                company_to_target_rate = get_conversion_rate(
-                    company_currency, target_currency, currency_rate_date
-                )
-            
-            for query_res in query_res_lines:
-                # Obtener la moneda original de la línea
-                original_currency_id = None
-                currency_ids_list = []
-                if query_res.get('currency_id'):
-                    currency_ids = query_res['currency_id']
-                    if isinstance(currency_ids, list):
-                        currency_ids_list = [c for c in currency_ids if c]
-                        # Si hay una sola moneda única, usar esa
-                        unique_currencies = set(currency_ids_list)
-                        if len(unique_currencies) == 1:
-                            original_currency_id = list(unique_currencies)[0]
-                    elif isinstance(currency_ids, (int, float)):
-                        original_currency_id = int(currency_ids)
-                        currency_ids_list = [original_currency_id]
-                
-                # Determinar la fecha a usar para la tasa de conversión
-                line_rate_date = currency_rate_date
-                if use_document_date:
-                    # Obtener la fecha del documento para esta línea
-                    if query_res.get('invoice_date'):
-                        invoice_dates = query_res['invoice_date']
-                        if isinstance(invoice_dates, list) and len(invoice_dates) > 0:
-                            # Usar la primera fecha disponible (si hay múltiples, tomar la más reciente o la primera)
-                            first_date = invoice_dates[0]
-                            if first_date:
-                                line_rate_date = fields.Date.from_string(first_date) if isinstance(first_date, str) else first_date
-                    elif query_res.get('due_date'):
-                        due_dates = query_res['due_date']
-                        if isinstance(due_dates, list) and len(due_dates) > 0:
-                            first_date = due_dates[0]
-                            if first_date:
-                                line_rate_date = fields.Date.from_string(first_date) if isinstance(first_date, str) else first_date
-                
-                # Determinar la fecha a usar para la tasa de conversión
-                line_rate_date = currency_rate_date
-                if use_document_date:
-                    # Obtener la fecha del documento para esta línea
-                    if query_res.get('invoice_date'):
-                        invoice_dates = query_res['invoice_date']
-                        if isinstance(invoice_dates, list) and len(invoice_dates) > 0:
-                            # Usar la primera fecha disponible (si hay múltiples, tomar la más reciente o la primera)
-                            first_date = invoice_dates[0]
-                            if first_date:
-                                line_rate_date = fields.Date.from_string(first_date) if isinstance(first_date, str) else first_date
-                    elif query_res.get('due_date'):
-                        due_dates = query_res['due_date']
-                        if isinstance(due_dates, list) and len(due_dates) > 0:
-                            first_date = due_dates[0]
-                            if first_date:
-                                line_rate_date = fields.Date.from_string(first_date) if isinstance(first_date, str) else first_date
-                
-                # Determinar la tasa a usar
-                # Si todas las facturas están en la moneda objetivo, usar amount_currency directamente
-                # en lugar de revertir el balance convertido
-                all_in_target_currency = (
-                    original_currency_id == target_currency.id or (
-                        currency_ids_list and 
-                        len(set(currency_ids_list)) == 1 and 
-                        currency_ids_list[0] == target_currency.id
-                    )
-                )
-                
-                if all_in_target_currency:
-                    # La factura ya está en la moneda objetivo
-                    # En lugar de revertir el balance convertido, usamos amount_currency directamente
-                    # que ya está en la moneda original
-                    if 'amount_currency' in query_res and query_res['amount_currency'] is not None:
-                        # Usar amount_currency directamente para los períodos
-                        # Pero necesitamos distribuir el amount_currency entre los períodos
-                        # Por ahora, usamos el balance convertido y lo revertimos
-                        original_currency = self.env['res.currency'].browse(
-                            original_currency_id if original_currency_id else currency_ids_list[0]
-                        )
-                        # Usar fecha del documento si está habilitado
-                        rate = get_conversion_rate(company_currency, original_currency, line_rate_date)
-                    else:
-                        rate = 1.0
-                elif original_currency_id and original_currency_id != company_currency.id:
-                    # La factura está en otra moneda diferente a la compañía y a la objetivo
-                    # El SQL ya la convirtió a compañía, ahora convertir de compañía a objetivo
-                    # Si usamos fecha del documento, calcular tasa para esa fecha
-                    if use_document_date:
-                        rate = get_conversion_rate(company_currency, target_currency, line_rate_date)
-                    else:
-                        rate = company_to_target_rate
-                else:
-                    # La factura está en moneda de compañía, convertir a objetivo
-                    # Si usamos fecha del documento, calcular tasa para esa fecha
-                    if use_document_date:
-                        rate = get_conversion_rate(company_currency, target_currency, line_rate_date)
-                    else:
-                        rate = company_to_target_rate
-                
-                # Aplicar conversión a todos los períodos
-                for i in range(len(periods)):
-                    period_key = f'period{i}'
-                    if period_key in query_res:
-                        query_res[period_key] = query_res[period_key] * rate
-                
-                # Convertir amount_currency
-                if 'amount_currency' in query_res:
-                    if all_in_target_currency:
-                        # Si todas las facturas están en la moneda objetivo, amount_currency ya está correcto
-                        # No necesitamos convertirlo
-                        pass
-                    else:
-                        # Convertir amount_currency a la moneda objetivo
-                        query_res['amount_currency'] = query_res['amount_currency'] * rate
 
         if not current_groupby:
-            return build_result_dict(report, query_res_lines, target_currency)
+            return build_result_dict(report, query_res_lines)
         else:
             rslt = []
 
@@ -584,8 +284,8 @@ class AgedPartnerBalanceCustomHandler(models.AbstractModel):
                 grouping_key = query_res['grouping_key']
                 all_res_per_grouping_key.setdefault(grouping_key, []).append(query_res)
 
-            for grouping_key, query_res_lines_group in all_res_per_grouping_key.items():
-                rslt.append((grouping_key, build_result_dict(report, query_res_lines_group, target_currency)))
+            for grouping_key, query_res_lines in all_res_per_grouping_key.items():
+                rslt.append((grouping_key, build_result_dict(report, query_res_lines)))
 
             return rslt
 
@@ -628,7 +328,7 @@ class AgedPartnerBalanceCustomHandler(models.AbstractModel):
                         partner_expression_totals = rslt.setdefault(f"[{report_line_id}]=>partner_id", {})\
                                                         .setdefault(column_group_key, {expression: {'value': []} for expression in expressions_to_evaluate})
                         for partner_id, aml_data_list in aml_data_by_partner.items():
-                            partner_values = self._prepare_partner_values(column_group_options)
+                            partner_values = self._prepare_partner_values()
                             for i in range(report_periods):
                                 partner_values[f'period{i}'] = 0
 
@@ -653,8 +353,8 @@ class AgedPartnerBalanceCustomHandler(models.AbstractModel):
 
         return rslt
 
-    def _prepare_partner_values(self, options=None):
-        result = {
+    def _prepare_partner_values(self):
+        return {
             'invoice_date': None,
             'due_date': None,
             'amount_currency': None,
@@ -663,17 +363,6 @@ class AgedPartnerBalanceCustomHandler(models.AbstractModel):
             'account_name': None,
             'total': 0,
         }
-        # Agregar campos de moneda si hay conversión
-        if options and options.get('convert_to_currency'):
-            target_currency_id = options['convert_to_currency']
-            result['currency_id'] = target_currency_id
-            target_currency = self.env['res.currency'].browse(target_currency_id)
-            result['currency'] = target_currency.display_name if target_currency.exists() else None
-            # Agregar campos _currency_ para todos los períodos
-            for i in range(6):  # 6 períodos
-                result[f'_currency_period{i}'] = target_currency_id
-            result['_currency_total'] = target_currency_id
-        return result
 
     def aged_partner_balance_audit(self, options, params, journal_type):
         """ Open a list of invoices/bills and/or deferral entries for the clicked cell

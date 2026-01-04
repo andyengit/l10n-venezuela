@@ -1,5 +1,5 @@
 <odoo>
-    <record model="ir.ui.view" id="l10n_ve_reports_journal_dashboard_kanban_view">
+    <record model="ir.ui.view" id="account_reports_journal_dashboard_kanban_view">
         <field name="name">account.journal.dashboard.kanban.reports</field>
         <field name="model">account.journal</field>
         <field name="inherit_id" ref="account.account_journal_dashboard_kanban_view" />

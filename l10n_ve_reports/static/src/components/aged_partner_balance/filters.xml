@@ -12,11 +12,6 @@
                     <t t-call="l10n_ve_reports.AccountReportAgingInterval"/>
                 </div>
             </t>
-            <t t-if="controller.options.available_currencies and controller.options.available_currencies.length > 0">
-                <div id="filter_currency_conversion">
-                    <t t-call="l10n_ve_reports.AgedPartnerBalanceCurrencyConversion"/>
-                </div>
-            </t>
         </xpath>
 
         <xpath expr="//div[@id='filter_extra_options']" position="replace">

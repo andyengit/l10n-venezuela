@@ -3,8 +3,8 @@
 import { Asserts } from "./asserts";
 import { registry } from "@web/core/registry";
 
-registry.category("web_tour.tours").add("l10n_ve_reports", {
-    url: "/odoo/action-l10n_ve_reports.action_account_report_bs",
+registry.category("web_tour.tours").add("account_reports", {
+    url: "/odoo/action-account_reports.action_account_report_bs",
     steps: () => [
         //--------------------------------------------------------------------------------------------------------------
         // Foldable

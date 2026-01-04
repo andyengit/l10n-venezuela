@@ -20,7 +20,7 @@ class TestAccountReportsJournalFilter(AccountTestInvoicingCommon):
             'company_id': cls.vanilla_company1.id,
         })
 
-        cls.report = cls.env.ref('l10n_ve_reports.balance_sheet')
+        cls.report = cls.env.ref('account_reports.balance_sheet')
 
     def _assert_filter_journal(self, options, display_name, expected_values_list):
         journal_options = options['journals']
@@ -404,7 +404,7 @@ class TestAccountReportsJournalFilter(AccountTestInvoicingCommon):
         g1 = self._quick_create_journal_group("g1", self.vanilla_company1, inv + bill)
         g2 = self._quick_create_journal_group("g2", self.vanilla_company1, misc + bill)
 
-        report = self.env.ref('l10n_ve_reports.cash_flow_report')
+        report = self.env.ref('account_reports.cash_flow_report')
         options = report.get_options({'is_opening_report': True})
         self._assert_filter_journal(options, "g1", [
             {'id': 'divider'},

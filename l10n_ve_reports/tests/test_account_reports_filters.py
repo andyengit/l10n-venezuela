@@ -1306,7 +1306,7 @@ class TestAccountReportsFilters(TestAccountReportsCommon, odoo.tests.HttpCase):
         report = self.env['account.report'].create({
             'name': 'Test ir filters',
             'filter_aml_ir_filters': True,
-            'root_report_id': self.env.ref("l10n_ve_reports.profit_and_loss").id,
+            'root_report_id': self.env.ref("account_reports.profit_and_loss").id,
             'column_ids': [
                 Command.create({
                     'name': 'Balance',
@@ -1354,7 +1354,7 @@ class TestAccountReportsFilters(TestAccountReportsCommon, odoo.tests.HttpCase):
         )
 
     def test_hide_line_at_0_tour(self):
-        report = self.env.ref('l10n_ve_reports.balance_sheet')
+        report = self.env.ref('account_reports.balance_sheet')
         report.filter_hide_0_lines = 'optional'
         self.env['account.move'].create([{
             'move_type': 'out_invoice',
@@ -1368,11 +1368,11 @@ class TestAccountReportsFilters(TestAccountReportsCommon, odoo.tests.HttpCase):
             })],
         } for i in range(1, 4)]).action_post()
 
-        self.start_tour("/odoo", 'l10n_ve_reports_hide_0_lines', login=self.env.user.login)
+        self.start_tour("/odoo", 'account_reports_hide_0_lines', login=self.env.user.login)
 
     @freeze_time('2020-01-16')
     def test_hide_line_at_0_tour_with_string_columns(self):
-        report = self.env.ref('l10n_ve_reports.general_ledger_report')
+        report = self.env.ref('account_reports.general_ledger_report')
         report.filter_hide_0_lines = 'optional'
         self.env['account.move'].create({
             'move_type': 'entry',
@@ -1387,7 +1387,7 @@ class TestAccountReportsFilters(TestAccountReportsCommon, odoo.tests.HttpCase):
             })],
         }).action_post()
 
-        self.start_tour("/odoo", 'l10n_ve_reports_hide_0_lines_with_string_columns', login=self.env.user.login)
+        self.start_tour("/odoo", 'account_reports_hide_0_lines_with_string_columns', login=self.env.user.login)
 
     def test_rounding_unit_tour(self):
         self.env['account.move'].create({
@@ -1402,7 +1402,7 @@ class TestAccountReportsFilters(TestAccountReportsCommon, odoo.tests.HttpCase):
             })],
         }).action_post()
 
-        self.start_tour("/odoo", 'l10n_ve_reports_rounding_unit', login=self.env.user.login)
+        self.start_tour("/odoo", 'account_reports_rounding_unit', login=self.env.user.login)
 
     def test_filter_multi_company(self):
         def _check_company_filter(allowed_companies, expected_companies, message=None, match_active=True):

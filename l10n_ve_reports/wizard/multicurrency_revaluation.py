@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+# Part of Odoo. See LICENSE file for full copyright and licensing details.
 
 import json
 from dateutil.relativedelta import relativedelta
@@ -115,7 +116,7 @@ class MulticurrencyRevaluationWizard(models.TransientModel):
                 if column.get('expression_label') == 'adjustment':
                     return column.get('no_format')
 
-        report = self.env.ref('l10n_ve_reports.multicurrency_revaluation_report')
+        report = self.env.ref('account_reports.multicurrency_revaluation_report')
         included_line_id = report.line_ids.filtered(lambda l: l.code == 'multicurrency_included').id
         generic_included_line_id = report._get_generic_line_id('account.report.line', included_line_id)
         options = {**self._context['multicurrency_revaluation_report_options'], 'unfold_all': False}

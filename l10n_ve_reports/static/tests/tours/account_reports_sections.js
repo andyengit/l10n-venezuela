@@ -5,8 +5,8 @@ const { DateTime } = luxon;
 import { Asserts } from "./asserts";
 import { registry } from "@web/core/registry";
 
-registry.category("web_tour.tours").add('l10n_ve_reports_sections', {
-    url: "/odoo/action-l10n_ve_reports.action_account_report_gt",
+registry.category("web_tour.tours").add('account_reports_sections', {
+    url: "/odoo/action-account_reports.action_account_report_gt",
     steps: () => [
         {
             content: "Open variant selector",

@@ -1,4 +1,4 @@
-
+# Part of Odoo. See LICENSE file for full copyright and licensing details.
 
 from odoo import models, fields, api, osv
 from odoo.addons.web.controllers.utils import clean_action

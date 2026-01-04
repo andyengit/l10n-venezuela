@@ -48,7 +48,7 @@ class TestMultiCurrenciesRevaluationReport(TestAccountReportsCommon):
         })
 
 
-        cls.report = cls.env.ref('l10n_ve_reports.multicurrency_revaluation_report')
+        cls.report = cls.env.ref('account_reports.multicurrency_revaluation_report')
 
     @classmethod
     def pay_move(cls, move, amount, date, account_type='liability_payable', currency=None, partner_type=None):
@@ -315,7 +315,7 @@ class TestMultiCurrenciesRevaluationReport(TestAccountReportsCommon):
             },
         )
 
-        oldest_line_id = self.report._get_generic_line_id('account.report.line', self.env.ref('l10n_ve_reports.multicurrency_revaluation_to_adjust').id)
+        oldest_line_id = self.report._get_generic_line_id('account.report.line', self.env.ref('account_reports.multicurrency_revaluation_to_adjust').id)
         old_line_id = self.report._get_generic_line_id('res.currency', self.other_currency.id, markup={'groupby': 'currency_id'}, parent_line_id=oldest_line_id)
         line_id = self.report._get_generic_line_id('account.account', first_bill.line_ids.account_id.filtered(lambda account: account.account_type == 'liability_payable').id, markup={'groupby': 'account_id'}, parent_line_id=old_line_id)
 

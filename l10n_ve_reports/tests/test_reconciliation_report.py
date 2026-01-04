@@ -114,7 +114,7 @@ class TestReconciliationReport(TestAccountReportsCommon):
 
         # ==== Report ====
 
-        report = self.env.ref('l10n_ve_reports.bank_reconciliation_report').with_context(
+        report = self.env.ref('account_reports.bank_reconciliation_report').with_context(
             active_id=bank_journal.id,
             active_model=bank_journal._name
         )
@@ -270,7 +270,7 @@ class TestReconciliationReport(TestAccountReportsCommon):
 
         # ==== Report ====
 
-        report = self.env.ref('l10n_ve_reports.bank_reconciliation_report').with_context(
+        report = self.env.ref('account_reports.bank_reconciliation_report').with_context(
             active_id=bank_journal.id,
             active_model=bank_journal._name
         )
@@ -345,7 +345,7 @@ class TestReconciliationReport(TestAccountReportsCommon):
         })
         payment.action_post()
 
-        report = self.env.ref('l10n_ve_reports.bank_reconciliation_report').with_context(
+        report = self.env.ref('account_reports.bank_reconciliation_report').with_context(
             active_id=bank_journal.id,
             active_model='account.journal'
         )
@@ -464,7 +464,7 @@ class TestReconciliationReport(TestAccountReportsCommon):
 
         # ==== Report ====
 
-        report = self.env.ref('l10n_ve_reports.bank_reconciliation_report').with_context(
+        report = self.env.ref('account_reports.bank_reconciliation_report').with_context(
             active_id=bank_journal.id,
             active_model='account.journal'
         )
@@ -526,7 +526,7 @@ class TestReconciliationReport(TestAccountReportsCommon):
             ]
         }).action_post()
 
-        report = self.env.ref('l10n_ve_reports.bank_reconciliation_report').with_context(
+        report = self.env.ref('account_reports.bank_reconciliation_report').with_context(
             active_id=bank_journal.id,
             active_model='account.journal'
         )
@@ -604,7 +604,7 @@ class TestReconciliationReport(TestAccountReportsCommon):
             ],
         })
 
-        report = self.env.ref('l10n_ve_reports.bank_reconciliation_report').with_context(
+        report = self.env.ref('account_reports.bank_reconciliation_report').with_context(
             active_id=bank_journal.id,
             active_model='account.journal'
         )
@@ -701,7 +701,7 @@ class TestReconciliationReport(TestAccountReportsCommon):
             }
         ])
 
-        report = self.env.ref('l10n_ve_reports.bank_reconciliation_report').with_context(
+        report = self.env.ref('account_reports.bank_reconciliation_report').with_context(
             active_id=bank_journal.id,
             active_model='account.journal'
         )

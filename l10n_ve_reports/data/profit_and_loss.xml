@@ -8,7 +8,6 @@
         <field name="filter_multi_company">selector</field>
         <field name="filter_budgets" eval="True"/>
         <field name="default_opening_date_filter">this_year</field>
-        <field name="custom_handler_model_id" ref="model_account_profit_and_loss_report_handler"/>
         <field name="column_ids">
             <record id="profit_and_loss_column" model="account.report.column">
                 <field name="name">Balance</field>

@@ -6,7 +6,7 @@ import { download } from "@web/core/network/download";
 async function executeAccountReportDownload({ env, action }) {
     env.services.ui.block();
 
-    const url = "/l10n_ve_reports";
+    const url = "/account_reports";
     const data = action.data;
 
     try {

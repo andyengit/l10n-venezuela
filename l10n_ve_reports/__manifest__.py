@@ -1,10 +1,15 @@
 # -*- coding: utf-8 -*-
+# Part of Odoo. See LICENSE file for full copyright and licensing details.
 {
-    'name': 'Venezuela Accounting Reports',
-    'version': '18.0.1.0.0',
-    'summary': 'View and create accounting reports',
-    'category': 'Accounting/Localization',
+    'name' : 'Venezuelan Reports',
+    'summary': 'View and create reports',
+    'category': 'Accounting/Accounting',
     'author': 'andyengit',
+    'maintainers': ['andyengit'],
+    'description': """
+Accounting Reports
+==================
+    """,
     'depends': ['account'],
     'data': [
         'security/ir.model.access.csv',
@@ -16,13 +21,16 @@
         'data/bank_reconciliation_report.xml',
         'data/aged_partner_balance.xml',
         'data/general_ledger.xml',
+        'data/diary_book_report.xml',
+        'data/sales_book_report.xml',
+        'data/sales_book_fiscal_machine_report.xml',
+        'data/purchases_book_report.xml',
         'data/trial_balance.xml',
         'data/sales_report.xml',
         'data/partner_ledger.xml',
         'data/customer_statement.xml',
         'data/followup_report.xml',
         'data/multicurrency_revaluation_report.xml',
-        'data/deferred_reports.xml',
         'data/journal_report.xml',
         'data/generic_tax_report.xml',
         'views/account_report_view.xml',
@@ -48,8 +56,9 @@
         'views/account_account_views.xml',
         'views/account_tax_views.xml',
     ],
+    'auto_install': True,
     'installable': True,
-    'license': 'LGPL-3',
+    'license': 'OEEL-1',
     'post_init_hook': 'set_periodicity_journal_on_companies',
     'assets': {
         'l10n_ve_reports.assets_pdf_export': [
@@ -65,6 +74,7 @@
         'web.report_assets_common': [
             'l10n_ve_reports/static/src/scss/account_pdf_export_template.scss',
         ],
+
         'web.assets_backend': [
             'l10n_ve_reports/static/src/components/**/*',
             'l10n_ve_reports/static/src/js/**/*',
@@ -85,4 +95,3 @@
         ],
     }
 }
-

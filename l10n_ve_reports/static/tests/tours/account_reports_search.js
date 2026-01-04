@@ -2,8 +2,8 @@
 
 import { registry } from "@web/core/registry";
 
-registry.category("web_tour.tours").add('l10n_ve_reports_search', {
-    url: '/odoo/action-l10n_ve_reports.action_account_report_general_ledger',
+registry.category("web_tour.tours").add('account_reports_search', {
+    url: '/odoo/action-account_reports.action_account_report_general_ledger',
     steps: () => [
         {
             content: "click search",

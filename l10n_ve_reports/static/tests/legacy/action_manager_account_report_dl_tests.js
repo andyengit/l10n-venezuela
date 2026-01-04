@@ -45,7 +45,7 @@ QUnit.module('Account Reports', {}, function () {
         assert.verifySteps([
             '/web/webclient/load_menus',
             '/web/action/load',
-            '/l10n_ve_reports',
+            '/account_reports',
         ]);
 
     });

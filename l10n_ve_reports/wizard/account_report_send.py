@@ -216,7 +216,7 @@ class AccountReportSend(models.TransientModel):
         """ Download the PDF attachment, or a zip of attachments if there are more than one. """
         return {
             'type': 'ir.actions.act_url',
-            'url': f'/l10n_ve_reports/download_attachments/{",".join(map(str, attachments.ids))}',
+            'url': f'/account_reports/download_attachments/{",".join(map(str, attachments.ids))}',
             'close': True,
         }
 
@@ -290,7 +290,7 @@ class AccountReportSend(models.TransientModel):
 
             self.account_report_id.send_and_print_values = self._get_wizard_values()
 
-            self.env.ref('l10n_ve_reports.ir_cron_account_report_send')._trigger()
+            self.env.ref('account_reports.ir_cron_account_report_send')._trigger()
             return {
                 'type': 'ir.actions.client',
                 'tag': 'display_notification',

@@ -21,7 +21,7 @@ class TestAccountReportAnnotationsExport(TestAccountReportsCommon):
 
         super().setUpClass()
 
-        cls.report = cls.env.ref('l10n_ve_reports.balance_sheet')
+        cls.report = cls.env.ref('account_reports.balance_sheet')
         cls.report.column_ids.sortable = True
 
         # Get accounts
@@ -39,9 +39,9 @@ class TestAccountReportAnnotationsExport(TestAccountReportsCommon):
         })
         move.action_post()
         # Get line_ids
-        line_id_ta = cls.report._get_generic_line_id('account.report.line', cls.env.ref('l10n_ve_reports.account_financial_report_total_assets0').id)
-        line_id_ca = cls.report._get_generic_line_id('account.report.line', cls.env.ref('l10n_ve_reports.account_financial_report_current_assets_view0').id, parent_line_id=line_id_ta)
-        line_id_ba = cls.report._get_generic_line_id('account.report.line', cls.env.ref('l10n_ve_reports.account_financial_report_bank_view0').id, parent_line_id=line_id_ca)
+        line_id_ta = cls.report._get_generic_line_id('account.report.line', cls.env.ref('account_reports.account_financial_report_total_assets0').id)
+        line_id_ca = cls.report._get_generic_line_id('account.report.line', cls.env.ref('account_reports.account_financial_report_current_assets_view0').id, parent_line_id=line_id_ta)
+        line_id_ba = cls.report._get_generic_line_id('account.report.line', cls.env.ref('account_reports.account_financial_report_bank_view0').id, parent_line_id=line_id_ca)
         line_id_bank = cls.report._get_generic_line_id('account.account', bank_default_account.id, markup={'groupby': 'account_id'}, parent_line_id=line_id_ba)
         # Create annotation
         date = datetime.datetime.strptime('2024-06-20', '%Y-%m-%d').date()

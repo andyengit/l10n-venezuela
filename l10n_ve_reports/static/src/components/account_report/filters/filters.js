@@ -34,6 +34,7 @@ export class AccountReportFilters extends Component {
             value: "",
             invalid: false,
         });
+        this.currencyDateLoadingState = useState({ isLoading: false });
         this.timeout = null;
     }
 
@@ -136,6 +137,46 @@ export class AccountReportFilters extends Component {
         return listToDisplay
             .concat(selectedAccountType.map((accountType) => accountType.name))
             .join(", ");
+    }
+
+    get selectedDisplayCurrencyName() {
+        const displayCurrency = this.controller.options.display_currency;
+        if (displayCurrency) {
+            return `${displayCurrency.symbol || displayCurrency.name}`;
+        }
+        const companyCurrency = this.controller.options.companies?.[0]?.currency_id;
+        if (companyCurrency) {
+            // Fallback to company currency if display_currency is not set
+            const currency = this.controller.options.available_currencies?.find(
+                (c) => c.id === companyCurrency
+            );
+            if (currency) {
+                return `${currency.symbol || currency.name}`;
+            }
+        }
+        return _t("Currency");
+    }
+
+    get selectedCurrencyRateDateTypeName() {
+        const dateType = this.controller.options.currency_rate_date_type || 'current';
+        return this.currencyRateDateTypeLabel(dateType);
+    }
+
+    currencyRateDateTypeLabel(dateType) {
+        const dateTypeNames = {
+            'current': _t("Fecha Actual"),
+            'document': _t("Fecha del Documento"),
+            'manual': _t("Seleccionar Fecha"),
+        };
+        return dateTypeNames[dateType] || dateTypeNames['current'];
+    }
+
+    get currencyRateDateValue() {
+        const date = this.controller.options.currency_rate_date;
+        if (date) {
+            return DateTime.fromISO(date);
+        }
+        return DateTime.now(); // Default to today
     }
 
     get selectedAmlIrFilters() {
@@ -401,7 +442,7 @@ export class AccountReportFilters extends Component {
 
     _computeTaxPeriodDates(periodicitySettings, dateInsideTargettesPeriod) {
         /**
-         * This function need to stay consitent with the one inside res_company from module l10n_ve_reports.
+         * This function need to stay consitent with the one inside res_company from module account_reports.
          * function_name = _get_tax_closing_period_boundaries
          */
         const startMonth = periodicitySettings.start_month;
@@ -569,6 +610,75 @@ export class AccountReportFilters extends Component {
     async toggleHorizontalSplit() {
         await this.controller.toggleOption("horizontal_split", false);
         this.controller.saveSessionOptions(this.controller.options);
+    }
+
+    async filterDisplayCurrency(currencyId) {
+        await this.controller.updateOption('display_currency_id', currencyId, false);
+        this.controller.saveSessionOptions(this.controller.options);
+        
+        // Reload the report to apply currency conversion
+        await this.controller.displayReport(this.controller.options.report_id);
+    }
+
+    async filterCurrencyRateDateType(dateType) {
+        await this.controller.updateOption('currency_rate_date_type', dateType, false);
+        // If switching to manual, set default date to today if not set
+        if (dateType === 'manual' && !this.controller.options.currency_rate_date) {
+            const today = DateTime.now();
+            await this.controller.updateOption('currency_rate_date', today.toISODate(), false);
+        }
+        // Don't save currency_rate_date_type to session, so it resets to 'current' when reopening
+        const optionsToSave = { ...this.controller.options };
+        delete optionsToSave.currency_rate_date_type;
+        delete optionsToSave.currency_rate_date;
+        this.controller.saveSessionOptions(optionsToSave);
+        
+        // Reload the report to apply currency conversion with new date type
+        await this.controller.displayReport(this.controller.options.report_id);
+    }
+
+    async onCurrencyRateDateChanged(date) {
+        if (date) {
+            // Format date as YYYY-MM-DD from DateTime object
+            let dateStr;
+            if (date instanceof DateTime) {
+                dateStr = date.toISODate();
+            } else if (date instanceof Date) {
+                dateStr = date.toISOString().split('T')[0];
+            } else if (typeof date === 'string') {
+                // If it's already a string, use it directly
+                dateStr = date;
+            } else {
+                // Try to convert to DateTime
+                try {
+                    const dt = DateTime.fromJSDate(date);
+                    dateStr = dt.toISODate();
+                } catch (e) {
+                    console.error('Error converting date:', e);
+                    return;
+                }
+            }
+            
+            if (dateStr) {
+                // Show loading indicator
+                this.currencyDateLoadingState.isLoading = true;
+                
+                try {
+                    await this.controller.updateOption('currency_rate_date', dateStr, false);
+                    // Don't save currency_rate_date to session, so it resets when reopening
+                    const optionsToSave = { ...this.controller.options };
+                    delete optionsToSave.currency_rate_date_type;
+                    delete optionsToSave.currency_rate_date;
+                    this.controller.saveSessionOptions(optionsToSave);
+                    
+                    // Reload the report to apply currency conversion with new date
+                    await this.controller.displayReport(this.controller.options.report_id);
+                } finally {
+                    // Hide loading indicator
+                    this.currencyDateLoadingState.isLoading = false;
+                }
+            }
+        }
     }
 
     async filterRoundingUnit(rounding) {

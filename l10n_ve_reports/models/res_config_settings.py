@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-
+# Part of Odoo. See LICENSE file for full copyright and licensing details.
 
 from calendar import monthrange
 
@@ -18,7 +18,7 @@ class ResConfigSettings(models.TransientModel):
     account_tax_periodicity_reminder_day = fields.Integer(related='company_id.account_tax_periodicity_reminder_day', string='Reminder', readonly=False, required=True)
     account_tax_periodicity_journal_id = fields.Many2one(related='company_id.account_tax_periodicity_journal_id', string='Journal', readonly=False)
 
-    l10n_ve_reports_show_per_company_setting = fields.Boolean(compute="_compute_l10n_ve_reports_show_per_company_setting")
+    account_reports_show_per_company_setting = fields.Boolean(compute="_compute_account_reports_show_per_company_setting")
 
     def open_tax_group_list(self):
         self.ensure_one()
@@ -34,14 +34,14 @@ class ResConfigSettings(models.TransientModel):
         }
 
     @api.depends('company_id')
-    def _compute_l10n_ve_reports_show_per_company_setting(self):
+    def _compute_account_reports_show_per_company_setting(self):
         custom_start_country_codes = self._get_country_codes_with_another_tax_closing_start_date()
         countries = self.env['account.fiscal.position'].search([
             ('company_id', '=', self.env.company.id),
             ('foreign_vat', '!=', False),
         ]).mapped('country_id') + self.env.company.account_fiscal_country_id
         for config_settings in self:
-            config_settings.l10n_ve_reports_show_per_company_setting = bool(set(countries.mapped('code')) & custom_start_country_codes)
+            config_settings.account_reports_show_per_company_setting = bool(set(countries.mapped('code')) & custom_start_country_codes)
 
     def open_company_dependent_report_settings(self):
         self.ensure_one()

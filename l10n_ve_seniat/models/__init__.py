@@ -5,4 +5,7 @@ from . import res_country_parish
 from . import res_country_municipality
 from . import account_move
 from . import account_move_line
+from . import account_move_audit_log
 from . import ir_actions_report
+from . import res_company
+from . import res_config_settings

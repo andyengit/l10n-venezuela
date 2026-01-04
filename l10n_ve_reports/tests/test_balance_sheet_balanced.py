@@ -1,5 +1,4 @@
 # pylint: disable=C0326
-import logging
 import itertools
 import contextlib
 
@@ -8,9 +7,6 @@ from odoo.addons.account.models.chart_template import SYSCOHADA_LIST
 
 from odoo.tests import tagged, new_test_user
 from odoo import fields, Command
-
-
-_logger = logging.getLogger(__name__)
 syscohada_coas = [country_code.lower() for country_code in SYSCOHADA_LIST]
 syscebnl_coas = [f'{country_code.lower}_syscebnl' for country_code in SYSCOHADA_LIST]
 
@@ -33,9 +29,9 @@ REPORT_CONFIG = {
 } '''
 
 REPORT_CONFIG = {
-    'l10n_ve_reports.balance_sheet': {
-        'asset_line_ref': 'l10n_ve_reports.account_financial_report_total_assets0',
-        'liability_line_ref': 'l10n_ve_reports.account_financial_report_liabilities_and_equity_view0',
+    'account_reports.balance_sheet': {
+        'asset_line_ref': 'account_reports.account_financial_report_total_assets0',
+        'liability_line_ref': 'account_reports.account_financial_report_liabilities_and_equity_view0',
     },
     'l10n_at_reports.account_financial_report_l10n_at_paragraph_224_ugb': {
         'asset_line_ref': 'l10n_at_reports.account_financial_report_l10n_at_paragraph_224_ugb_line_activa',
@@ -348,53 +344,11 @@ NON_TESTED_ACCOUNTS = {
 
 
 def log_incorrect_accounts_quiet(report_setup_data, amls, totals, is_first_call):
-    if is_first_call:
-        _logger.error("""
-                The Balance Sheet %s is not balanced.
-                These accounts are incorrectly used in the Balance Sheet
-                or in the Profit & Loss, if inserted into the Balance Sheet via cross-report).
-                To show the journal entries that cause the imbalance,
-                set the EXTRA_DETAIL global to True at the top of the test file.
-            """,
-            report_setup_data['report_ref'],
-        )
-
-    _logger.error('- %s %s', amls[0].account_id.code, amls[0].account_id.name)
+    pass
 
 
 def log_incorrect_accounts_detailed(report_setup_data, amls, totals, is_first_call):
-    if is_first_call:
-        _logger.error("""
-                The Balance Sheet %s is not balanced.
-                If you construct any of the following journal entries, Assets != Liabilities + Equity.
-            """,
-            report_setup_data['report_ref'],
-        )
-
-    format_params = []
-    currency = amls.currency_id
-    for aml in amls:
-        format_params += [
-            aml.date,
-            f'{aml.account_id.code} {aml.account_id.name}'[:50],
-            currency.format(aml.debit),
-            currency.format(aml.credit),
-        ]
-    format_params += [
-        report_setup_data['report_date'],
-        currency.format(totals['total_asset']),
-        currency.format(totals['total_liability']),
-    ]
-    error_msg = '''
-        +------------+----------------------------------------------------+------------------+------------------+
-        |    Date    |                        Account                     |       Debit      |      Credit      |
-        +------------+----------------------------------------------------+------------------+------------------+
-        | {:10} | {:<50} | {:<16} | {:<16} |
-        | {:10} | {:<50} | {:<16} | {:<16} |
-        +------------+----------------------------------------------------+------------------+------------------+
-        Balance Sheet on {}: Total Assets: {} ; Total Liabilities + Equity: {}
-    '''.format(*format_params)
-    _logger.error(error_msg)
+    pass
 
 
 @tagged('post_install_l10n', 'post_install', '-at_install')
@@ -456,8 +410,6 @@ class TestBalanceSheetBalanced(TestAccountReportsCommon):
                 for report in available_reports:
                     report_ref = report.get_external_id()[report.id]
                     with self.subTest(Report=report_ref):
-                        _logger.info('Testing report %s with CoA %s', report_ref, coa)
-
                         # === 2. Set-up report === #
                         report_setup_data = self._set_up_report(report)
 
@@ -523,7 +475,7 @@ class TestBalanceSheetBalanced(TestAccountReportsCommon):
             coa_setup_data['journal'] = company_data['default_journal_misc']
 
         # Find the available Balance Sheets for the current company.
-        generic_balance_sheet = self.env.ref('l10n_ve_reports.balance_sheet').with_company(self.env.company)
+        generic_balance_sheet = self.env.ref('account_reports.balance_sheet').with_company(self.env.company)
         generic_balance_sheet.with_context(active_test=False).variant_report_ids.write({'active': True})
         available_report_ids = [variant['id'] for variant in generic_balance_sheet.get_options({})['available_variants']]
         available_reports = self.env['account.report'].browse(available_report_ids)

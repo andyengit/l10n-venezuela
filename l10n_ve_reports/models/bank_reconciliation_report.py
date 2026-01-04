@@ -1,10 +1,7 @@
 from datetime import date
-import logging
 from odoo import models, fields, _
 from odoo.exceptions import UserError
 from odoo.tools import SQL
-
-_logger = logging.getLogger(__name__)
 
 
 class BankReconciliationReportCustomHandler(models.AbstractModel):

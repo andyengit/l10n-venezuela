@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+# Part of Odoo. See LICENSE file for full copyright and licensing details.
 
 from odoo import api, models, fields, _
 from odoo.exceptions import UserError
@@ -14,10 +15,10 @@ class ReportExportWizard(models.TransientModel):
     """ Wizard allowing to export an accounting report in several different formats
     at once, saving them as attachments.
     """
-    _name = 'l10n_ve_reports.export.wizard'
+    _name = 'account_reports.export.wizard'
     _description = "Export wizard for accounting's reports"
 
-    export_format_ids = fields.Many2many(string="Export to", comodel_name='l10n_ve_reports.export.wizard.format', relation="dms_acc_rep_export_wizard_format_rel")
+    export_format_ids = fields.Many2many(string="Export to", comodel_name='account_reports.export.wizard.format', relation="dms_acc_rep_export_wizard_format_rel")
     report_id = fields.Many2one(string="Parent Report Id", comodel_name='account.report', required=True)
     doc_name = fields.Char(string="Documents Name", help="Name to give to the generated documents.")
 
@@ -32,7 +33,7 @@ class ReportExportWizard(models.TransientModel):
             # This is done so to allow selecting them as Many2many tags in the wizard.
             for button_dict in self._context.get('account_report_generation_options', {}).get('buttons', []):
                 if button_dict.get('file_export_type'):
-                    self.env['l10n_ve_reports.export.wizard.format'].create({
+                    self.env['account_reports.export.wizard.format'].create({
                         'name': button_dict['file_export_type'],
                         'fun_to_call': button_dict['action'],
                         'fun_param': button_dict.get('action_param'),
@@ -74,13 +75,13 @@ class ReportExportWizard(models.TransientModel):
 
 
 class ReportExportWizardOption(models.TransientModel):
-    _name = 'l10n_ve_reports.export.wizard.format'
+    _name = 'account_reports.export.wizard.format'
     _description = "Export format for accounting's reports"
 
     name = fields.Char(string="Name", required=True)
     fun_to_call = fields.Char(string="Function to Call", required=True)
     fun_param = fields.Char(string="Function Parameter")
-    export_wizard_id = fields.Many2one(string="Parent Wizard", comodel_name='l10n_ve_reports.export.wizard', required=True, ondelete='cascade')
+    export_wizard_id = fields.Many2one(string="Parent Wizard", comodel_name='account_reports.export.wizard', required=True, ondelete='cascade')
 
     def apply_export(self, report_action):
         self.ensure_one()

@@ -60,12 +60,19 @@
                     name="l10n_ve_control_number"  
                     placeholder="00-00000000-0" 
                     nolabel="1"  
-                    readonly="move_type in ('out_invoice', 'out_refund') or (move_type == 'in_invoice' and state != 'draft')" 
+                    readonly="move_type in ('out_invoice', 'out_refund')" 
                     invisible="move_type not in ('out_invoice', 'out_refund', 'in_invoice')"
                 />
             </xpath>
             <xpath expr="//div[@class='oe_title']" position="before">
                 <widget name="web_ribbon" title="Canceled" invisible="state != 'cancel'" bg_color="text-bg-danger"/>
+            </xpath>
+            <xpath expr="//page[@name='other_info']" position="inside">
+                <group string="Máquina Fiscal" invisible="move_type not in ('out_invoice', 'out_refund')">
+                    <field name="l10n_ve_serial_number" placeholder="Serial"/>
+                    <field name="l10n_ve_invoice_number" placeholder="N° Factura"/>
+                    <field name="l10n_ve_report_z" placeholder="Reporte Z"/>
+                </group>
             </xpath>
 
         </field>
