@@ -455,6 +455,34 @@ Please create a credit note instead.
 
             move.purchase_tax_data = tax_data
 
+    l10n_ve_inverse_rate = fields.Float(
+        string="Tasa de Cambio Inversa",
+        compute="_compute_l10n_ve_inverse_rate",
+        store=True,
+        help="Tasa de cambio inversa (inverse_rate) de la moneda de la factura para la fecha de la factura",
+    )
+
+    @api.depends('currency_id', 'date', 'company_id')
+    def _compute_l10n_ve_inverse_rate(self):
+        for move in self:
+            if not move.currency_id or not move.date or not move.company_id:
+                move.l10n_ve_inverse_rate = 0.0
+                continue
+
+            if move.currency_id == move.company_id.currency_id:
+                move.l10n_ve_inverse_rate = 1.0
+                continue
+
+            currency_rate = self.env['res.currency.rate'].search([
+                ('currency_id', '=', move.currency_id.id),
+                ('name', '<=', move.date),
+                ('company_id', '=', move.company_id.id),
+            ], order='name desc', limit=1)
+            if currency_rate and currency_rate.rate and currency_rate.rate != 0.0:
+                move.l10n_ve_inverse_rate = 1.0 / currency_rate.rate
+            else:
+                move.l10n_ve_inverse_rate = 0.0
+
     def action_print_invoice_ve_free_form(self):
         self.ensure_one()
         if self.company_id.account_fiscal_country_id.code == "VE" and self.move_type in ("out_invoice", "out_refund"):

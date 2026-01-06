@@ -17,6 +17,9 @@
             </attribute>
         </xpath>
 
+        <xpath expr="//t[@t-call='account.document_tax_totals_company_currency_template']" position="replace">
+        </xpath>
+
         <xpath expr="//div[@id='total']//t[@t-call='account.document_tax_totals']" position="replace">
             <t t-if="o.tax_totals and o.tax_totals.get('display_in_company_currency') and o.company_currency_id != o.currency_id">
                 <table class="l10n_ve_totals_grid o_ignore_layout_styling">

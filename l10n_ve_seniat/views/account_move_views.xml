@@ -67,6 +67,26 @@
             <xpath expr="//div[@class='oe_title']" position="before">
                 <widget name="web_ribbon" title="Canceled" invisible="state != 'cancel'" bg_color="text-bg-danger"/>
             </xpath>
+            <xpath expr="//field[@name='delivery_date']" position="after">
+                <field 
+                    name="fiscal_position_id" 
+                    options="{'no_create': True, 'no_open': True}"
+                    readonly="state != 'draft'"
+                    class="mb-2"
+                />
+            </xpath>
+            <xpath expr="//div[@name='currency_conversion_div']//field[@name='invoice_currency_rate']" position="attributes">
+                <attribute name="readonly">True</attribute>
+            </xpath>
+            <xpath expr="//div[@name='currency_conversion_div']" position="after">
+                <div class="d-flex gap-1 text-muted mt-1" invisible="currency_id == company_currency_id or not l10n_ve_inverse_rate">
+                    <span>1</span>
+                    <field name="currency_id" readonly="True" options="{'no_open': True}" class="w-auto"/>
+                    <span>=</span>
+                    <field name="l10n_ve_inverse_rate" digits="[12,6]" readonly="True"/>
+                    <field name="company_currency_id" readonly="True" options="{'no_open': True}" class="w-auto"/>
+                </div>
+            </xpath>
             <xpath expr="//page[@name='other_info']" position="inside">
                 <group string="Máquina Fiscal" invisible="move_type not in ('out_invoice', 'out_refund')">
                     <field name="l10n_ve_serial_number" placeholder="Serial"/>

@@ -214,7 +214,7 @@
                                 </tbody>
                             </table>
                             <div class="overflow-hidden">
-                                <div id="right-elements" t-attf-class="#{'col-7 mt-5' if (report_type == 'pdf' and o.company_currency_id != o.currency_id) else ('col-5 mt-5' if report_type == 'pdf' else 'col-12 col-md-5')} ms-5 d-inline-block float-end">
+                                <div id="right-elements" t-attf-class="col-8 mt-5 d-inline-block float-end">
                                     <div id="total" class="clearfix row">
                                         <div class="ms-auto">
                                             <t t-if="o.company_currency_id != o.currency_id">
@@ -245,10 +245,10 @@
                                                                                 </td>
                                                                             </t>
                                                                             <t t-else="">
-                                                                                <td>
+                                                                                <td  class="text-nowrap">
                                                                                     <span t-out="tax_group['group_name']">Tax</span>
                                                                                     <span> on </span>
-                                                                                    <span class="text-nowrap" t-out="tax_group['display_base_amount']" t-options='{"widget": "monetary", "display_currency": currency}'>0.00</span>
+                                                                                    <span t-out="tax_group['display_base_amount']" t-options='{"widget": "monetary", "display_currency": currency}'>0.00</span>
                                                                                 </td>
                                                                                 <td class="text-end o_price_total">
                                                                                     <span class="text-nowrap" t-out="tax_group['tax_amount']" t-options='{"widget": "monetary", "display_currency": currency}'>0.00</span>
@@ -305,17 +305,14 @@
                             </div>
                             <div id="payment_term" class="clearfix mt-3">
                                 <div class="justify-text">
-                                    <p t-if="not is_html_empty(o.fiscal_position_id.note)" name="note" class="mb-2">
-                                        <span t-field="o.fiscal_position_id.note" />
-                                    </p>
+                                    <span t-if="o.company_currency_id != o.currency_id">
+                                        A los efectos de lo previsto en el <strong>Art. 25</strong> de la Ley de
+                                        Impuesto al Valor Agregado se expresa el monto total
+                                        de la factura en <strong><t t-out="o.currency_id.name" /></strong> calculado a la tasa de cambio
+                                        establecida por BCV de 1US$ por <strong><t t-out="o.l10n_ve_inverse_rate" t-options='{"widget": "monetary", "display_currency": o.company_currency_id}'/></strong>
+                                    </span>
                                 </div>
-                                <div class="justify-text">
-                                    <p t-if="not is_html_empty(o.taxes_legal_notes)" name="taxes_legal_notes" class="mb-2">
-                                        <span t-field="o.taxes_legal_notes" />
-                                    </p>
-                                </div>
-                                <t t-set="payment_term_details" t-value="o.payment_term_details" />
-                                <div class="mb-3">
+                                <div t-if="o.invoice_payment_term_id" class="mb-3">
                                     <span id="payment_terms_note_id" t-if="o.invoice_payment_term_id.note" t-field="o.invoice_payment_term_id.note" name="payment_term">Payment within 30 calendar day</span>
                                     <br />
                                     <t t-if="o.invoice_payment_term_id.display_on_invoice and payment_term_details">
@@ -338,31 +335,6 @@
                                             </div>
                                         </div>
                                     </t>
-                                </div>
-                                <div class="mb-3" t-if="o.move_type in ('out_invoice', 'in_refund') and o.payment_reference">
-                                    <p name="payment_communication">
-                                            Payment Communication: <span class="fw-bold" t-field="o.payment_reference">INV/2023/00001</span>
-                                        <t t-if="o.partner_bank_id">
-                                            <br />
- on this account: <span t-field="o.partner_bank_id" class="fw-bold" />
-                                        </t>
-                                    </p>
-                                </div>
-                                <t t-set="show_qr" t-value="o.display_qr_code and o.amount_residual > 0" />
-                                <div t-if="not show_qr" name="qr_code_placeholder" />
-                                <div id="qrcode" class="d-flex mb-3 avoid-page-break-inside" t-else="">
-                                    <div class="qrcode me-3" id="qrcode_image">
-                                        <t t-set="qr_code_url" t-value="o._generate_qr_code(silent_errors=True)" />
-                                        <p t-if="qr_code_url" class="position-relative mb-0">
-                                            <img t-att-src="qr_code_url" />
-                                            <img src="/account/static/src/img/Odoo_logo_O.svg" id="qrcode_odoo_logo" class="top-50 start-50 position-absolute bg-white border border-white border-3 rounded-circle" />
-                                        </p>
-                                    </div>
-                                    <div class="d-inline text-muted lh-sm fst-italic" id="qrcode_info" t-if="qr_code_url">
-                                        <p>Scan this QR Code with <br/>
-your banking application
-                                        </p>
-                                    </div>
                                 </div>
                                 <!--terms and conditions-->
                                 <div class="text-muted mb-3" t-attf-style="#{'text-align:justify;text-justify:inter-word;' if o.company_id.terms_type != 'html' else ''}" t-if="not is_html_empty(o.narration)" name="comment">
