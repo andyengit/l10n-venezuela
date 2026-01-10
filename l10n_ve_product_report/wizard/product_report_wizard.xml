@@ -11,6 +11,7 @@
                                string="Listas de Precios a Incluir"
                                help="Seleccione las listas de precios que desea incluir en el reporte de productos"
                                options="{'no_create': True}"/>
+                        <field name="product_ids" invisible="1"/>
                     </group>
                 </sheet>
                 <footer>
