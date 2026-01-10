@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Heredar la vista de lista de productos para agregar el botón de reporte -->
+    <record id="product_product_tree_view_inherit" model="ir.ui.view">
+        <field name="name">product.product.list.inherit</field>
+        <field name="model">product.product</field>
+        <field name="inherit_id" ref="product.product_product_tree_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//header">
+                <button string="Reporte de Productos"
+                        type="object"
+                        name="action_open_product_report_wizard"
+                        groups="product.group_product_pricelist"
+                        class="btn-primary"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

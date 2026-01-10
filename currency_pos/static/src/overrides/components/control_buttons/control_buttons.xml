@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates id="template" xml:space="preserve">
+    <t t-inherit="point_of_sale.ControlButtons" t-inherit-mode="extension">
+        <xpath expr="//SelectPartnerButton" position="after">
+            <button class="btn btn-light btn-lg lh-lg"
+                    t-att-class="{'ms-auto': !props.showRemainingButtons}"
+                    t-on-click="() => this.clickExchangeCurrency()">
+                <i class="fa fa-exchange me-1" role="img" aria-label="Exchange Currency" title="Seleccionar moneda"/>
+                <t t-if="exchangeCurrency" t-esc="exchangeCurrency.name"/>
+                <t t-else="">Moneda</t>
+            </button>
+        </xpath>
+    </t>
+</templates>

@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates id="template" xml:space="preserve">
+    <t t-inherit="point_of_sale.PaymentScreenButtons" t-inherit-mode="extension">
+        <xpath expr="//button[@class='button js_invoice btn btn-light btn-lg d-flex justify-content-between align-items-baseline w-100 w-md-50 lh-lg']" position="before">
+            <!-- Currency selection button -->
+            <button class="button currency-button btn btn-light btn-lg w-100 w-md-50 lh-lg"
+                    t-on-click="clickExchangeCurrency"
+                    title="Seleccionar moneda de cambio">
+                <i class="fa fa-exchange me-2"></i>
+                <t t-if="exchangeCurrency" t-esc="exchangeCurrency.name"/>
+                <t t-else="">Moneda</t>
+            </button>
+        </xpath>
+    </t>
+
+    <t t-inherit="point_of_sale.PaymentScreenDue" t-inherit-mode="extension">
+        <xpath expr="//div[@class='total text-center py-2 py-lg-4 text-success']" position="inside">
+            <t t-if="shouldShowTotalDueConversion() and getConvertedTotalDue()">
+                <br/>
+                <span class="text-info fw-bold" style="font-size: 1.1em;">
+                    <t t-esc="getConvertedTotalDue()"/>
+                </span>
+            </t>
+        </xpath>
+    </t>
+</templates>

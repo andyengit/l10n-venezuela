@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="product_report_template">
+        <t t-call="web.html_container">
+            <t t-call="web.external_layout">
+                    <t t-set="pricelists" t-value="env['product.pricelist'].browse(context.get('pricelist_ids', []))"/>
+                    <t t-set="products" t-value="env['product.product'].browse(context.get('product_ids', []))"/>
+                    <div class="page">
+                        <div class="oe_structure"/>
+
+                        <!-- Encabezado del reporte -->
+                        <div class="row">
+                            <div class="col-12">
+                                <h1 class="text-center">Reporte de Productos con Precios</h1>
+                                <p class="text-center">
+                                    <strong>Fecha de generación:</strong>
+                                    <t t-esc="datetime.datetime.now().strftime('%d/%m/%Y %H:%M')"/>
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- Información de las listas de precios seleccionadas -->
+                        <div class="row mt-4">
+                            <div class="col-12">
+                                <h3>Listas de Precios Incluidas:</h3>
+                                <ul>
+                                    <t t-foreach="pricelists" t-as="pricelist">
+                                        <li><t t-esc="pricelist.name"/> (<t t-esc="pricelist.currency_id.name"/>)</li>
+                                    </t>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <!-- Tabla de productos -->
+                        <div class="row mt-4">
+                            <div class="col-12">
+                                <table class="table table-bordered">
+                                    <thead class="thead-light">
+                                        <tr>
+                                            <th class="text-center">Código</th>
+                                            <th class="text-center">Nombre del Producto</th>
+                                            <th class="text-center">Coste</th>
+                                            <th class="text-center">Cantidad a Mano</th>
+                                            <!-- Columnas dinámicas para cada lista de precios -->
+                                            <t t-foreach="pricelists" t-as="pricelist">
+                                                <th class="text-center">
+                                                    <t t-esc="pricelist.name"/>
+                                                    <br/>
+                                                    <small>(<t t-esc="pricelist.currency_id.name"/>)</small>
+                                                </th>
+                                            </t>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                            <t t-foreach="products" t-as="product">
+                                                <tr>
+                                                    <!-- Debug: log product info -->
+                                                    <t t-set="debug_info" t-value="product.name + ' - cost: ' + str(product.standard_price) + ' - qty: ' + str(product.qty_available)"/>
+                                                    <td class="text-center"><t t-esc="product.default_code or ''"/></td>
+                                                <td>
+                                                    <t t-set="name_dict" t-value="product.product_tmpl_id.name"/>
+                                                    <t t-esc="name_dict.get('en_US', '') if isinstance(name_dict, dict) else (name_dict or '')"/>
+                                                </td>
+                                                <td class="text-right">
+                                                    <t t-set="cost_dict" t-value="product.standard_price"/>
+                                                    <t t-set="cost_value" t-value="cost_dict.get('1', 0.0) if isinstance(cost_dict, dict) else (cost_dict or 0.0)"/>
+                                                    <t t-esc="'{:.2f} {}'.format(cost_value, product.currency_id.symbol or product.currency_id.name)"/>
+                                                </td>
+                                                <td class="text-right">
+                                                    <t t-esc="'{:.2f}'.format(product.qty_available or 0.0)"/>
+                                                </td>
+                                                <!-- Precios en cada lista de precios -->
+                                                <t t-foreach="pricelists" t-as="pricelist">
+                                                    <td class="text-right">
+                                                        <t t-set="price" t-value="pricelist._get_product_price(product, 1.0, False, False, False)"/>
+                                                        <t t-esc="'{:.2f} {}'.format(price, pricelist.currency_id.symbol or pricelist.currency_id.name)"/>
+                                                    </td>
+                                                </t>
+                                            </tr>
+                                        </t>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- Pie de página -->
+                        <div class="row mt-4">
+                            <div class="col-12">
+                                <p class="text-muted">
+                                    <small>Reporte generado por el sistema Odoo - <t t-esc="res_company.name"/></small>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+            </t>
+        </t>
+    </template>
+</odoo>

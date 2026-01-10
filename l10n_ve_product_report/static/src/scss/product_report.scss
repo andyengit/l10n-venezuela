@@ -1,0 +1,16 @@
+// Estilos personalizados para el módulo de reportes de productos
+.product-report-table {
+    th, td {
+        padding: 8px;
+        text-align: center;
+    }
+
+    .product-name {
+        text-align: left;
+    }
+
+    .price-column {
+        text-align: right;
+        font-family: monospace;
+    }
+}
