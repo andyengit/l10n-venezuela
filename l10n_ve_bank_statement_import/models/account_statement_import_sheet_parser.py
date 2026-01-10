@@ -1,4 +1,5 @@
 import logging
+
 from odoo import api, models
 from odoo.exceptions import UserError
 
@@ -64,8 +65,9 @@ class AccountStatementImportSheetParser(models.TransientModel):
             return result
 
         try:
-            from openpyxl import load_workbook
             from io import BytesIO
+
+            from openpyxl import load_workbook
 
             workbook = load_workbook(filename=BytesIO(data_file), data_only=True)
             csv_or_xlsx = (workbook, workbook.worksheets[0])
@@ -75,16 +77,26 @@ class AccountStatementImportSheetParser(models.TransientModel):
         initial_balance = None
         final_balance = None
 
-        if hasattr(mapping, "initial_balance_row") and hasattr(mapping, "initial_balance_column"):
+        if hasattr(mapping, "initial_balance_row") and hasattr(
+            mapping, "initial_balance_column"
+        ):
             if mapping.initial_balance_row and mapping.initial_balance_column:
                 initial_balance = self._get_balance_from_cell(
-                    csv_or_xlsx, mapping.initial_balance_row, mapping.initial_balance_column, mapping
+                    csv_or_xlsx,
+                    mapping.initial_balance_row,
+                    mapping.initial_balance_column,
+                    mapping,
                 )
 
-        if hasattr(mapping, "final_balance_row") and hasattr(mapping, "final_balance_column"):
+        if hasattr(mapping, "final_balance_row") and hasattr(
+            mapping, "final_balance_column"
+        ):
             if mapping.final_balance_row and mapping.final_balance_column:
                 final_balance = self._get_balance_from_cell(
-                    csv_or_xlsx, mapping.final_balance_row, mapping.final_balance_column, mapping
+                    csv_or_xlsx,
+                    mapping.final_balance_row,
+                    mapping.final_balance_column,
+                    mapping,
                 )
 
         if initial_balance is not None or final_balance is not None:
@@ -125,9 +137,7 @@ class AccountStatementImportSheetParser(models.TransientModel):
             max_col = len(header_row) if header_row else sheet.max_column
             for row_num in range(start_line, footer_line + 1):
                 values = []
-                for col_index in range(
-                    mapping.offset_column + 1, max_col + 1
-                ):
+                for col_index in range(mapping.offset_column + 1, max_col + 1):
                     cell = sheet.cell(row_num, col_index)
                     cell_value = cell.value
                     values.append(cell_value)
@@ -150,4 +160,3 @@ class AccountStatementImportSheetParser(models.TransientModel):
                 if line:
                     lines.append(line)
         return lines
-

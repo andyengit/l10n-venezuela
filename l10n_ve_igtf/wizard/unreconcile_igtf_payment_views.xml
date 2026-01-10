@@ -10,16 +10,21 @@
                     <field name="partial_id" readonly="1" />
                 </group>
                 <group>
-                    <div class="o_form_label">This payment includes IGTF. What do you want to do?</div>
+                    <div
+                        class="o_form_label"
+                    >This payment includes IGTF. What do you want to do?</div>
                     <field name="action" widget="radio" />
                 </group>
                 <footer>
-                    <button string="Confirm" name="action_confirm" type="object" class="btn-primary" />
+                    <button
+                        string="Confirm"
+                        name="action_confirm"
+                        type="object"
+                        class="btn-primary"
+                    />
                     <button string="Cancel" special="cancel" class="btn-secondary" />
                 </footer>
             </form>
         </field>
     </record>
 </odoo>
-
-

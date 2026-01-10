@@ -1,5 +1,6 @@
-from odoo import api, fields, models, _
+from odoo import _, api, fields, models
 from odoo.tools.misc import formatLang
+
 
 class AccountMove(models.Model):
     _inherit = "account.move"
@@ -40,7 +41,7 @@ class AccountMove(models.Model):
         """
         self.ensure_one()
 
-        if self.country_code != 'VE':
+        if self.country_code != "VE":
             return 0.0, 0.0
 
         if not self.is_sale_document(include_receipts=True):
@@ -64,24 +65,42 @@ class AccountMove(models.Model):
         if invoice_currency.is_zero(invoice_total):
             return 0.0, 0.0
 
-        receivable_lines = self.line_ids.filtered(lambda line: line.account_id.account_type == "asset_receivable")
-        partials = (receivable_lines.matched_debit_ids | receivable_lines.matched_credit_ids).filtered(
-            lambda pr: not pr.exchange_move_id
+        receivable_lines = self.line_ids.filtered(
+            lambda line: line.account_id.account_type == "asset_receivable"
         )
+        partials = (
+            receivable_lines.matched_debit_ids | receivable_lines.matched_credit_ids
+        ).filtered(lambda pr: not pr.exchange_move_id)
         if not partials:
             return 0.0, 0.0
 
         by_pay_line = {}
         for pr in partials:
-            pay_line = pr.debit_move_id if pr.debit_move_id.payment_id else pr.credit_move_id if pr.credit_move_id.payment_id else False
+            pay_line = (
+                pr.debit_move_id
+                if pr.debit_move_id.payment_id
+                else pr.credit_move_id
+                if pr.credit_move_id.payment_id
+                else False
+            )
             if not pay_line:
                 continue
             payment = pay_line.payment_id
             if not payment or not payment.exists() or not payment.l10n_ve_apply_igtf:
                 continue
-            entry = by_pay_line.setdefault(pay_line, {"payment": payment, "net_invoice": 0.0})
-            line_currency = pr.debit_currency_id if pr.debit_move_id == pay_line else pr.credit_currency_id
-            amt = abs(pr.debit_amount_currency) if pr.debit_move_id == pay_line else abs(pr.credit_amount_currency)
+            entry = by_pay_line.setdefault(
+                pay_line, {"payment": payment, "net_invoice": 0.0}
+            )
+            line_currency = (
+                pr.debit_currency_id
+                if pr.debit_move_id == pay_line
+                else pr.credit_currency_id
+            )
+            amt = (
+                abs(pr.debit_amount_currency)
+                if pr.debit_move_id == pay_line
+                else abs(pr.credit_amount_currency)
+            )
             entry["net_invoice"] += (
                 amt
                 if line_currency == invoice_currency
@@ -98,17 +117,27 @@ class AccountMove(models.Model):
             if invoice_currency.is_zero(net_invoice):
                 continue
 
-            matched_partials = (pay_line.matched_debit_ids | pay_line.matched_credit_ids).filtered(
-                lambda pr: not pr.exchange_move_id
-            )
+            matched_partials = (
+                pay_line.matched_debit_ids | pay_line.matched_credit_ids
+            ).filtered(lambda pr: not pr.exchange_move_id)
             total_net = 0.0
             for pr in matched_partials:
-                line_currency = pr.debit_currency_id if pr.debit_move_id == pay_line else pr.credit_currency_id
-                amt = abs(pr.debit_amount_currency) if pr.debit_move_id == pay_line else abs(pr.credit_amount_currency)
+                line_currency = (
+                    pr.debit_currency_id
+                    if pr.debit_move_id == pay_line
+                    else pr.credit_currency_id
+                )
+                amt = (
+                    abs(pr.debit_amount_currency)
+                    if pr.debit_move_id == pay_line
+                    else abs(pr.credit_amount_currency)
+                )
                 total_net += (
                     amt
                     if line_currency == invoice_currency
-                    else line_currency._convert(amt, invoice_currency, company, pr.max_date)
+                    else line_currency._convert(
+                        amt, invoice_currency, company, pr.max_date
+                    )
                 )
             total_net = invoice_currency.round(total_net)
             if invoice_currency.is_zero(total_net):
@@ -117,9 +146,13 @@ class AccountMove(models.Model):
             payment_amount_invoice_currency = (
                 payment.amount
                 if payment.currency_id == invoice_currency
-                else payment.currency_id._convert(payment.amount, invoice_currency, company, payment.date)
+                else payment.currency_id._convert(
+                    payment.amount, invoice_currency, company, payment.date
+                )
             )
-            payment_amount_invoice_currency = invoice_currency.round(payment_amount_invoice_currency)
+            payment_amount_invoice_currency = invoice_currency.round(
+                payment_amount_invoice_currency
+            )
             if invoice_currency.is_zero(payment_amount_invoice_currency):
                 continue
 
@@ -131,12 +164,16 @@ class AccountMove(models.Model):
             return 0.0, 0.0
 
         igtf_company_currency = company.currency_id.round(
-            invoice_currency._convert(abs(igtf_invoice_currency), company.currency_id, company, self.date)
+            invoice_currency._convert(
+                abs(igtf_invoice_currency), company.currency_id, company, self.date
+            )
         )
         igtf_company_currency *= 1.0 if igtf_invoice_currency >= 0 else -1.0
         return igtf_invoice_currency, igtf_company_currency
 
-    @api.depends("move_type", "line_ids.amount_residual", "line_ids.amount_residual_currency")
+    @api.depends(
+        "move_type", "line_ids.amount_residual", "line_ids.amount_residual_currency"
+    )
     def _compute_l10n_ve_igtf_collected_amounts(self):
         """
         Compute IGTF collected fields for display purposes.
@@ -150,7 +187,7 @@ class AccountMove(models.Model):
         None
         """
         for move in self:
-            if move.country_code != 'VE':
+            if move.country_code != "VE":
                 move.l10n_ve_igtf_collected_amount_currency = 0.0
                 move.l10n_ve_igtf_collected_amount_company_currency = 0.0
                 continue
@@ -175,7 +212,7 @@ class AccountMove(models.Model):
         """
         self.ensure_one()
 
-        if self.country_code != 'VE':
+        if self.country_code != "VE":
             return False
 
         partial = self.env["account.partial.reconcile"].browse(partial_id)
@@ -236,7 +273,7 @@ class AccountMove(models.Model):
         """
         super()._compute_tax_totals()
         for move in self:
-            if move.country_code != 'VE':
+            if move.country_code != "VE":
                 continue
             if not move.tax_totals or not move.is_invoice(include_receipts=True):
                 continue
@@ -244,7 +281,9 @@ class AccountMove(models.Model):
             if not move.currency_id or move.currency_id.is_zero(igtf_amount_currency):
                 continue
             totals = dict(move.tax_totals)
-            igtf_amount_company_currency = move.l10n_ve_igtf_collected_amount_company_currency
+            igtf_amount_company_currency = (
+                move.l10n_ve_igtf_collected_amount_company_currency
+            )
             subtotals = list(totals.get("subtotals") or [])
             subtotals.append(
                 {
@@ -259,8 +298,12 @@ class AccountMove(models.Model):
             totals["subtotals"] = subtotals
             totals["l10n_ve_igtf_collected_amount_currency"] = igtf_amount_currency
             totals["l10n_ve_igtf_collected_amount"] = igtf_amount_company_currency
-            totals["total_amount_currency"] = totals.get("total_amount_currency", 0.0) + igtf_amount_currency
-            totals["total_amount"] = totals.get("total_amount", 0.0) + igtf_amount_company_currency
+            totals["total_amount_currency"] = (
+                totals.get("total_amount_currency", 0.0) + igtf_amount_currency
+            )
+            totals["total_amount"] = (
+                totals.get("total_amount", 0.0) + igtf_amount_company_currency
+            )
             move.tax_totals = totals
 
     @api.depends("move_type", "line_ids.amount_residual")
@@ -289,7 +332,7 @@ class AccountMove(models.Model):
         Payment = self.env["account.payment"]
 
         for move in self:
-            if move.country_code != 'VE':
+            if move.country_code != "VE":
                 continue
             widget = move.invoice_payments_widget
             if not widget or not isinstance(widget, dict) or not widget.get("content"):
@@ -321,7 +364,9 @@ class AccountMove(models.Model):
 
                 # Total IGTF on the payment move, expressed in widget_currency.
                 total_igtf_widget_currency = 0.0
-                igtf_amls = payment.move_id.line_ids.filtered(lambda line: line.account_id == igtf_account)
+                igtf_amls = payment.move_id.line_ids.filtered(
+                    lambda line: line.account_id == igtf_account
+                )
                 if not igtf_amls:
                     continue
 
@@ -331,14 +376,18 @@ class AccountMove(models.Model):
                         total_igtf_widget_currency += (
                             amt
                             if aml.currency_id == widget_currency
-                            else aml.currency_id._convert(amt, widget_currency, payment.company_id, aml.date)
+                            else aml.currency_id._convert(
+                                amt, widget_currency, payment.company_id, aml.date
+                            )
                         )
                     else:
                         amt = abs(aml.balance)
                         total_igtf_widget_currency += (
                             amt
                             if payment.company_currency_id == widget_currency
-                            else payment.company_currency_id._convert(amt, widget_currency, payment.company_id, aml.date)
+                            else payment.company_currency_id._convert(
+                                amt, widget_currency, payment.company_id, aml.date
+                            )
                         )
 
                 if widget_currency.is_zero(total_igtf_widget_currency):
@@ -360,7 +409,10 @@ class AccountMove(models.Model):
                     payment.amount
                     if payment.currency_id == widget_currency
                     else payment.currency_id._convert(
-                        payment.amount, widget_currency, payment.company_id, payment.date
+                        payment.amount,
+                        widget_currency,
+                        payment.company_id,
+                        payment.date,
                     )
                 )
                 if widget_currency.is_zero(payment_amount_widget):
@@ -370,29 +422,47 @@ class AccountMove(models.Model):
                 if p <= 0.0:
                     continue
 
-                matched_partials = (pay_line.matched_debit_ids | pay_line.matched_credit_ids).filtered(
-                    lambda pr: not pr.exchange_move_id
-                )
+                matched_partials = (
+                    pay_line.matched_debit_ids | pay_line.matched_credit_ids
+                ).filtered(lambda pr: not pr.exchange_move_id)
                 total_net_paymentline_widget = 0.0
                 for pr in matched_partials:
-                    line_currency = pr.debit_currency_id if pr.debit_move_id == pay_line else pr.credit_currency_id
-                    amt = abs(pr.debit_amount_currency) if pr.debit_move_id == pay_line else abs(pr.credit_amount_currency)
+                    line_currency = (
+                        pr.debit_currency_id
+                        if pr.debit_move_id == pay_line
+                        else pr.credit_currency_id
+                    )
+                    amt = (
+                        abs(pr.debit_amount_currency)
+                        if pr.debit_move_id == pay_line
+                        else abs(pr.credit_amount_currency)
+                    )
                     total_net_paymentline_widget += (
                         amt
                         if line_currency == widget_currency
-                        else line_currency._convert(amt, widget_currency, payment.company_id, pr.max_date)
+                        else line_currency._convert(
+                            amt, widget_currency, payment.company_id, pr.max_date
+                        )
                     )
                 if widget_currency.is_zero(total_net_paymentline_widget):
                     continue
 
-                gross_allocated_widget = payment_amount_widget * (net_amount / total_net_paymentline_widget)
+                gross_allocated_widget = payment_amount_widget * (
+                    net_amount / total_net_paymentline_widget
+                )
 
                 invoice_total_widget = (
                     move.amount_total
                     if move.currency_id == widget_currency
-                    else move.currency_id._convert(move.amount_total, widget_currency, move.company_id, move.date)
+                    else move.currency_id._convert(
+                        move.amount_total, widget_currency, move.company_id, move.date
+                    )
                 )
-                base_widget = min(gross_allocated_widget, invoice_total_widget) if invoice_total_widget else gross_allocated_widget
+                base_widget = (
+                    min(gross_allocated_widget, invoice_total_widget)
+                    if invoice_total_widget
+                    else gross_allocated_widget
+                )
 
                 igtf_amount_widget = base_widget * p
                 if widget_currency.is_zero(igtf_amount_widget):
@@ -422,14 +492,24 @@ class AccountMove(models.Model):
                         "amount": gross_amount,
                         "l10n_ve_net_amount": net_amount,
                         "l10n_ve_igtf_amount": igtf_amount_widget,
-                        "l10n_ve_net_amount_formatted": formatLang(self.env, net_amount, currency_obj=widget_currency),
-                        "l10n_ve_igtf_amount_formatted": formatLang(self.env, igtf_amount_widget, currency_obj=widget_currency),
-                        "l10n_ve_igtf_amount_company_currency_formatted": formatLang(
-                            self.env, igtf_company_currency, currency_obj=payment.company_currency_id
+                        "l10n_ve_net_amount_formatted": formatLang(
+                            self.env, net_amount, currency_obj=widget_currency
                         ),
-                        "amount_foreign_currency": formatLang(self.env, gross_amount, currency_obj=widget_currency),
+                        "l10n_ve_igtf_amount_formatted": formatLang(
+                            self.env, igtf_amount_widget, currency_obj=widget_currency
+                        ),
+                        "l10n_ve_igtf_amount_company_currency_formatted": formatLang(
+                            self.env,
+                            igtf_company_currency,
+                            currency_obj=payment.company_currency_id,
+                        ),
+                        "amount_foreign_currency": formatLang(
+                            self.env, gross_amount, currency_obj=widget_currency
+                        ),
                         "amount_company_currency": formatLang(
-                            self.env, gross_company_currency, currency_obj=payment.company_currency_id
+                            self.env,
+                            gross_company_currency,
+                            currency_obj=payment.company_currency_id,
                         ),
                     }
                 )

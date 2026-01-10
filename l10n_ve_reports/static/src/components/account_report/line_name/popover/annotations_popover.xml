@@ -6,7 +6,7 @@
                 <tr class="annotation_popover_line">
                     <th>Date</th>
                     <th>Annotation</th>
-                    <th/>
+                    <th />
                 </tr>
 
                 <t t-foreach="annotations" t-as="annotation" t-key="annotation.id">
@@ -24,7 +24,12 @@
                 />
                 <tr class="annotation_popover_line">
                     <td colspan="4">
-                        <a class="oe_link" href="#" t-on-click.prevent="addAnnotation" data-hotkey="c">
+                        <a
+                            class="oe_link"
+                            href="#"
+                            t-on-click.prevent="addAnnotation"
+                            data-hotkey="c"
+                        >
                             Add a line
                         </a>
                     </td>

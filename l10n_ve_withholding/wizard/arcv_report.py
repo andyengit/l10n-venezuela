@@ -16,9 +16,9 @@ class ArcvReport(models.TransientModel):
             self._get_islr_retention_lines_grouped_by_year_month_and_percentage_fees()
         )
         data = self._construct_report_data(retentions_by_month_and_percentage_fees)
-        return self.env.ref(
-            "l10n_ve_withholding.action_report_arcv"
-        ).report_action(None, data=data)
+        return self.env.ref("l10n_ve_withholding.action_report_arcv").report_action(
+            None, data=data
+        )
 
     def _get_islr_retention_lines_grouped_by_year_month_and_percentage_fees(self):
         """

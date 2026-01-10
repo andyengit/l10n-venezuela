@@ -3,16 +3,19 @@
     <record id="account_statement_import_sheet_mapping_form_inherit" model="ir.ui.view">
         <field name="name">account.statement.import.sheet.mapping.form.inherit</field>
         <field name="model">account.statement.import.sheet.mapping</field>
-        <field name="inherit_id" ref="account_statement_import_sheet_file.account_statement_import_sheet_mapping_tree"/>
+        <field
+            name="inherit_id"
+            ref="account_statement_import_sheet_file.account_statement_import_sheet_mapping_tree"
+        />
         <field name="arch" type="xml">
             <field name="header_lines_skip_count" position="after">
-                <field name="lines_skip_after_header"/>
+                <field name="lines_skip_after_header" />
             </field>
             <xpath expr="//field[@name='bank_account_column']" position="after">
-                <field name="initial_balance_row"/>
-                <field name="initial_balance_column"/>
-                <field name="final_balance_row"/>
-                <field name="final_balance_column"/>
+                <field name="initial_balance_row" />
+                <field name="initial_balance_column" />
+                <field name="final_balance_row" />
+                <field name="final_balance_column" />
                 <div class="alert alert-info" role="alert" colspan="2">
                     <span class="fa fa-info-circle">
                         Indica la fila y columna donde se encuentran los saldos inicial y final.
@@ -24,4 +27,3 @@
         </field>
     </record>
 </odoo>
-

@@ -1,11 +1,11 @@
 /** @odoo-module */
 
-import { Component, useRef, useState, onMounted } from "@odoo/owl";
+import {Component, useRef, useState, onMounted} from "@odoo/owl";
 
 export class AccountReportSearchBar extends Component {
     static template = "l10n_ve_reports.AccountReportSearchBar";
     static props = {
-        initialQuery: { type: String, optional: true },
+        initialQuery: {type: String, optional: true},
     };
 
     setup() {
@@ -33,7 +33,7 @@ export class AccountReportSearchBar extends Component {
                 if (!line.name) continue;
 
                 const lineName = line.name.trim().toLowerCase();
-                const match = (lineName.indexOf(query) !== -1);
+                const match = lineName.indexOf(query) !== -1;
 
                 if (match) {
                     linesIDsMatched.push(line.id);
@@ -44,6 +44,6 @@ export class AccountReportSearchBar extends Component {
         } else {
             delete this.controller.lines_searched;
             this.controller.deleteOption("filter_search_bar");
-        }        
+        }
     }
 }

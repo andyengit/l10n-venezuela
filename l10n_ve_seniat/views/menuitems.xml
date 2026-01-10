@@ -26,10 +26,12 @@
             sequence="10"
         />
     </menuitem>
-    <menuitem id="menu_account_move_audit_log"
-              name="Audit Log - Moves"
-              action="action_account_move_audit_log"
-              parent="account.menu_finance_reports"
-              sequence="99"
-              groups="account.group_account_user"/>
+    <menuitem
+        id="menu_account_move_audit_log"
+        name="Audit Log - Moves"
+        action="action_account_move_audit_log"
+        parent="account.menu_finance_reports"
+        sequence="99"
+        groups="account.group_account_user"
+    />
 </odoo>

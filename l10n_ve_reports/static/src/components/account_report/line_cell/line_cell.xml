@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <templates>
     <t t-name="l10n_ve_reports.AccountReportLineCell">
-        <t t-call="{{ env.template('AccountReportLineCell') }}"/>
+        <t t-call="{{ env.template('AccountReportLineCell') }}" />
     </t>
 
     <t t-name="l10n_ve_reports.AccountReportLineCellCustomizable">
@@ -25,28 +25,34 @@
                             class="btn btn_edit me-auto"
                             t-on-click="(ev) => this.editPopover(ev)"
                         >
-                            <i class="fa fa-pencil"/>
+                            <i class="fa fa-pencil" />
                         </button>
                     </t>
 
                     <div class="content">
                         <t t-if="props.cell.auditable">
                             <a t-on-click="() => this.audit()">
-                                <t t-component="env.component('AccountReportEllipsis')" t-props="{
+                                <t
+                                    t-component="env.component('AccountReportEllipsis')"
+                                    t-props="{
                                     name: props.cell.name?.toString(),
                                     no_format: props.cell.no_format,
                                     type: props.cell.figure_type,
                                     maxCharacters: 50,
-                                }"/>
+                                }"
+                                />
                             </a>
                         </t>
                         <t t-else="">
-                            <t t-component="env.component('AccountReportEllipsis')" t-props="{
+                            <t
+                                t-component="env.component('AccountReportEllipsis')"
+                                t-props="{
                                 name: props.cell.name?.toString(),
                                 no_format: props.cell.no_format,
                                 type: props.cell.figure_type,
                                 maxCharacters: 50,
-                            }"/>
+                            }"
+                            />
                         </t>
                     </div>
                 </t>

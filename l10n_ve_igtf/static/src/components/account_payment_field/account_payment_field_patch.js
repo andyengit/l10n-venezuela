@@ -1,7 +1,7 @@
 /** @odoo-module **/
 
-import { patch } from "@web/core/utils/patch";
-import { AccountPaymentField } from "@account/components/account_payment_field/account_payment_field";
+import {patch} from "@web/core/utils/patch";
+import {AccountPaymentField} from "@account/components/account_payment_field/account_payment_field";
 
 patch(AccountPaymentField.prototype, {
     async removeMoveReconcile(moveId, partialId) {
@@ -29,9 +29,12 @@ patch(AccountPaymentField.prototype, {
             return;
         }
         this.popover.close();
-        await this.orm.call(this.props.record.resModel, "js_remove_outstanding_partial", [moveId, partialId], {});
+        await this.orm.call(
+            this.props.record.resModel,
+            "js_remove_outstanding_partial",
+            [moveId, partialId],
+            {}
+        );
         await this.props.record.model.root.load();
     },
 });
-
-

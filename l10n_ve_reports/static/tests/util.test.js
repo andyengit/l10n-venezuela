@@ -1,6 +1,10 @@
-import { expect, test } from "@odoo/hoot";
+import {expect, test} from "@odoo/hoot";
 
-import { buildLineId, parseLineId, removeTaxGroupingFromLineId } from "@l10n_ve_reports/js/util";
+import {
+    buildLineId,
+    parseLineId,
+    removeTaxGroupingFromLineId,
+} from "@l10n_ve_reports/js/util";
 
 test("can build a line id from a list of [markup, res_model, res_id]", () => {
     const values = [
@@ -23,7 +27,7 @@ test("can parse a line id from a generic id with a markup as object", () => {
         [null, "account.move", 10],
         [null, "account.move.line", 22],
         ["name", null, null],
-        [{ groupby: "account" }, null, null],
+        [{groupby: "account"}, null, null],
     ]);
 });
 

@@ -1,6 +1,6 @@
 import logging
 
-from odoo import Command, _, api, models, fields
+from odoo import Command, _, api, fields, models
 from odoo.exceptions import ValidationError
 
 _logger = logging.getLogger(__name__)
@@ -58,14 +58,17 @@ class AccountMoveLine(models.Model):
         self.ensure_one()
         if self.display_type not in ("product", "discount"):
             return
-        
+
         if self.move_id.move_type == "entry":
             return
-        
+
         # Validar que el precio unitario no sea 0
         if abs(self.price_unit or 0.0) < 0.01:
             raise ValidationError(
-                _("No se permiten líneas con precio en 0. La línea '%s' tiene un precio de 0.") % (self.name or _("Sin nombre"))
+                _(
+                    "No se permiten líneas con precio en 0. La línea '%s' tiene un precio de 0."
+                )
+                % (self.name or _("Sin nombre"))
             )
 
     def _put_unique_tax_per_line(self):

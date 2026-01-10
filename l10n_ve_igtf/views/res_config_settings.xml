@@ -25,16 +25,18 @@
                                 class="col-lg-5 o_light_label"
                                 string="IGTF Currencies"
                             />
-                            <field 
-                                name="l10n_ve_igtf_currency_ids" 
+                            <field
+                                name="l10n_ve_igtf_currency_ids"
                                 widget="many2many_tags"
                             />
                         </div>
                         <div class="row mt8">
-                            <label for="l10n_ve_igtf_percent" class="col-lg-5 o_light_label" string="IGTF (%)" />
-                            <field 
-                                name="l10n_ve_igtf_percent"
+                            <label
+                                for="l10n_ve_igtf_percent"
+                                class="col-lg-5 o_light_label"
+                                string="IGTF (%)"
                             />
+                            <field name="l10n_ve_igtf_percent" />
                         </div>
                     </div>
                 </setting>
@@ -42,5 +44,3 @@
         </field>
     </record>
 </odoo>
-
-

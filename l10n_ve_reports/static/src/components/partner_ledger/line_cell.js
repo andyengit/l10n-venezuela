@@ -1,10 +1,8 @@
-
 /** @odoo-module */
 
-import { AccountReport } from "@l10n_ve_reports/components/account_report/account_report";
-import { AccountReportLineCell } from "@l10n_ve_reports/components/account_report/line_cell/line_cell";
-const { DateTime } = luxon;
-
+import {AccountReport} from "@l10n_ve_reports/components/account_report/account_report";
+import {AccountReportLineCell} from "@l10n_ve_reports/components/account_report/line_cell/line_cell";
+const {DateTime} = luxon;
 
 export class PartnerLedgerLineCell extends AccountReportLineCell {
     static template = "l10n_ve_reports.PartnerLedgerLineCell";
@@ -12,12 +10,13 @@ export class PartnerLedgerLineCell extends AccountReportLineCell {
         let superCellClasses = super.cellClasses;
         const cell = this.props.cell;
         if (
-            cell.figure_type === 'date'
-            && cell.expression_label == 'date_maturity'
-            && cell.no_format
-            && DateTime.fromISO(cell.no_format).startOf('day') < DateTime.now().startOf('day')
+            cell.figure_type === "date" &&
+            cell.expression_label == "date_maturity" &&
+            cell.no_format &&
+            DateTime.fromISO(cell.no_format).startOf("day") <
+                DateTime.now().startOf("day")
         ) {
-            superCellClasses += ' text-danger';
+            superCellClasses += " text-danger";
         }
         return superCellClasses;
     }

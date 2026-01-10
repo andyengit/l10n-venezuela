@@ -52,7 +52,10 @@
         </field>
     </record>
 
-    <record id="action_payment_concept_l10n_ve_withholding" model="ir.actions.act_window">
+    <record
+        id="action_payment_concept_l10n_ve_withholding"
+        model="ir.actions.act_window"
+    >
         <field name="name">Payment concept</field>
         <field name="res_model">payment.concept</field>
         <field name="type">ir.actions.act_window</field>
@@ -63,7 +66,9 @@
 
     <!-- Payment Concept Line Views -->
     <record id="view_payment_concept_line_list_l10n_ve_withholding" model="ir.ui.view">
-        <field name="name">view.payment.concept.line.list.l10n.ve.payment.extension</field>
+        <field
+            name="name"
+        >view.payment.concept.line.list.l10n.ve.payment.extension</field>
         <field name="model">payment.concept.line</field>
         <field name="arch" type="xml">
             <list string="Payment Concept Lines" delete="false">
@@ -78,7 +83,9 @@
     </record>
 
     <record id="view_payment_concept_line_form_l10n_ve_withholding" model="ir.ui.view">
-        <field name="name">view.payment.concept.line.form.l10n.ve.payment.extension</field>
+        <field
+            name="name"
+        >view.payment.concept.line.form.l10n.ve.payment.extension</field>
         <field name="model">payment.concept.line</field>
         <field name="arch" type="xml">
             <form string="Payment Concept Line">
@@ -100,8 +107,13 @@
         </field>
     </record>
 
-    <record id="view_payment_concept_line_search_l10n_ve_withholding" model="ir.ui.view">
-        <field name="name">view.payment.concept.line.search.l10n.ve.payment.extension</field>
+    <record
+        id="view_payment_concept_line_search_l10n_ve_withholding"
+        model="ir.ui.view"
+    >
+        <field
+            name="name"
+        >view.payment.concept.line.search.l10n.ve.payment.extension</field>
         <field name="model">payment.concept.line</field>
         <field name="arch" type="xml">
             <search string="Payment Concept Line">
@@ -112,20 +124,38 @@
                 <filter name="by_concept" domain="[]" string="All" />
                 <separator />
                 <group expand="0" string="Group By">
-                    <filter name="group_by_concept" context="{'group_by': 'payment_concept_id'}" string="Payment Concept" />
-                    <filter name="group_by_type_person" context="{'group_by': 'type_person_id'}" string="Type Person" />
-                    <filter name="group_by_tariff" context="{'group_by': 'tariff_id'}" string="Tariff" />
+                    <filter
+                        name="group_by_concept"
+                        context="{'group_by': 'payment_concept_id'}"
+                        string="Payment Concept"
+                    />
+                    <filter
+                        name="group_by_type_person"
+                        context="{'group_by': 'type_person_id'}"
+                        string="Type Person"
+                    />
+                    <filter
+                        name="group_by_tariff"
+                        context="{'group_by': 'tariff_id'}"
+                        string="Tariff"
+                    />
                 </group>
             </search>
         </field>
     </record>
 
-    <record id="action_payment_concept_line_l10n_ve_withholding" model="ir.actions.act_window">
+    <record
+        id="action_payment_concept_line_l10n_ve_withholding"
+        model="ir.actions.act_window"
+    >
         <field name="name">Payment Concept Lines</field>
         <field name="res_model">payment.concept.line</field>
         <field name="type">ir.actions.act_window</field>
         <field name="view_mode">list,form</field>
-        <field name="view_id" ref="view_payment_concept_line_list_l10n_ve_withholding"/>
+        <field
+            name="view_id"
+            ref="view_payment_concept_line_list_l10n_ve_withholding"
+        />
         <field name="context">{"group_by":"type_person_id"}</field>
     </record>
 </odoo>

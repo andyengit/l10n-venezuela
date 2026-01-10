@@ -15,7 +15,11 @@ export function buildLineId(current) {
 
     return current
         .map(([markup, model, value]) => {
-            const lineValues = [convertNull(markup), convertNull(model), convertNull(value)];
+            const lineValues = [
+                convertNull(markup),
+                convertNull(model),
+                convertNull(value),
+            ];
             return lineValues.join(LINE_ID_GROUP_DELIMITER);
         })
         .join(LINE_ID_HIERARCHY_DELIMITER);

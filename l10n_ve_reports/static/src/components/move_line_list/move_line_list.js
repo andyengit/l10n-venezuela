@@ -1,13 +1,13 @@
-import { AttachmentViewMoveLine } from "./attachment_view_move_line";
+import {AttachmentViewMoveLine} from "./attachment_view_move_line";
 
-import { registry } from "@web/core/registry";
-import { useService } from "@web/core/utils/hooks";
-import { listView } from "@web/views/list/list_view";
-import { ListRenderer } from "@web/views/list/list_renderer";
-import { ListController } from "@web/views/list/list_controller";
-import { SIZES } from "@web/core/ui/ui_service";
-import { useChildSubEnv, useState } from "@odoo/owl";
-import { makeActiveField } from "@web/model/relational_model/utils";
+import {registry} from "@web/core/registry";
+import {useService} from "@web/core/utils/hooks";
+import {listView} from "@web/views/list/list_view";
+import {ListRenderer} from "@web/views/list/list_renderer";
+import {ListController} from "@web/views/list/list_controller";
+import {SIZES} from "@web/core/ui/ui_service";
+import {useChildSubEnv, useState} from "@odoo/owl";
+import {makeActiveField} from "@web/model/relational_model/utils";
 
 export class AccountMoveLineListController extends ListController {
     static template = "l10n_ve_reports.MoveLineListView";
@@ -22,17 +22,18 @@ export class AccountMoveLineListController extends ListController {
         this.mailPopoutService = useState(useService("mail.popout"));
         this.attachmentPreviewState = useState({
             displayAttachment:
-                localStorage.getItem("account.move_line_pdf_previewer_hidden") !== "false",
+                localStorage.getItem("account.move_line_pdf_previewer_hidden") !==
+                "false",
             selectedRecord: false,
             thread: null,
         });
-        this.popout = useState({ active: false });
+        this.popout = useState({active: false});
 
         useChildSubEnv({
             setPopout: this.setPopout.bind(this),
         });
 
-        this.openRecord = () => {}
+        this.openRecord = () => {};
     }
 
     get previewEnabled() {
@@ -47,7 +48,7 @@ export class AccountMoveLineListController extends ListController {
         params.config.activeFields.move_attachment_ids = makeActiveField();
         params.config.activeFields.move_attachment_ids.related = {
             fields: {
-                mimetype: { name: "mimetype", type: "char" },
+                mimetype: {name: "mimetype", type: "char"},
             },
             activeFields: {
                 mimetype: makeActiveField(),
@@ -77,20 +78,25 @@ export class AccountMoveLineListController extends ListController {
     }
 
     async setThread(accountMoveLineData) {
-        if (!accountMoveLineData || !accountMoveLineData.data.move_attachment_ids.records.length) {
+        if (
+            !accountMoveLineData ||
+            !accountMoveLineData.data.move_attachment_ids.records.length
+        ) {
             this.attachmentPreviewState.thread = null;
             return;
         }
         const thread = this.store.Thread.insert({
-            attachments: accountMoveLineData.data.move_attachment_ids.records.map((attachment) => ({
-                id: attachment.resId,
-                mimetype: attachment.data.mimetype,
-            })),
+            attachments: accountMoveLineData.data.move_attachment_ids.records.map(
+                (attachment) => ({
+                    id: attachment.resId,
+                    mimetype: attachment.data.mimetype,
+                })
+            ),
             id: accountMoveLineData.data.move_id[0],
             model: accountMoveLineData.fields["move_id"].relation,
         });
         if (!thread.mainAttachment && thread.attachmentsInWebClientView.length > 0) {
-            thread.update({ mainAttachment: thread.attachmentsInWebClientView[0] });
+            thread.update({mainAttachment: thread.attachmentsInWebClientView[0]});
         }
         this.attachmentPreviewState.thread = thread;
     }
@@ -107,7 +113,9 @@ export class AccountMoveLineListRenderer extends ListRenderer {
         const futureCell = super.findFocusFutureCell(cell, cellIsInGroupRow, direction);
         if (futureCell) {
             const dataPointId = futureCell.closest("tr").dataset.id;
-            const record = this.props.list.records.filter((x) => x.id === dataPointId)[0];
+            const record = this.props.list.records.filter(
+                (x) => x.id === dataPointId
+            )[0];
             this.props.setSelectedRecord(record);
         }
         return futureCell;
@@ -120,4 +128,3 @@ export const AccountMoveLineListView = {
 };
 
 registry.category("views").add("account_move_line_list", AccountMoveLineListView);
-

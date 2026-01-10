@@ -37,7 +37,7 @@ export class Asserts {
     // Assert that 'actual' and 'expected' are equal
     static isEqual(actual, expected) {
         Asserts.check(
-            (actual == expected),
+            actual == expected,
             `${actual} is equal to expected ${expected}`,
             `${actual} is not equal to expected ${expected}`
         );
@@ -45,7 +45,7 @@ export class Asserts {
     // Asserts that 'actual' and 'expected' are strictly equal
     static isStrictEqual(actual, expected) {
         Asserts.check(
-            (actual === expected),
+            actual === expected,
             `${actual} is strictly equal to expected ${expected}`,
             `${actual} is not strictly equal to expected ${expected}`
         );
@@ -54,7 +54,7 @@ export class Asserts {
     static contains(target, selector) {
         const count = Asserts.getCount(target, selector);
         Asserts.check(
-            (count > 0),
+            count > 0,
             `There is at least one ${selector} in ${target}`,
             `There should be at least one ${selector} in ${target} but there is ${count}`
         );
@@ -63,7 +63,7 @@ export class Asserts {
     static containsNone(target, selector) {
         const count = Asserts.getCount(target, selector);
         Asserts.check(
-            (count === 0),
+            count === 0,
             `There is no ${selector} in ${target}`,
             `There should be no ${selector} in ${target} but there is ${count}`
         );
@@ -72,7 +72,7 @@ export class Asserts {
     static containsNumber(target, selector, number) {
         const count = Asserts.getCount(target, selector);
         Asserts.check(
-            (count === number),
+            count === number,
             `There is the correct number (${number}) of ${selector} in ${target}`,
             `There should be at ${number} ${selector} in ${target} but there is ${count}`
         );
@@ -81,7 +81,7 @@ export class Asserts {
     static DOMContains(selector) {
         const count = Asserts.getDOMCount(selector);
         Asserts.check(
-            (count > 0),
+            count > 0,
             `There is at least one ${selector} in the DOM`,
             `There should be at least one ${selector} in the DOM but there is ${count}`
         );
@@ -90,7 +90,7 @@ export class Asserts {
     static DOMContainsNone(selector) {
         const count = Asserts.getDOMCount(selector);
         Asserts.check(
-            (count === 0),
+            count === 0,
             `There is no ${selector} in the DOM`,
             `There should be 0 ${selector} in the DOM but there is ${count}`
         );
@@ -99,7 +99,7 @@ export class Asserts {
     static DOMContainsNumber(selector, number) {
         const count = Asserts.getDOMCount(selector);
         Asserts.check(
-            (Asserts.getDOMCount(selector) === number),
+            Asserts.getDOMCount(selector) === number,
             `There is the correct number (${number}) of ${selector} in the DOM`,
             `There should be ${number} ${selector} in the DOM but there is ${count}`
         );

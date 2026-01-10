@@ -1,4 +1,4 @@
-from odoo import api, fields, models, _
+from odoo import _, api, fields, models
 from odoo.exceptions import UserError
 
 
@@ -58,33 +58,38 @@ class AccountPaymentRegister(models.TransientModel):
             or self.env["res.currency"]
         )
 
-    @api.depends("currency_id", "company_id", "company_id.l10n_ve_igtf_currency_ids", "batches")
+    @api.depends(
+        "currency_id", "company_id", "company_id.l10n_ve_igtf_currency_ids", "batches"
+    )
     def _compute_l10n_ve_show_apply_igtf(self):
         for wiz in self:
-            if wiz.company_id.account_fiscal_country_id.code != 'VE':
+            if wiz.company_id.account_fiscal_country_id.code != "VE":
                 wiz.l10n_ve_show_apply_igtf = False
                 continue
-            
+
             # Verificar que los movimientos sean facturas de clientes o notas de crédito de clientes
             # No mostrar IGTF para facturas de proveedor (in_invoice) o notas de crédito de proveedor (in_refund)
             show_igtf = True
             if wiz.batches:
                 # batches es una lista de diccionarios, cada uno con 'lines' que es un recordset de account.move.line
                 for batch in wiz.batches:
-                    lines = batch.get('lines', self.env['account.move.line'])
+                    lines = batch.get("lines", self.env["account.move.line"])
                     if lines:
                         moves = lines.move_id
                         if moves:
                             # Solo permitir IGTF para facturas de clientes (out_invoice) y notas de crédito de clientes (out_refund)
-                            allowed_move_types = ('out_invoice', 'out_refund')
-                            if any(move.move_type not in allowed_move_types for move in moves):
+                            allowed_move_types = ("out_invoice", "out_refund")
+                            if any(
+                                move.move_type not in allowed_move_types
+                                for move in moves
+                            ):
                                 show_igtf = False
                                 break
-            
+
             if not show_igtf:
                 wiz.l10n_ve_show_apply_igtf = False
                 continue
-            
+
             allowed = wiz.company_id.l10n_ve_igtf_currency_ids
             if not allowed:
                 allowed = (
@@ -125,7 +130,7 @@ class AccountPaymentRegister(models.TransientModel):
         IGTF when the user enters an amount larger than the invoice total.
         """
         for wiz in self:
-            if wiz.company_id.account_fiscal_country_id.code != 'VE':
+            if wiz.company_id.account_fiscal_country_id.code != "VE":
                 wiz.l10n_ve_igtf_amount_currency = 0.0
                 continue
             percent = wiz.company_id.l10n_ve_igtf_percent or 0.0
@@ -182,7 +187,7 @@ class AccountPaymentRegister(models.TransientModel):
         None
         """
         for wiz in self:
-            if wiz.company_id.account_fiscal_country_id.code != 'VE':
+            if wiz.company_id.account_fiscal_country_id.code != "VE":
                 wiz.l10n_ve_igtf_amount_company_currency = 0.0
                 continue
             igtf_amount_currency = wiz.l10n_ve_igtf_amount_currency
@@ -314,7 +319,7 @@ class AccountPaymentRegister(models.TransientModel):
             If the amount exceeds the computed maximum allowed amount.
         """
         self.ensure_one()
-        if self.company_id.account_fiscal_country_id.code != 'VE':
+        if self.company_id.account_fiscal_country_id.code != "VE":
             return
         if (
             not self.l10n_ve_apply_igtf

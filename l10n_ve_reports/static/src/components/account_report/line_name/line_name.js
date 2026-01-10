@@ -1,12 +1,12 @@
 /** @odoo-module */
 
-import { Dropdown } from "@web/core/dropdown/dropdown";
-import { DropdownItem } from "@web/core/dropdown/dropdown_item";
-import { useService } from "@web/core/utils/hooks";
-import { usePopover } from "@web/core/popover/popover_hook";
-import { Component, useState, useRef } from "@odoo/owl";
+import {Dropdown} from "@web/core/dropdown/dropdown";
+import {DropdownItem} from "@web/core/dropdown/dropdown_item";
+import {useService} from "@web/core/utils/hooks";
+import {usePopover} from "@web/core/popover/popover_hook";
+import {Component, useState, useRef} from "@odoo/owl";
 
-import { AccountReportAnnotationsPopover } from "@l10n_ve_reports/components/account_report/line_name/popover/annotations_popover";
+import {AccountReportAnnotationsPopover} from "@l10n_ve_reports/components/account_report/line_name/popover/annotations_popover";
 
 export class AccountReportLineName extends Component {
     static template = "l10n_ve_reports.AccountReportLineName";
@@ -17,7 +17,7 @@ export class AccountReportLineName extends Component {
     static components = {
         Dropdown,
         DropdownItem,
-    }
+    };
 
     setup() {
         this.action = useService("action");
@@ -71,11 +71,9 @@ export class AccountReportLineName extends Component {
     get lineNameClasses() {
         let classes = "text";
 
-        if (this.props.line.unfoldable)
-            classes += " unfoldable";
+        if (this.props.line.unfoldable) classes += " unfoldable";
 
-        if (this.props.line.class)
-            classes += ` ${ this.props.line.class }`;
+        if (this.props.line.class) classes += ` ${this.props.line.class}`;
 
         return classes;
     }
@@ -107,24 +105,24 @@ export class AccountReportLineName extends Component {
     // Load more
     // -----------------------------------------------------------------------------------------------------------------
     async loadMore() {
-        const newLines = await this.orm.call(
-            "account.report",
-            "get_expanded_lines",
-            [
-                this.controller.options.report_id,
-                this.controller.options,
-                this.props.line.parent_id,
-                this.props.line.groupby,
-                this.props.line.expand_function,
-                this.props.line.progress,
-                this.props.line.offset,
-                this.props.line.horizontal_split_side,
-            ],
-        );
+        const newLines = await this.orm.call("account.report", "get_expanded_lines", [
+            this.controller.options.report_id,
+            this.controller.options,
+            this.props.line.parent_id,
+            this.props.line.groupby,
+            this.props.line.expand_function,
+            this.props.line.progress,
+            this.props.line.offset,
+            this.props.line.horizontal_split_side,
+        ]);
 
-        this.controller.setLineVisibility(newLines)
+        this.controller.setLineVisibility(newLines);
         if (this.controller.areLinesOrdered()) {
-            this.controller.updateLinesOrderIndexes(this.props.lineIndex, newLines, true)
+            this.controller.updateLinesOrderIndexes(
+                this.props.lineIndex,
+                newLines,
+                true
+            );
         }
         await this.controller.replaceLineWith(this.props.lineIndex, newLines);
     }
@@ -136,8 +134,7 @@ export class AccountReportLineName extends Component {
         if (this.props.line.unfoldable)
             if (this.props.line.unfolded)
                 this.controller.foldLine(this.props.lineIndex);
-            else
-                this.controller.unfoldLine(this.props.lineIndex);
+            else this.controller.unfoldLine(this.props.lineIndex);
     }
 
     // -----------------------------------------------------------------------------------------------------------------

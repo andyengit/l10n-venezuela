@@ -29,4 +29,3 @@ class ResConfigSettings(models.TransientModel):
     extend_aliquot_purchase = fields.Many2one(
         "account.tax", related="company_id.extend_aliquot_purchase", readonly=False
     )
-

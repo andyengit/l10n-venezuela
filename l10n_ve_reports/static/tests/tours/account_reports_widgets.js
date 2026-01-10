@@ -1,4 +1,4 @@
-import { registry } from "@web/core/registry";
+import {registry} from "@web/core/registry";
 
 registry.category("web_tour.tours").add("account_reports_widgets", {
     url: "/odoo/action-account_reports.action_account_report_pl",
@@ -11,7 +11,7 @@ registry.category("web_tour.tours").add("account_reports_widgets", {
         {
             content: "Select another date in the future",
             trigger: ".dropdown-menu span.dropdown-item:nth-child(3) .btn_next_date",
-            run: 'click'
+            run: "click",
         },
         {
             content: "Apply filter by closing the dropdown",
@@ -20,7 +20,7 @@ registry.category("web_tour.tours").add("account_reports_widgets", {
         },
         {
             content: "wait refresh",
-            trigger: `#filter_date button:not(:contains(${ new Date().getFullYear() }))`,
+            trigger: `#filter_date button:not(:contains(${new Date().getFullYear()}))`,
         },
         {
             content: "change date filter for the second time",
@@ -29,16 +29,18 @@ registry.category("web_tour.tours").add("account_reports_widgets", {
         },
         {
             content: "Select another date in the past first time",
-            trigger: ".dropdown-menu span.dropdown-item:nth-child(3) .btn_previous_date",
-            run: 'click'
+            trigger:
+                ".dropdown-menu span.dropdown-item:nth-child(3) .btn_previous_date",
+            run: "click",
         },
         {
             trigger: `.dropdown-menu span.dropdown-item:nth-child(3) time:contains(${new Date().getFullYear()})`,
         },
         {
             content: "Select another date in the past second time",
-            trigger: ".dropdown-menu span.dropdown-item:nth-child(3) .btn_previous_date",
-            run: 'click'
+            trigger:
+                ".dropdown-menu span.dropdown-item:nth-child(3) .btn_previous_date",
+            run: "click",
         },
         {
             trigger: `.dropdown-menu span.dropdown-item:nth-child(3) time:contains(${
@@ -52,7 +54,7 @@ registry.category("web_tour.tours").add("account_reports_widgets", {
         },
         {
             content: "wait refresh",
-            trigger: `#filter_date button:contains(${ new Date().getFullYear() - 1 })`,
+            trigger: `#filter_date button:contains(${new Date().getFullYear() - 1})`,
         },
         {
             content: "change comparison filter",

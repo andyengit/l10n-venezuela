@@ -1,6 +1,5 @@
-from odoo import fields, models, _
+from odoo import Command, _, fields, models
 from odoo.exceptions import UserError
-from odoo import Command
 
 
 class L10nVeIgtfUnreconcilePaymentWizard(models.TransientModel):
@@ -8,7 +7,9 @@ class L10nVeIgtfUnreconcilePaymentWizard(models.TransientModel):
     _description = "IGTF payment unreconcile decision"
 
     move_id = fields.Many2one("account.move", string="Invoice", required=True)
-    partial_id = fields.Many2one("account.partial.reconcile", string="Partial Reconcile", required=True)
+    partial_id = fields.Many2one(
+        "account.partial.reconcile", string="Partial Reconcile", required=True
+    )
     payment_id = fields.Many2one("account.payment", string="Payment", required=True)
 
     action = fields.Selection(
@@ -69,7 +70,9 @@ class L10nVeIgtfUnreconcilePaymentWizard(models.TransientModel):
         if not igtf_account:
             raise UserError(_("No IGTF account is configured for the company."))
 
-        igtf_lines = payment.move_id.line_ids.filtered(lambda l: l.account_id == igtf_account)
+        igtf_lines = payment.move_id.line_ids.filtered(
+            lambda l: l.account_id == igtf_account
+        )
         if not igtf_lines:
             payment.with_context(l10n_ve_igtf_from_register_payment=True).write(
                 {"l10n_ve_apply_igtf": False, "l10n_ve_igtf_included": False}
@@ -80,25 +83,32 @@ class L10nVeIgtfUnreconcilePaymentWizard(models.TransientModel):
 
         payment.action_draft()
 
-        new_amount = payment.currency_id.round(payment.amount - igtf_amount_currency_abs)
+        new_amount = payment.currency_id.round(
+            payment.amount - igtf_amount_currency_abs
+        )
         if new_amount < 0:
-            raise UserError(_("The payment amount would become negative after removing IGTF."))
+            raise UserError(
+                _("The payment amount would become negative after removing IGTF.")
+            )
 
         self.env.cr.execute(
             "UPDATE account_payment SET l10n_ve_apply_igtf = FALSE, l10n_ve_igtf_included = FALSE, amount = %s WHERE id = %s",
             (new_amount, payment.id),
         )
-        payment.invalidate_recordset(["l10n_ve_apply_igtf", "l10n_ve_igtf_included", "amount"])
+        payment.invalidate_recordset(
+            ["l10n_ve_apply_igtf", "l10n_ve_igtf_included", "amount"]
+        )
 
         old_line_ids = payment.move_id.line_ids.ids
         line_vals_list = payment._prepare_move_line_default_vals()
-        
-        payment.move_id.write({
-            "line_ids": [Command.delete(line_id) for line_id in old_line_ids] + [Command.create(vals) for vals in line_vals_list],
-        })
+
+        payment.move_id.write(
+            {
+                "line_ids": [Command.delete(line_id) for line_id in old_line_ids]
+                + [Command.create(vals) for vals in line_vals_list],
+            }
+        )
 
         payment.move_id.action_post()
         payment.action_post()
         return {"type": "ir.actions.act_window_close"}
-
-

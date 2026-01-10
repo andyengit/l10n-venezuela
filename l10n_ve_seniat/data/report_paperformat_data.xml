@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8" ?>
 <odoo>
     <data noupdate="1">
         <record id="paperformat_invoice_ve_small" model="report.paperformat">
@@ -19,4 +19,3 @@
         </record>
     </data>
 </odoo>
-

@@ -25,10 +25,7 @@
         </field>
     </record>
 
-    <record
-        id="view_economic_branch_search_l10n_ve_withholding"
-        model="ir.ui.view"
-    >
+    <record id="view_economic_branch_search_l10n_ve_withholding" model="ir.ui.view">
         <field name="name">view.economic.branch.search.l10n.ve.payment.extension</field>
         <field name="model">economic.branch</field>
         <field name="arch" type="xml">

@@ -1,7 +1,7 @@
-import { AccountReport } from "@l10n_ve_reports/components/account_report/account_report";
-import { AccountReportFilters } from "@l10n_ve_reports/components/account_report/filters/filters";
-import { parseFloat } from "@web/views/fields/parsers";
-import { _t } from "@web/core/l10n/translation";
+import {AccountReport} from "@l10n_ve_reports/components/account_report/account_report";
+import {AccountReportFilters} from "@l10n_ve_reports/components/account_report/filters/filters";
+import {parseFloat} from "@web/views/fields/parsers";
+import {_t} from "@web/core/l10n/translation";
 
 export class MulticurrencyRevaluationReportFilters extends AccountReportFilters {
     static template = "l10n_ve_reports.MulticurrencyRevaluationReportFilters";
@@ -11,7 +11,9 @@ export class MulticurrencyRevaluationReportFilters extends AccountReportFilters 
     //------------------------------------------------------------------------------------------------------------------
     async filterExchangeRate(ev, currencyId) {
         try {
-            this.controller.options.currency_rates[currencyId].rate = Math.abs(parseFloat(ev.currentTarget.value));
+            this.controller.options.currency_rates[currencyId].rate = Math.abs(
+                parseFloat(ev.currentTarget.value)
+            );
         } catch {
             this.notification.add(_t("Please enter a valid number."), {
                 type: "danger",

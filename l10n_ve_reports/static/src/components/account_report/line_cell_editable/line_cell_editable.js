@@ -1,7 +1,7 @@
-import { useRef, useState } from "@odoo/owl";
-import { useHotkey } from "@web/core/hotkeys/hotkey_hook";
+import {useRef, useState} from "@odoo/owl";
+import {useHotkey} from "@web/core/hotkeys/hotkey_hook";
 
-import { AccountReportLineCell } from "@l10n_ve_reports/components/account_report/line_cell/line_cell";
+import {AccountReportLineCell} from "@l10n_ve_reports/components/account_report/line_cell/line_cell";
 
 export class AccountReportLineCellEditable extends AccountReportLineCell {
     static template = "l10n_ve_reports.AccountReportLineCellEditable";
@@ -9,14 +9,14 @@ export class AccountReportLineCellEditable extends AccountReportLineCell {
     setup() {
         super.setup();
         this.input = useRef("input");
-        this.focused = useState({ value: false });
+        this.focused = useState({value: false});
 
         useHotkey(
             "Enter",
             (ev) => {
                 ev.target.blur();
             },
-            { bypassEditableProtection: true }
+            {bypassEditableProtection: true}
         );
     }
 

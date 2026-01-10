@@ -1,8 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <templates>
-    <t t-name="l10n_ve_reports.JournalReportFilters" t-inherit="l10n_ve_reports.AccountReportFiltersCustomizable">
+    <t
+        t-name="l10n_ve_reports.JournalReportFilters"
+        t-inherit="l10n_ve_reports.AccountReportFiltersCustomizable"
+    >
         <xpath expr="//div[@id='filter_extra_options']" position="replace">
-            <t t-call="l10n_ve_reports.JournalReportFilterExtraOptions"/>
+            <t t-call="l10n_ve_reports.JournalReportFilterExtraOptions" />
         </xpath>
     </t>
 </templates>

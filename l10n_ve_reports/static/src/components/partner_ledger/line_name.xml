@@ -1,9 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <templates>
-    <t t-name="l10n_ve_reports.PartnerLedgerLineName" t-inherit="l10n_ve_reports.AccountReportLineNameCustomizable">
+    <t
+        t-name="l10n_ve_reports.PartnerLedgerLineName"
+        t-inherit="l10n_ve_reports.AccountReportLineNameCustomizable"
+    >
         <xpath expr="//td[@data-id='line_name']" position="attributes">
             <t t-if="props.line.unfoldable">
-                <attribute name="class" add="more" separator=" "/>
+                <attribute name="class" add="more" separator=" " />
             </t>
         </xpath>
 
@@ -30,10 +33,16 @@
 
         <xpath expr="//button[@data-id='btn_foldable']" position="after">
             <t t-if="props.line.trust === 'good'">
-                <i class="fa fa-circle text-success partner_trust" title="Partner is good"/>
+                <i
+                    class="fa fa-circle text-success partner_trust"
+                    title="Partner is good"
+                />
             </t>
             <t t-elif="props.line.trust === 'bad'">
-                <i class="fa fa-circle text-danger partner_trust" title="Partner is bad"/>
+                <i
+                    class="fa fa-circle text-danger partner_trust"
+                    title="Partner is bad"
+                />
             </t>
         </xpath>
     </t>

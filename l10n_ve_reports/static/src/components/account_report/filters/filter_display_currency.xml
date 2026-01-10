@@ -7,17 +7,21 @@
                 onStateChanged="(isOpen) => !isOpen ? this.applyFilters('display_currency') : null"
             >
                 <button class="btn btn-secondary">
-                    <i class="fa fa-money me-1"/>
-                    <t t-out="selectedDisplayCurrencyName"/>
+                    <i class="fa fa-money me-1" />
+                    <t t-out="selectedDisplayCurrencyName" />
                 </button>
 
                 <t t-set-slot="content">
-                    <t t-foreach="controller.options.available_currencies" t-as="currency" t-key="currency.id">
+                    <t
+                        t-foreach="controller.options.available_currencies"
+                        t-as="currency"
+                        t-key="currency.id"
+                    >
                         <DropdownItem
                             class="{ 'selected': (controller.options.display_currency_id == currency.id) }"
                             onSelected="() => this.filterDisplayCurrency(currency.id)"
                         >
-                            <t t-out="currency.name + ' (' + currency.symbol + ')'"/>
+                            <t t-out="currency.name + ' (' + currency.symbol + ')'" />
                         </DropdownItem>
                     </t>
                 </t>
@@ -29,8 +33,8 @@
                 onStateChanged="(isOpen) => !isOpen ? this.applyFilters('currency_rate_date_type') : null"
             >
                 <button class="btn btn-secondary">
-                    <i class="fa fa-calendar me-1"/>
-                    <t t-out="selectedCurrencyRateDateTypeName"/>
+                    <i class="fa fa-calendar me-1" />
+                    <t t-out="selectedCurrencyRateDateTypeName" />
                 </button>
 
                 <t t-set-slot="content">
@@ -38,19 +42,19 @@
                         class="{ 'selected': (controller.options.currency_rate_date_type == 'current') }"
                         onSelected="() => this.filterCurrencyRateDateType('current')"
                     >
-                        <t t-out="currencyRateDateTypeLabel('current')"/>
+                        <t t-out="currencyRateDateTypeLabel('current')" />
                     </DropdownItem>
                     <DropdownItem
                         class="{ 'selected': (controller.options.currency_rate_date_type == 'document') }"
                         onSelected="() => this.filterCurrencyRateDateType('document')"
                     >
-                        <t t-out="currencyRateDateTypeLabel('document')"/>
+                        <t t-out="currencyRateDateTypeLabel('document')" />
                     </DropdownItem>
                     <DropdownItem
                         class="{ 'selected': (controller.options.currency_rate_date_type == 'manual') }"
                         onSelected="() => this.filterCurrencyRateDateType('manual')"
                     >
-                        <t t-out="currencyRateDateTypeLabel('manual')"/>
+                        <t t-out="currencyRateDateTypeLabel('manual')" />
                     </DropdownItem>
                 </t>
             </Dropdown>
@@ -65,11 +69,13 @@
                         disabled="currencyDateLoadingState.isLoading"
                     />
                     <t t-if="currencyDateLoadingState.isLoading">
-                        <i class="fa fa-spinner fa-spin" title="Convirtiendo moneda..."/>
+                        <i
+                            class="fa fa-spinner fa-spin"
+                            title="Convirtiendo moneda..."
+                        />
                     </t>
                 </div>
             </t>
         </div>
     </t>
 </templates>
-

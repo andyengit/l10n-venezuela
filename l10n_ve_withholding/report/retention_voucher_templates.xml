@@ -913,9 +913,7 @@
                             <t t-call="l10n_ve_withholding.report_iva_customer" />
                         </t>
                         <t t-else="">
-                            <t
-                                t-call="l10n_ve_withholding.report_islr_customer"
-                            />
+                            <t t-call="l10n_ve_withholding.report_islr_customer" />
                         </t>
                     </div>
                 </t>

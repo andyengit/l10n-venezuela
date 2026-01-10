@@ -1,8 +1,14 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <templates>
-    <t t-name="l10n_ve_reports.PartnerLedgerReportFilterExtraOptions" t-inherit="l10n_ve_reports.AccountReportFilterExtraOptions">
+    <t
+        t-name="l10n_ve_reports.PartnerLedgerReportFilterExtraOptions"
+        t-inherit="l10n_ve_reports.AccountReportFilterExtraOptions"
+    >
         <!-- Deprecated options, will be removed in master-->
-        <xpath expr="//DropdownItem[contains(@class, 'filter_show_all_hook')]" position="after">
+        <xpath
+            expr="//DropdownItem[contains(@class, 'filter_show_all_hook')]"
+            position="after"
+        >
             <DropdownItem
                 t-if="'hide_account' in controller.options"
                 class="{ 'selected': controller.options.hide_account }"

@@ -1,15 +1,15 @@
-import { _t } from "@web/core/l10n/translation";
-import { Component, useState } from "@odoo/owl";
+import {_t} from "@web/core/l10n/translation";
+import {Component, useState} from "@odoo/owl";
 
-import { useService } from "@web/core/utils/hooks";
-import { WarningDialog } from "@web/core/errors/error_dialogs";
+import {useService} from "@web/core/utils/hooks";
+import {WarningDialog} from "@web/core/errors/error_dialogs";
 
-import { DateTimeInput } from '@web/core/datetime/datetime_input';
-import { Dropdown } from "@web/core/dropdown/dropdown";
-import { DropdownItem } from "@web/core/dropdown/dropdown_item";
-import { MultiRecordSelector } from "@web/core/record_selectors/multi_record_selector";
-import { formatDate} from "@web/core/l10n/dates";
-const { DateTime } = luxon;
+import {DateTimeInput} from "@web/core/datetime/datetime_input";
+import {Dropdown} from "@web/core/dropdown/dropdown";
+import {DropdownItem} from "@web/core/dropdown/dropdown_item";
+import {MultiRecordSelector} from "@web/core/record_selectors/multi_record_selector";
+import {formatDate} from "@web/core/l10n/dates";
+const {DateTime} = luxon;
 
 export class AccountReportFilters extends Component {
     static template = "l10n_ve_reports.AccountReportFilters";
@@ -34,7 +34,7 @@ export class AccountReportFilters extends Component {
             value: "",
             invalid: false,
         });
-        this.currencyDateLoadingState = useState({ isLoading: false });
+        this.currencyDateLoadingState = useState({isLoading: false});
         this.timeout = null;
     }
 
@@ -53,7 +53,8 @@ export class AccountReportFilters extends Component {
             case "all":
                 return _t("All");
             default:
-                for (const fiscalPosition of this.controller.options.available_vat_fiscal_positions) {
+                for (const fiscalPosition of this.controller.options
+                    .available_vat_fiscal_positions) {
                     if (fiscalPosition.id === this.controller.options.fiscal_position) {
                         return fiscalPosition.name;
                     }
@@ -63,8 +64,12 @@ export class AccountReportFilters extends Component {
     }
 
     get selectedHorizontalGroupName() {
-        for (const horizontalGroup of this.controller.options.available_horizontal_groups) {
-            if (horizontalGroup.id === this.controller.options.selected_horizontal_group_id) {
+        for (const horizontalGroup of this.controller.options
+            .available_horizontal_groups) {
+            if (
+                horizontalGroup.id ===
+                this.controller.options.selected_horizontal_group_id
+            ) {
                 return horizontalGroup.name;
             }
         }
@@ -103,7 +108,7 @@ export class AccountReportFilters extends Component {
 
     get selectedAccountType() {
         let selectedAccountType = this.controller.options.account_type.filter(
-            (accountType) => accountType.selected,
+            (accountType) => accountType.selected
         );
         if (
             !selectedAccountType.length ||
@@ -113,23 +118,31 @@ export class AccountReportFilters extends Component {
         }
 
         const accountTypeMappings = [
-            { list: ["trade_receivable", "non_trade_receivable"], name: _t("All Receivable") },
-            { list: ["trade_payable", "non_trade_payable"], name: _t("All Payable") },
-            { list: ["trade_receivable", "trade_payable"], name: _t("Trade Partners") },
-            { list: ["non_trade_receivable", "non_trade_payable"], name: _t("Non Trade Partners") },
+            {
+                list: ["trade_receivable", "non_trade_receivable"],
+                name: _t("All Receivable"),
+            },
+            {list: ["trade_payable", "non_trade_payable"], name: _t("All Payable")},
+            {list: ["trade_receivable", "trade_payable"], name: _t("Trade Partners")},
+            {
+                list: ["non_trade_receivable", "non_trade_payable"],
+                name: _t("Non Trade Partners"),
+            },
         ];
 
         const listToDisplay = [];
         for (const mapping of accountTypeMappings) {
             if (
                 mapping.list.every((accountType) =>
-                    selectedAccountType.map((accountType) => accountType.id).includes(accountType),
+                    selectedAccountType
+                        .map((accountType) => accountType.id)
+                        .includes(accountType)
                 )
             ) {
                 listToDisplay.push(mapping.name);
                 // Delete already checked id
                 selectedAccountType = selectedAccountType.filter(
-                    (accountType) => !mapping.list.includes(accountType.id),
+                    (accountType) => !mapping.list.includes(accountType.id)
                 );
             }
         }
@@ -158,17 +171,17 @@ export class AccountReportFilters extends Component {
     }
 
     get selectedCurrencyRateDateTypeName() {
-        const dateType = this.controller.options.currency_rate_date_type || 'current';
+        const dateType = this.controller.options.currency_rate_date_type || "current";
         return this.currencyRateDateTypeLabel(dateType);
     }
 
     currencyRateDateTypeLabel(dateType) {
         const dateTypeNames = {
-            'current': _t("Fecha Actual"),
-            'document': _t("Fecha del Documento"),
-            'manual': _t("Seleccionar Fecha"),
+            current: _t("Fecha Actual"),
+            document: _t("Fecha del Documento"),
+            manual: _t("Seleccionar Fecha"),
         };
-        return dateTypeNames[dateType] || dateTypeNames['current'];
+        return dateTypeNames[dateType] || dateTypeNames["current"];
     }
 
     get currencyRateDateValue() {
@@ -181,7 +194,7 @@ export class AccountReportFilters extends Component {
 
     get selectedAmlIrFilters() {
         const selectedFilters = this.controller.options.aml_ir_filters.filter(
-            (irFilter) => irFilter.selected,
+            (irFilter) => irFilter.selected
         );
 
         if (selectedFilters.length === 1) {
@@ -194,7 +207,7 @@ export class AccountReportFilters extends Component {
     }
 
     get availablePeriodOrder() {
-        return { descending: _t("Descending"), ascending: _t("Ascending") };
+        return {descending: _t("Descending"), ascending: _t("Ascending")};
     }
 
     get periodOrder() {
@@ -206,14 +219,20 @@ export class AccountReportFilters extends Component {
     get selectedExtraOptions() {
         const selectedExtraOptions = [];
 
-        if (this.controller.groups.account_readonly && this.controller.filters.show_draft) {
+        if (
+            this.controller.groups.account_readonly &&
+            this.controller.filters.show_draft
+        ) {
             selectedExtraOptions.push(
                 this.controller.options.all_entries
                     ? _t("With Draft Entries")
-                    : _t("Posted Entries"),
+                    : _t("Posted Entries")
             );
         }
-        if (this.controller.filters.show_unreconciled && this.controller.options.unreconciled) {
+        if (
+            this.controller.filters.show_unreconciled &&
+            this.controller.options.unreconciled
+        ) {
             selectedExtraOptions.push(_t("Unreconciled Entries"));
         }
         if (this.controller.options.include_analytic_without_aml) {
@@ -232,17 +251,25 @@ export class AccountReportFilters extends Component {
     }
 
     get periodLabel() {
-        return this.controller.options.comparison.number_period > 1 ? _t("Periods") : _t("Period");
+        return this.controller.options.comparison.number_period > 1
+            ? _t("Periods")
+            : _t("Period");
     }
     //------------------------------------------------------------------------------------------------------------------
     // Helpers
     //------------------------------------------------------------------------------------------------------------------
     get hasAnalyticGroupbyFilter() {
-        return Boolean(this.controller.groups.analytic_accounting) && (Boolean(this.controller.filters.show_analytic_groupby) || Boolean(this.controller.filters.show_analytic_plan_groupby));
+        return (
+            Boolean(this.controller.groups.analytic_accounting) &&
+            (Boolean(this.controller.filters.show_analytic_groupby) ||
+                Boolean(this.controller.filters.show_analytic_plan_groupby))
+        );
     }
 
     get hasCodesFilter() {
-        return Boolean(this.controller.options.sales_report_taxes?.operation_category?.goods);
+        return Boolean(
+            this.controller.options.sales_report_taxes?.operation_category?.goods
+        );
     }
 
     get hasExtraOptionsFilter() {
@@ -266,7 +293,8 @@ export class AccountReportFilters extends Component {
         const isMultiCompany = this.controller.options.companies.length > 1;
         const minimumFiscalPosition = this.controller.options.allow_domestic ? 0 : 1;
         const hasFiscalPositions =
-            this.controller.options.available_vat_fiscal_positions.length > minimumFiscalPosition;
+            this.controller.options.available_vat_fiscal_positions.length >
+            minimumFiscalPosition;
         return hasFiscalPositions && isMultiCompany;
     }
 
@@ -293,8 +321,7 @@ export class AccountReportFilters extends Component {
         if (date) {
             this.controller.options[optionKey][`date_${type}`] = date;
             this.applyFilters(optionKey);
-        }
-        else {
+        } else {
             this.dialog.add(WarningDialog, {
                 title: _t("Odoo Warning"),
                 message: _t("Date cannot be empty"),
@@ -303,46 +330,48 @@ export class AccountReportFilters extends Component {
     }
 
     setDateFrom(optionKey, dateFrom) {
-        this.setDate(optionKey, 'from', dateFrom);
+        this.setDate(optionKey, "from", dateFrom);
     }
 
     setDateTo(optionKey, dateTo) {
-        this.setDate(optionKey, 'to', dateTo);
+        this.setDate(optionKey, "to", dateTo);
     }
 
     dateFilters(mode) {
         switch (mode) {
             case "single":
                 return [
-                    {"name": _t("End of Month"), "period": "month"},
-                    {"name": _t("End of Quarter"), "period": "quarter"},
-                    {"name": _t("End of Year"), "period": "year"},
+                    {name: _t("End of Month"), period: "month"},
+                    {name: _t("End of Quarter"), period: "quarter"},
+                    {name: _t("End of Year"), period: "year"},
                 ];
             case "range":
                 return [
-                    {"name": _t("Month"), "period": "month"},
-                    {"name": _t("Quarter"), "period": "quarter"},
-                    {"name": _t("Year"), "period": "year"},
+                    {name: _t("Month"), period: "month"},
+                    {name: _t("Quarter"), period: "quarter"},
+                    {name: _t("Year"), period: "year"},
                 ];
             default:
-                throw new Error(`Invalid mode in dateFilters(): ${ mode }`);
+                throw new Error(`Invalid mode in dateFilters(): ${mode}`);
         }
     }
 
     initDateFilters() {
         const filters = {
-            "month": 0,
-            "quarter": 0,
-            "year": 0,
-            "tax_period": 0
+            month: 0,
+            quarter: 0,
+            year: 0,
+            tax_period: 0,
         };
 
-        const specifier = this.controller.options.date.filter.split('_')[0];
+        const specifier = this.controller.options.date.filter.split("_")[0];
         const periodType = this.controller.options.date.period_type;
         // In case the period is fiscalyear it will be computed exactly like a year period.
         const period = periodType === "fiscalyear" ? "year" : periodType;
         // Set the filter value based on the specifier
-        filters[period] = this.controller.options.date.period || (specifier === 'previous' ? -1 : specifier === 'next' ? 1 : 0);
+        filters[period] =
+            this.controller.options.date.period ||
+            (specifier === "previous" ? -1 : specifier === "next" ? 1 : 0);
 
         return filters;
     }
@@ -358,8 +387,15 @@ export class AccountReportFilters extends Component {
     }
 
     selectDateFilter(periodType, reload = false) {
-        this.filterClicked({ optionKey: "date.filter", optionValue: this.getDateFilter(periodType)});
-        this.filterClicked({ optionKey: "date.period", optionValue: this.dateFilter[periodType], reload: reload});
+        this.filterClicked({
+            optionKey: "date.filter",
+            optionValue: this.getDateFilter(periodType),
+        });
+        this.filterClicked({
+            optionKey: "date.period",
+            optionValue: this.dateFilter[periodType],
+            reload: reload,
+        });
     }
 
     selectPreviousPeriod(periodType) {
@@ -380,7 +416,7 @@ export class AccountReportFilters extends Component {
     }
 
     isPeriodSelected(periodType) {
-        return this.controller.options.date.filter.includes(periodType)
+        return this.controller.options.date.filter.includes(periodType);
     }
 
     displayPeriod(periodType) {
@@ -396,48 +432,70 @@ export class AccountReportFilters extends Component {
             case "tax_period":
                 return this._displayTaxPeriod(dateTo);
             default:
-                throw new Error(`Invalid period type in displayPeriod(): ${ periodType }`);
+                throw new Error(
+                    `Invalid period type in displayPeriod(): ${periodType}`
+                );
         }
     }
 
     _displayMonth(dateTo) {
-        return dateTo.plus({ months: this.dateFilter.month }).toFormat("MMMM yyyy");
+        return dateTo.plus({months: this.dateFilter.month}).toFormat("MMMM yyyy");
     }
 
     _displayQuarter(dateTo) {
         const quarterMonths = {
-            1: { 'start': 1, 'end': 3 },
-            2: { 'start': 4, 'end': 6 },
-            3: { 'start': 7, 'end': 9 },
-            4: { 'start': 10, 'end': 12 },
-        }
+            1: {start: 1, end: 3},
+            2: {start: 4, end: 6},
+            3: {start: 7, end: 9},
+            4: {start: 10, end: 12},
+        };
 
-        dateTo = dateTo.plus({ months: this.dateFilter.quarter * 3 });
+        dateTo = dateTo.plus({months: this.dateFilter.quarter * 3});
 
-        const quarterDateFrom = DateTime.utc(dateTo.year, quarterMonths[dateTo.quarter]['start'], 1)
-        const quarterDateTo = DateTime.utc(dateTo.year, quarterMonths[dateTo.quarter]['end'], 1)
+        const quarterDateFrom = DateTime.utc(
+            dateTo.year,
+            quarterMonths[dateTo.quarter]["start"],
+            1
+        );
+        const quarterDateTo = DateTime.utc(
+            dateTo.year,
+            quarterMonths[dateTo.quarter]["end"],
+            1
+        );
 
-        return `${ formatDate(quarterDateFrom, {format: "MMM"}) } - ${ formatDate(quarterDateTo, {format: "MMM yyyy"}) }`;
+        return `${formatDate(quarterDateFrom, {format: "MMM"})} - ${formatDate(quarterDateTo, {format: "MMM yyyy"})}`;
     }
 
     _displayYear(dateTo) {
-        return dateTo.plus({ years: this.dateFilter.year }).toFormat("yyyy");
+        return dateTo.plus({years: this.dateFilter.year}).toFormat("yyyy");
     }
 
     _displayTaxPeriod(dateTo) {
         const periodicitySettings = this.controller.options.tax_periodicity;
-        const targetDateInPeriod = dateTo.plus({months: periodicitySettings.months_per_period * this.dateFilter['tax_period']})
-        const [start, end] = this._computeTaxPeriodDates(periodicitySettings, targetDateInPeriod);
+        const targetDateInPeriod = dateTo.plus({
+            months:
+                periodicitySettings.months_per_period * this.dateFilter["tax_period"],
+        });
+        const [start, end] = this._computeTaxPeriodDates(
+            periodicitySettings,
+            targetDateInPeriod
+        );
 
-        if (periodicitySettings.start_month == 1 && periodicitySettings.start_day == 1) {
+        if (
+            periodicitySettings.start_month == 1 &&
+            periodicitySettings.start_day == 1
+        ) {
             switch (periodicitySettings.months_per_period) {
-                case 1: return end.toFormat("MMMM yyyy");
-                case 3: return `Q${end.quarter} ${dateTo.year}`;
-                case 12: return end.toFormat("yyyy");
+                case 1:
+                    return end.toFormat("MMMM yyyy");
+                case 3:
+                    return `Q${end.quarter} ${dateTo.year}`;
+                case 12:
+                    return end.toFormat("yyyy");
             }
         }
 
-        return formatDate(start) + ' - ' + formatDate(end);
+        return formatDate(start) + " - " + formatDate(end);
     }
 
     _computeTaxPeriodDates(periodicitySettings, dateInsideTargettesPeriod) {
@@ -446,23 +504,31 @@ export class AccountReportFilters extends Component {
          * function_name = _get_tax_closing_period_boundaries
          */
         const startMonth = periodicitySettings.start_month;
-        const startDay = periodicitySettings.start_day
+        const startDay = periodicitySettings.start_day;
         const monthsPerPeriod = periodicitySettings.months_per_period;
-        const aligned_date = dateInsideTargettesPeriod.minus({days: startDay - 1}) 
+        const aligned_date = dateInsideTargettesPeriod.minus({days: startDay - 1});
         let year = aligned_date.year;
         const monthOffset = aligned_date.month - startMonth;
 
         let periodNumber = Math.floor(monthOffset / monthsPerPeriod) + 1;
 
-        if (dateInsideTargettesPeriod < DateTime.now().set({year: year, month: startMonth, day: startDay})) {
+        if (
+            dateInsideTargettesPeriod <
+            DateTime.now().set({year: year, month: startMonth, day: startDay})
+        ) {
             year -= 1;
             periodNumber = Math.floor((12 + monthOffset) / monthsPerPeriod) + 1;
         }
 
         let deltaMonth = periodNumber * monthsPerPeriod;
 
-        const endDate = DateTime.utc(year, startMonth, 1).plus({ months: deltaMonth, days: startDay-2})
-        const startDate = DateTime.utc(year, startMonth, 1).plus({ months: deltaMonth-monthsPerPeriod }).set({ day: startDay})
+        const endDate = DateTime.utc(year, startMonth, 1).plus({
+            months: deltaMonth,
+            days: startDay - 2,
+        });
+        const startDate = DateTime.utc(year, startMonth, 1)
+            .plus({months: deltaMonth - monthsPerPeriod})
+            .set({day: startDay});
         return [startDate, endDate];
     }
 
@@ -489,7 +555,11 @@ export class AccountReportFilters extends Component {
             resModel,
             resIds: this.controller.options[optionKey],
             update: (resIds) => {
-                this.filterClicked({ optionKey: optionKey, optionValue: resIds, reload: true});
+                this.filterClicked({
+                    optionKey: optionKey,
+                    optionValue: resIds,
+                    reload: true,
+                });
             },
         };
     }
@@ -498,13 +568,16 @@ export class AccountReportFilters extends Component {
     // Rounding unit
     //------------------------------------------------------------------------------------------------------------------
     roundingUnitName(roundingUnit) {
-        return _t("In %s", this.controller.options["rounding_unit_names"][roundingUnit][0]);
+        return _t(
+            "In %s",
+            this.controller.options["rounding_unit_names"][roundingUnit][0]
+        );
     }
 
     //------------------------------------------------------------------------------------------------------------------
     // Generic filters
     //------------------------------------------------------------------------------------------------------------------
-    async filterClicked({ optionKey, optionValue = undefined, reload = false}) {
+    async filterClicked({optionKey, optionValue = undefined, reload = false}) {
         if (optionValue !== undefined) {
             await this.controller.updateOption(optionKey, optionValue);
         } else {
@@ -555,7 +628,9 @@ export class AccountReportFilters extends Component {
             });
         } else {
             this.controller.options.journals.forEach((journal) => {
-                journal.selected = selectedJournal.journals.includes(journal.id) && journal.model === "account.journal";
+                journal.selected =
+                    selectedJournal.journals.includes(journal.id) &&
+                    journal.model === "account.journal";
             });
         }
     }
@@ -568,7 +643,7 @@ export class AccountReportFilters extends Component {
                     journal.unfolded = !journal.unfolded;
                     inSelectedCompanySection = true;
                 } else if (inSelectedCompanySection) {
-                    break;  // Reached another company divider, exit the loop
+                    break; // Reached another company divider, exit the loop
                 }
             }
             if (inSelectedCompanySection && journal.model === "account.journal") {
@@ -592,7 +667,7 @@ export class AccountReportFilters extends Component {
     }
 
     async filterTaxUnit(taxUnit) {
-        await this.filterClicked({ optionKey: "tax_unit", optionValue: taxUnit.id});
+        await this.filterClicked({optionKey: "tax_unit", optionValue: taxUnit.id});
         this.controller.saveSessionOptions(this.controller.options);
 
         // force the company to those impacted by the tax units, the reload will be force by this function
@@ -613,26 +688,30 @@ export class AccountReportFilters extends Component {
     }
 
     async filterDisplayCurrency(currencyId) {
-        await this.controller.updateOption('display_currency_id', currencyId, false);
+        await this.controller.updateOption("display_currency_id", currencyId, false);
         this.controller.saveSessionOptions(this.controller.options);
-        
+
         // Reload the report to apply currency conversion
         await this.controller.displayReport(this.controller.options.report_id);
     }
 
     async filterCurrencyRateDateType(dateType) {
-        await this.controller.updateOption('currency_rate_date_type', dateType, false);
+        await this.controller.updateOption("currency_rate_date_type", dateType, false);
         // If switching to manual, set default date to today if not set
-        if (dateType === 'manual' && !this.controller.options.currency_rate_date) {
+        if (dateType === "manual" && !this.controller.options.currency_rate_date) {
             const today = DateTime.now();
-            await this.controller.updateOption('currency_rate_date', today.toISODate(), false);
+            await this.controller.updateOption(
+                "currency_rate_date",
+                today.toISODate(),
+                false
+            );
         }
         // Don't save currency_rate_date_type to session, so it resets to 'current' when reopening
-        const optionsToSave = { ...this.controller.options };
+        const optionsToSave = {...this.controller.options};
         delete optionsToSave.currency_rate_date_type;
         delete optionsToSave.currency_rate_date;
         this.controller.saveSessionOptions(optionsToSave);
-        
+
         // Reload the report to apply currency conversion with new date type
         await this.controller.displayReport(this.controller.options.report_id);
     }
@@ -644,8 +723,8 @@ export class AccountReportFilters extends Component {
             if (date instanceof DateTime) {
                 dateStr = date.toISODate();
             } else if (date instanceof Date) {
-                dateStr = date.toISOString().split('T')[0];
-            } else if (typeof date === 'string') {
+                dateStr = date.toISOString().split("T")[0];
+            } else if (typeof date === "string") {
                 // If it's already a string, use it directly
                 dateStr = date;
             } else {
@@ -654,25 +733,31 @@ export class AccountReportFilters extends Component {
                     const dt = DateTime.fromJSDate(date);
                     dateStr = dt.toISODate();
                 } catch (e) {
-                    console.error('Error converting date:', e);
+                    console.error("Error converting date:", e);
                     return;
                 }
             }
-            
+
             if (dateStr) {
                 // Show loading indicator
                 this.currencyDateLoadingState.isLoading = true;
-                
+
                 try {
-                    await this.controller.updateOption('currency_rate_date', dateStr, false);
+                    await this.controller.updateOption(
+                        "currency_rate_date",
+                        dateStr,
+                        false
+                    );
                     // Don't save currency_rate_date to session, so it resets when reopening
-                    const optionsToSave = { ...this.controller.options };
+                    const optionsToSave = {...this.controller.options};
                     delete optionsToSave.currency_rate_date_type;
                     delete optionsToSave.currency_rate_date;
                     this.controller.saveSessionOptions(optionsToSave);
-                    
+
                     // Reload the report to apply currency conversion with new date
-                    await this.controller.displayReport(this.controller.options.report_id);
+                    await this.controller.displayReport(
+                        this.controller.options.report_id
+                    );
                 } finally {
                     // Hide loading indicator
                     this.currencyDateLoadingState.isLoading = false;
@@ -682,41 +767,48 @@ export class AccountReportFilters extends Component {
     }
 
     async filterRoundingUnit(rounding) {
-        await this.controller.updateOption('rounding_unit', rounding, false);
+        await this.controller.updateOption("rounding_unit", rounding, false);
 
         this.controller.saveSessionOptions(this.controller.options);
 
         this.controller.lines = await this.controller.orm.call(
             "account.report",
             "format_column_values",
-            [
-                this.controller.options,
-                this.controller.lines,
-            ],
+            [this.controller.options, this.controller.lines]
         );
     }
 
     async selectHorizontalGroup(horizontalGroupId) {
-        if (horizontalGroupId === this.controller.options.selected_horizontal_group_id) {
+        if (
+            horizontalGroupId === this.controller.options.selected_horizontal_group_id
+        ) {
             return;
         }
 
         if (this.isBudgetSelected) {
             this.notification.add(
-                _t("It's not possible to select a budget with the horizontal group feature."),
+                _t(
+                    "It's not possible to select a budget with the horizontal group feature."
+                ),
                 {
                     type: "warning",
                 }
             );
             return;
         }
-        await this.filterClicked({ optionKey: "selected_horizontal_group_id", optionValue: horizontalGroupId, reload: true});
+        await this.filterClicked({
+            optionKey: "selected_horizontal_group_id",
+            optionValue: horizontalGroupId,
+            reload: true,
+        });
     }
 
     selectBudget(budget) {
         if (this.isHorizontalGroupSelected) {
             this.notification.add(
-                _t("It's not possible to select a horizontal group with the budget feature."),
+                _t(
+                    "It's not possible to select a horizontal group with the budget feature."
+                ),
                 {
                     type: "warning",
                 }
@@ -724,7 +816,7 @@ export class AccountReportFilters extends Component {
             return;
         }
         budget.selected = !budget.selected;
-        this.applyFilters( 'budgets')
+        this.applyFilters("budgets");
     }
 
     async createBudget() {
@@ -737,7 +829,7 @@ export class AccountReportFilters extends Component {
             return;
         }
         const createdId = await this.orm.call("account.report.budget", "create", [
-            { name: budgetName },
+            {name: budgetName},
         ]);
         this.budgetName.value = "";
         this.budgetName.invalid = false;
@@ -747,7 +839,7 @@ export class AccountReportFilters extends Component {
             budgets: [
                 ...options.budgets,
                 // Selected by default if we don't have any horizontal group selected
-                { id: createdId, selected: !this.isHorizontalGroupSelected },
+                {id: createdId, selected: !this.isHorizontalGroupSelected},
             ],
         });
     }

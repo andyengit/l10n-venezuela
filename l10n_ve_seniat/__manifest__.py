@@ -20,6 +20,7 @@
         "data/res.country.parish.csv",
         "data/ir_sequence_data.xml",
         "data/report_paperformat_data.xml",
+        "views/account_journal_views.xml",
         "views/account_move_views.xml",
         "views/account_move_audit_log_views.xml",
         "views/ir_sequence_views.xml",

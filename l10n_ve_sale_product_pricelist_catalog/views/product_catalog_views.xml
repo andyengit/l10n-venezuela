@@ -1,16 +1,16 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8" ?>
 <odoo>
     <record id="product_view_kanban_catalog_pricelist" model="ir.ui.view">
         <field name="name">product.view.kanban.catalog.pricelist</field>
         <field name="model">product.product</field>
-        <field name="inherit_id" ref="product.product_view_kanban_catalog"/>
+        <field name="inherit_id" ref="product.product_view_kanban_catalog" />
         <field name="arch" type="xml">
             <xpath expr="//div[@name='o_kanban_price']" position="after">
-                <div name="o_kanban_pricelists"
-                     t-attf-id="product-{{record.id.raw_value}}-pricelists">
-                </div>
+                <div
+                    name="o_kanban_pricelists"
+                    t-attf-id="product-{{record.id.raw_value}}-pricelists"
+                />
             </xpath>
         </field>
     </record>
 </odoo>
-

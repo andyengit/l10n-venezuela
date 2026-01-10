@@ -1,7 +1,7 @@
 /** @odoo-module */
 
-import { useService } from "@web/core/utils/hooks";
-import { Component } from "@odoo/owl";
+import {useService} from "@web/core/utils/hooks";
+import {Component} from "@odoo/owl";
 
 export class AccountReportCarryoverPopover extends Component {
     static template = "l10n_ve_reports.AccountReportCarryoverPopover";
@@ -24,16 +24,12 @@ export class AccountReportCarryoverPopover extends Component {
         const viewCarryoverLinesAction = await this.orm.call(
             "account.report.expression",
             "action_view_carryover_lines",
-            [
-                expressionId,
-                this.props.options,
-                columnGroupKey,
-            ],
+            [expressionId, this.props.options, columnGroupKey],
             {
                 context: this.props.context,
             }
         );
-        this.props.close()
+        this.props.close();
         return this.actionService.doAction(viewCarryoverLinesAction);
     }
 }

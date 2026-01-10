@@ -1,7 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <templates>
-    <t t-name="l10n_ve_reports.JournalReportLineName" t-inherit="l10n_ve_reports.AccountReportLineNameCustomizable">
-        <xpath expr="//td[@data-id='line_name']//div[@data-id='content']" position="replace">
+    <t
+        t-name="l10n_ve_reports.JournalReportLineName"
+        t-inherit="l10n_ve_reports.AccountReportLineNameCustomizable"
+    >
+        <xpath
+            expr="//td[@data-id='line_name']//div[@data-id='content']"
+            position="replace"
+        >
             <t t-if="'journal_id' in props.line and 'account_id' in props.line">
                 <a
                     class="link"
@@ -15,11 +21,11 @@
                         }
                     )"
                 >
-                    <t t-out="props.line.name"/>
+                    <t t-out="props.line.name" />
                 </a>
             </t>
             <t t-else="">
-                <t t-out="props.line.name"/>
+                <t t-out="props.line.name" />
 
                 <t t-if="'journal_id' in props.line">
                     <button

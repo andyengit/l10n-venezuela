@@ -1,6 +1,6 @@
 /** @odoo-module */
 
-import { Component, useState } from "@odoo/owl";
+import {Component, useState} from "@odoo/owl";
 
 export class AccountReportButtonsBar extends Component {
     static template = "l10n_ve_reports.AccountReportButtonsBar";

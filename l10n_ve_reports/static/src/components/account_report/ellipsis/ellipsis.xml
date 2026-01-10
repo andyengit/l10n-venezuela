@@ -1,13 +1,15 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <templates>
     <t t-name="l10n_ve_reports.AccountReportEllipsis">
-        <t t-call="{{ env.template('AccountReportEllipsis') }}"/>
+        <t t-call="{{ env.template('AccountReportEllipsis') }}" />
     </t>
 
     <t t-name="l10n_ve_reports.AccountReportEllipsisCustomizable">
         <t t-if="props.type === 'string'">
             <div class="name">
-                <t t-out="(props.name) ? props.name.substring(0, props.maxCharacters) : ''"/>
+                <t
+                    t-out="(props.name) ? props.name.substring(0, props.maxCharacters) : ''"
+                />
             </div>
 
             <t t-if="triggersEllipsis">
@@ -15,13 +17,13 @@
                     class="btn btn_ellipsis"
                     t-on-click="(ev) => this.showEllipsisPopover(ev)"
                 >
-                    <i class="fa fa-ellipsis-h"/>
+                    <i class="fa fa-ellipsis-h" />
                 </button>
             </t>
         </t>
         <t t-else="">
             <div class="name">
-                <t t-out="props.name"/>
+                <t t-out="props.name" />
             </div>
         </t>
     </t>

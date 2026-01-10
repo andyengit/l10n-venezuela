@@ -1,10 +1,10 @@
-import { Component, useState, useRef, onWillDestroy } from "@odoo/owl";
-import { useService } from "@web/core/utils/hooks";
-import { DateTimeInput } from "@web/core/datetime/datetime_input";
-import { AnnotationPopoverLine } from "@l10n_ve_reports/components/account_report/line_name/popover_line/annotation_popover_line";
-import { removeTaxGroupingFromLineId } from "@l10n_ve_reports/js/util";
+import {Component, useState, useRef, onWillDestroy} from "@odoo/owl";
+import {useService} from "@web/core/utils/hooks";
+import {DateTimeInput} from "@web/core/datetime/datetime_input";
+import {AnnotationPopoverLine} from "@l10n_ve_reports/components/account_report/line_name/popover_line/annotation_popover_line";
+import {removeTaxGroupingFromLineId} from "@l10n_ve_reports/js/util";
 
-const { DateTime } = luxon;
+const {DateTime} = luxon;
 
 export class AccountReportAnnotationsPopover extends Component {
     static template = "l10n_ve_reports.AccountReportAnnotationsPopover";
@@ -12,8 +12,8 @@ export class AccountReportAnnotationsPopover extends Component {
         controller: Object,
         lineName: Object,
         lineID: String,
-        close: { type: Function, optional: true },
-        isAddingAnnotation: { type: Boolean, optional: true },
+        close: {type: Function, optional: true},
+        isAddingAnnotation: {type: Boolean, optional: true},
     };
     static components = {
         DateTimeInput,
@@ -27,7 +27,11 @@ export class AccountReportAnnotationsPopover extends Component {
             value: this.props.isAddingAnnotation ? this._getNewAnnotation() : {},
         });
 
-        this.annotations = useState(this.props.controller.visibleAnnotations[removeTaxGroupingFromLineId(this.props.lineID)]);
+        this.annotations = useState(
+            this.props.controller.visibleAnnotations[
+                removeTaxGroupingFromLineId(this.props.lineID)
+            ]
+        );
 
         this.popoverTable = useRef("popoverTable");
         this.currentPromise = null;
@@ -46,7 +50,10 @@ export class AccountReportAnnotationsPopover extends Component {
     async refreshAnnotations() {
         this.currentPromise = null;
         await this.props.controller.refreshAnnotations();
-        this.annotations = this.props.controller.visibleAnnotations[removeTaxGroupingFromLineId(this.props.lineID)];
+        this.annotations =
+            this.props.controller.visibleAnnotations[
+                removeTaxGroupingFromLineId(this.props.lineID)
+            ];
         if (this.isAddingAnnotation) {
             this.cleanNewAnnotation();
         }
@@ -91,8 +98,11 @@ export class AccountReportAnnotationsPopover extends Component {
                         report_id: this.props.controller.options.report_id,
                         line_id: newAnnotation.lineID,
                         text: newAnnotation.text,
-                        date: newAnnotation.date ? newAnnotation.date.toFormat("yyyy-LL-dd") : null,
-                        fiscal_position_id: this.props.controller.options.fiscal_position,
+                        date: newAnnotation.date
+                            ? newAnnotation.date.toFormat("yyyy-LL-dd")
+                            : null,
+                        fiscal_position_id:
+                            this.props.controller.options.fiscal_position,
                     },
                 ],
                 {
@@ -104,7 +114,10 @@ export class AccountReportAnnotationsPopover extends Component {
             this.currentPromise.then(async () => {
                 await this.refreshAnnotations();
                 if (this.popoverTable.el) {
-                    this.popoverTable.el.scrollIntoView({ behavior: "smooth", block: "end" });
+                    this.popoverTable.el.scrollIntoView({
+                        behavior: "smooth",
+                        block: "end",
+                    });
                 }
             });
         }
@@ -115,7 +128,7 @@ export class AccountReportAnnotationsPopover extends Component {
             "account.report.annotation",
             "unlink",
             [annotationId],
-            { context: this.props.controller.context }
+            {context: this.props.controller.context}
         );
         await this.currentPromise;
         await this.refreshAnnotations();
@@ -125,7 +138,10 @@ export class AccountReportAnnotationsPopover extends Component {
         this.currentPromise = this.env.services.orm.call(
             "account.report.annotation",
             "write",
-            [[existingAnnotation.id], { text: editedAnnotation.text, date: editedAnnotation.date }],
+            [
+                [existingAnnotation.id],
+                {text: editedAnnotation.text, date: editedAnnotation.date},
+            ],
             {
                 context: this.props.controller.context,
             }

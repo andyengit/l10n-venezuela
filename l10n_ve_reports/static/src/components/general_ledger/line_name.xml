@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <templates>
-    <t t-name="l10n_ve_reports.GeneralLedgerLineName" t-inherit="l10n_ve_reports.AccountReportLineNameCustomizable">
+    <t
+        t-name="l10n_ve_reports.GeneralLedgerLineName"
+        t-inherit="l10n_ve_reports.AccountReportLineNameCustomizable"
+    >
         <xpath expr="//t[@data-id='line_buttons']" position="inside">
             <t t-if="props.line.unfoldable">
                 <button

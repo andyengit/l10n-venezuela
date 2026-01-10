@@ -1,12 +1,12 @@
 /** @odoo-module */
 
-import { localization } from "@web/core/l10n/localization";
-import { useService } from "@web/core/utils/hooks";
+import {localization} from "@web/core/l10n/localization";
+import {useService} from "@web/core/utils/hooks";
 
-import { AccountReportCarryoverPopover } from "@l10n_ve_reports/components/account_report/line_cell/popover/carryover_popover";
-import { AccountReportEditPopover } from "@l10n_ve_reports/components/account_report/line_cell/popover/edit_popover";
+import {AccountReportCarryoverPopover} from "@l10n_ve_reports/components/account_report/line_cell/popover/carryover_popover";
+import {AccountReportEditPopover} from "@l10n_ve_reports/components/account_report/line_cell/popover/edit_popover";
 
-import { Component, markup, useState } from "@odoo/owl";
+import {Component, markup, useState} from "@odoo/owl";
 
 export class AccountReportLineCell extends Component {
     static template = "l10n_ve_reports.AccountReportLineCell";
@@ -29,7 +29,7 @@ export class AccountReportLineCell extends Component {
     // Helpers
     // -----------------------------------------------------------------------------------------------------------------
     isNumeric(type) {
-        return ['float', 'integer', 'monetary', 'percentage'].includes(type);
+        return ["float", "integer", "monetary", "percentage"].includes(type);
     }
 
     // -----------------------------------------------------------------------------------------------------------------
@@ -42,14 +42,11 @@ export class AccountReportLineCell extends Component {
 
         let classes = "";
 
-        if (this.props.cell.auditable)
-            classes += " auditable";
+        if (this.props.cell.auditable) classes += " auditable";
 
-        if (this.props.cell.figure_type === 'date')
-            classes += " date";
+        if (this.props.cell.figure_type === "date") classes += " date";
 
-        if (this.props.cell.figure_type === 'string')
-            classes += " text";
+        if (this.props.cell.figure_type === "string") classes += " text";
 
         if (this.isNumeric(this.props.cell.figure_type)) {
             classes += " numeric text-end";
@@ -68,8 +65,7 @@ export class AccountReportLineCell extends Component {
                 }
         }
 
-        if (this.props.cell.class)
-            classes += ` ${this.props.cell.class}`;
+        if (this.props.cell.class) classes += ` ${this.props.cell.class}`;
 
         return classes;
     }
@@ -110,10 +106,9 @@ export class AccountReportLineCell extends Component {
         const close = () => {
             this.popoverCloseFn();
             this.popoverCloseFn = null;
-        }
+        };
 
-        if (this.popoverCloseFn)
-            close();
+        if (this.popoverCloseFn) close();
 
         this.popoverCloseFn = this.popover.add(
             ev.currentTarget,
@@ -127,7 +122,7 @@ export class AccountReportLineCell extends Component {
             {
                 closeOnClickAway: true,
                 position: localization.direction === "rtl" ? "bottom" : "left",
-            },
+            }
         );
     }
 
@@ -151,7 +146,7 @@ export class AccountReportLineCell extends Component {
             {
                 closeOnClickAway: true,
                 position: localization.direction === "rtl" ? "bottom" : "right",
-            },
+            }
         );
     }
 

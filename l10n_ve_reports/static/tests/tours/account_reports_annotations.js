@@ -1,7 +1,7 @@
 /** @odoo-module **/
 
-import { Asserts } from "./asserts";
-import { registry } from "@web/core/registry";
+import {Asserts} from "./asserts";
+import {registry} from "@web/core/registry";
 
 registry.category("web_tour.tours").add("account_reports_annotations", {
     url: "/odoo/action-account_reports.action_account_report_bs",
@@ -40,7 +40,9 @@ registry.category("web_tour.tours").add("account_reports_annotations", {
             content: "Check there are two lines annotated initially",
             trigger: ".o_content",
             run: () => {
-                const annotations = document.querySelectorAll(".btn_annotation .fa-commenting");
+                const annotations = document.querySelectorAll(
+                    ".btn_annotation .fa-commenting"
+                );
 
                 // Check the number of annotated lines
                 Asserts.isEqual(annotations.length, 2);
@@ -48,11 +50,15 @@ registry.category("web_tour.tours").add("account_reports_annotations", {
                 // Check the annotations buttons are on the right lines
                 Asserts.isTrue(
                     annotations[0] ===
-                        document.querySelector("tr:nth-child(5)").querySelector(".fa-commenting")
+                        document
+                            .querySelector("tr:nth-child(5)")
+                            .querySelector(".fa-commenting")
                 );
                 Asserts.isTrue(
                     annotations[1] ===
-                        document.querySelector("tr:nth-child(12)").querySelector(".fa-commenting")
+                        document
+                            .querySelector("tr:nth-child(12)")
+                            .querySelector(".fa-commenting")
                 );
             },
         },
@@ -71,7 +77,8 @@ registry.category("web_tour.tours").add("account_reports_annotations", {
         },
         {
             content: "Click on annotate",
-            trigger: ".o-dropdown--menu .dropdown-item:last-of-type:contains('Annotate')",
+            trigger:
+                ".o-dropdown--menu .dropdown-item:last-of-type:contains('Annotate')",
             run: "click",
         },
         {
@@ -101,7 +108,9 @@ registry.category("web_tour.tours").add("account_reports_annotations", {
             content: "Check there are now three lines annotated",
             trigger: ".o_content",
             run: () => {
-                const annotations = document.querySelectorAll(".btn_annotation .fa-commenting");
+                const annotations = document.querySelectorAll(
+                    ".btn_annotation .fa-commenting"
+                );
 
                 // Check the number of annotated lines
                 Asserts.isEqual(annotations.length, 3);
@@ -109,15 +118,21 @@ registry.category("web_tour.tours").add("account_reports_annotations", {
                 // Check the annotations buttons are on the right lines
                 Asserts.isTrue(
                     annotations[0] ===
-                        document.querySelector("tr:nth-child(5)").querySelector(".fa-commenting")
+                        document
+                            .querySelector("tr:nth-child(5)")
+                            .querySelector(".fa-commenting")
                 );
                 Asserts.isTrue(
                     annotations[1] ===
-                        document.querySelector("tr:nth-child(8)").querySelector(".fa-commenting")
+                        document
+                            .querySelector("tr:nth-child(8)")
+                            .querySelector(".fa-commenting")
                 );
                 Asserts.isTrue(
                     annotations[2] ===
-                        document.querySelector("tr:nth-child(12)").querySelector(".fa-commenting")
+                        document
+                            .querySelector("tr:nth-child(12)")
+                            .querySelector(".fa-commenting")
                 );
             },
         },
@@ -131,7 +146,10 @@ registry.category("web_tour.tours").add("account_reports_annotations", {
             content: "Annotate contains previous text value",
             trigger: "textarea",
             run: () => {
-                Asserts.isEqual(document.querySelector("textarea").value, "Annotation 121000");
+                Asserts.isEqual(
+                    document.querySelector("textarea").value,
+                    "Annotation 121000"
+                );
             },
         },
         {
@@ -144,7 +162,8 @@ registry.category("web_tour.tours").add("account_reports_annotations", {
             trigger: "tr:nth-child(8) .btn_annotation",
             run: () => {
                 Asserts.isEqual(
-                    document.querySelector(".annotation_popover_autoresize_textarea").value,
+                    document.querySelector(".annotation_popover_autoresize_textarea")
+                        .value,
                     "Annotation 121000 edited"
                 );
             },
@@ -159,7 +178,9 @@ registry.category("web_tour.tours").add("account_reports_annotations", {
             content: "Check there are now only two lines annotated",
             trigger: "tr:nth-child(8):not(:has(.fa-commenting))",
             run: () => {
-                const annotations = document.querySelectorAll(".btn_annotation .fa-commenting");
+                const annotations = document.querySelectorAll(
+                    ".btn_annotation .fa-commenting"
+                );
 
                 // Check the number of annotated lines
                 Asserts.isEqual(annotations.length, 2);
@@ -167,11 +188,15 @@ registry.category("web_tour.tours").add("account_reports_annotations", {
                 // Check the annotations buttons are on the right lines
                 Asserts.isTrue(
                     annotations[0] ===
-                        document.querySelector("tr:nth-child(5)").querySelector(".fa-commenting")
+                        document
+                            .querySelector("tr:nth-child(5)")
+                            .querySelector(".fa-commenting")
                 );
                 Asserts.isTrue(
                     annotations[1] ===
-                        document.querySelector("tr:nth-child(12)").querySelector(".fa-commenting")
+                        document
+                            .querySelector("tr:nth-child(12)")
+                            .querySelector(".fa-commenting")
                 );
             },
         },
@@ -205,7 +230,9 @@ registry.category("web_tour.tours").add("account_reports_annotations", {
             content: "Check there are two annotated lines to end the test",
             trigger: ".o_content",
             run: () => {
-                const annotations = document.querySelectorAll(".btn_annotation .fa-commenting");
+                const annotations = document.querySelectorAll(
+                    ".btn_annotation .fa-commenting"
+                );
 
                 // Check there is only one annotated line
                 Asserts.isEqual(annotations.length, 2);
@@ -213,11 +240,15 @@ registry.category("web_tour.tours").add("account_reports_annotations", {
                 // Check the annotation buttons are on the right lines
                 Asserts.isTrue(
                     annotations[0] ===
-                        document.querySelector("tr:nth-child(5)").querySelector(".fa-commenting")
+                        document
+                            .querySelector("tr:nth-child(5)")
+                            .querySelector(".fa-commenting")
                 );
                 Asserts.isTrue(
                     annotations[1] ===
-                        document.querySelector("tr:nth-child(12)").querySelector(".fa-commenting")
+                        document
+                            .querySelector("tr:nth-child(12)")
+                            .querySelector(".fa-commenting")
                 );
             },
         },
@@ -247,7 +278,7 @@ registry.category("web_tour.tours").add("account_reports_annotations", {
                 // we need to dispatch the event manually requiring a function.
                 const input = this.anchor;
                 input.dispatchEvent(new InputEvent("input"));
-                input.dispatchEvent(new Event("change", { bubbles: true }));
+                input.dispatchEvent(new Event("change", {bubbles: true}));
             },
         },
         {
@@ -282,7 +313,9 @@ registry.category("web_tour.tours").add("account_reports_annotations", {
             content: "Check there is one annotation on line 12",
             trigger: "tr:nth-child(12):has(.fa-commenting)",
             run: () => {
-                const annotations = document.querySelectorAll(".btn_annotation .fa-commenting");
+                const annotations = document.querySelectorAll(
+                    ".btn_annotation .fa-commenting"
+                );
 
                 // Check there is only one annotated line
                 Asserts.isEqual(annotations.length, 1);
@@ -290,9 +323,11 @@ registry.category("web_tour.tours").add("account_reports_annotations", {
                 // Check the annotation buttons are on the right lines
                 Asserts.isTrue(
                     annotations[0] ===
-                        document.querySelector("tr:nth-child(12)").querySelector(".fa-commenting")
+                        document
+                            .querySelector("tr:nth-child(12)")
+                            .querySelector(".fa-commenting")
                 );
-            }
+            },
         },
-    ]
+    ],
 });

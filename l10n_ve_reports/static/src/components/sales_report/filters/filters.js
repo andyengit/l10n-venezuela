@@ -1,7 +1,7 @@
-import { _t } from "@web/core/l10n/translation";
+import {_t} from "@web/core/l10n/translation";
 
-import { AccountReport } from "@l10n_ve_reports/components/account_report/account_report";
-import { AccountReportFilters } from "@l10n_ve_reports/components/account_report/filters/filters";
+import {AccountReport} from "@l10n_ve_reports/components/account_report/account_report";
+import {AccountReportFilters} from "@l10n_ve_reports/components/account_report/filters/filters";
 
 export class SalesReportFilters extends AccountReportFilters {
     static template = "l10n_ve_reports.SalesReportFilters";
@@ -11,7 +11,7 @@ export class SalesReportFilters extends AccountReportFilters {
     //------------------------------------------------------------------------------------------------------------------
     get selectedEcTaxName() {
         const selected = this.controller.options.ec_tax_filter_selection.filter(
-            (ecTax) => ecTax.selected,
+            (ecTax) => ecTax.selected
         );
 
         switch (selected.length) {

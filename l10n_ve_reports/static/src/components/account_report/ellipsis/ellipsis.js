@@ -1,18 +1,18 @@
 /** @odoo-module **/
 
-import { _t } from "@web/core/l10n/translation";
-import { localization } from "@web/core/l10n/localization";
-import { useService } from "@web/core/utils/hooks";
-import { Component, useState } from "@odoo/owl";
+import {_t} from "@web/core/l10n/translation";
+import {localization} from "@web/core/l10n/localization";
+import {useService} from "@web/core/utils/hooks";
+import {Component, useState} from "@odoo/owl";
 
-import { AccountReportEllipsisPopover } from "@l10n_ve_reports/components/account_report/ellipsis/popover/ellipsis_popover";
+import {AccountReportEllipsisPopover} from "@l10n_ve_reports/components/account_report/ellipsis/popover/ellipsis_popover";
 
 export class AccountReportEllipsis extends Component {
     static template = "l10n_ve_reports.AccountReportEllipsis";
     static props = {
-        name: { type: String, optional: true },
-        no_format: { optional: true },
-        type: { type: String, optional: true },
+        name: {type: String, optional: true},
+        no_format: {optional: true},
+        type: {type: String, optional: true},
         maxCharacters: Number,
     };
 
@@ -26,15 +26,14 @@ export class AccountReportEllipsis extends Component {
     // Ellipsis
     //------------------------------------------------------------------------------------------------------------------
     get triggersEllipsis() {
-        if (this.props.name)
-            return this.props.name.length > this.props.maxCharacters;
+        if (this.props.name) return this.props.name.length > this.props.maxCharacters;
 
         return false;
     }
 
     copyEllipsisText() {
         navigator.clipboard.writeText(this.props.name);
-        this.notification.add(_t("Text copied"), { type: 'success' });
+        this.notification.add(_t("Text copied"), {type: "success"});
         this.popoverCloseFn();
         this.popoverCloseFn = null;
     }
@@ -58,7 +57,7 @@ export class AccountReportEllipsis extends Component {
             {
                 closeOnClickAway: true,
                 position: localization.direction === "rtl" ? "left" : "right",
-            },
+            }
         );
     }
 }

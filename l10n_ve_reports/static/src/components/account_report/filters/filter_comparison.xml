@@ -1,7 +1,9 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <templates>
     <t t-name="l10n_ve_reports.AccountReportComparisonPeriod">
-        <div t-att-class="(controller.options.comparison.filter !== filter) ? 'invisible' : ''">
+        <div
+            t-att-class="(controller.options.comparison.filter !== filter) ? 'invisible' : ''"
+        >
             <input
                 min="1"
                 type="number"
@@ -9,7 +11,7 @@
                 t-on-change="(ev) => this.setNumberPeriods(ev)"
             />
             <label>
-                <t t-out="periodLabel"/>
+                <t t-out="periodLabel" />
             </label>
         </div>
     </t>
@@ -20,30 +22,38 @@
             navigationOptions="dropdownProps"
         >
             <button class="btn btn-secondary">
-                <i class="fa fa-percent me-1"/>
+                <i class="fa fa-percent me-1" />
                 <span>Comparison</span>
                 <t t-if="controller.options.comparison.string">
                     <span>: </span>
-                    <t t-if="controller.options.comparison.filter === 'previous_period'">
+                    <t
+                        t-if="controller.options.comparison.filter === 'previous_period'"
+                    >
                         <t t-if="controller.options.comparison.number_period === 1">
                             <span>Previous Period</span>
                         </t>
                         <t t-elif="controller.options.comparison.number_period > 1">
-                            <t t-esc="`${ controller.options.comparison.number_period } `"/>
+                            <t
+                                t-esc="`${ controller.options.comparison.number_period } `"
+                            />
                             <span>Previous Periods</span>
                         </t>
                     </t>
-                    <t t-elif="controller.options.comparison.filter === 'same_last_year'">
+                    <t
+                        t-elif="controller.options.comparison.filter === 'same_last_year'"
+                    >
                         <t t-if="controller.options.comparison.number_period === 1">
                             <span>Previous Year</span>
                         </t>
                         <t t-elif="controller.options.comparison.number_period > 1">
-                            <t t-esc="`${ controller.options.comparison.number_period } `"/>
+                            <t
+                                t-esc="`${ controller.options.comparison.number_period } `"
+                            />
                             <span>Previous Years</span>
                         </t>
                     </t>
                     <t t-else="">
-                        <t t-esc="`${ controller.options.comparison.string }`"/>
+                        <t t-esc="`${ controller.options.comparison.string }`" />
                     </t>
                 </t>
             </button>
@@ -67,7 +77,7 @@
                     </label>
 
                     <t t-call="l10n_ve_reports.AccountReportComparisonPeriod">
-                        <t t-set="filter" t-value="'previous_period'"/>
+                        <t t-set="filter" t-value="'previous_period'" />
                     </t>
                 </DropdownItem>
 
@@ -82,7 +92,7 @@
                     </label>
 
                     <t t-call="l10n_ve_reports.AccountReportComparisonPeriod">
-                        <t t-set="filter" t-value="'same_last_year'"/>
+                        <t t-set="filter" t-value="'same_last_year'" />
                     </t>
                 </DropdownItem>
 
@@ -97,8 +107,10 @@
                             Custom Dates
                         </label>
 
-                        <div class="d-flex flex-row"
-                             t-att-class="(controller.options.comparison.filter !== 'custom') ? 'invisible' : ''">
+                        <div
+                            class="d-flex flex-row"
+                            t-att-class="(controller.options.comparison.filter !== 'custom') ? 'invisible' : ''"
+                        >
                             <DateTimeInput
                                 type="'date'"
                                 value="dateFrom('comparison')"
@@ -126,7 +138,9 @@
                             Specific Date
                         </label>
 
-                        <div t-att-class="(controller.options.comparison.filter !== 'custom') ? 'invisible' : ''">
+                        <div
+                            t-att-class="(controller.options.comparison.filter !== 'custom') ? 'invisible' : ''"
+                        >
                             <DateTimeInput
                                 type="'date'"
                                 value="dateTo('comparison')"
@@ -136,7 +150,7 @@
                     </DropdownItem>
                 </t>
 
-                <div class="dropdown-divider"/>
+                <div class="dropdown-divider" />
 
                 <div class="dropdown-item period order">
                     <label class="d-flex align-items-center pe-none">
@@ -144,15 +158,18 @@
                     </label>
 
                     <div>
-                        <select name="select_order"
-                                class="o_input pe-3"
-                                t-on-change="(ev) => this.filterClicked({ optionKey: 'comparison.period_order', optionValue: ev.target.value, reload: true})">
-                            <option t-foreach="availablePeriodOrder"
-                                    t-as="order"
-                                    t-key="order_index"
-                                    t-att-value="order"
-                                    t-att-selected="availablePeriodOrder[order] === periodOrder"
-                                    t-out="availablePeriodOrder[order]"
+                        <select
+                            name="select_order"
+                            class="o_input pe-3"
+                            t-on-change="(ev) => this.filterClicked({ optionKey: 'comparison.period_order', optionValue: ev.target.value, reload: true})"
+                        >
+                            <option
+                                t-foreach="availablePeriodOrder"
+                                t-as="order"
+                                t-key="order_index"
+                                t-att-value="order"
+                                t-att-selected="availablePeriodOrder[order] === periodOrder"
+                                t-out="availablePeriodOrder[order]"
                             />
                         </select>
                     </div>

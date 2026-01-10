@@ -1,4 +1,4 @@
-from odoo import api, fields, models, _
+from odoo import _, api, fields, models
 from odoo.exceptions import ValidationError
 
 
@@ -47,5 +47,8 @@ class ResCompany(models.Model):
             If IGTF percentage is outside the [0, 100] interval.
         """
         for company in self:
-            if company.l10n_ve_igtf_percent < 0.0 or company.l10n_ve_igtf_percent > 100.0:
+            if (
+                company.l10n_ve_igtf_percent < 0.0
+                or company.l10n_ve_igtf_percent > 100.0
+            ):
                 raise ValidationError(_("IGTF percentage must be between 0 and 100."))

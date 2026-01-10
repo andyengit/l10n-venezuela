@@ -1,9 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <templates>
-    <t t-name="l10n_ve_reports.TaxReportLineName" t-inherit="l10n_ve_reports.AccountReportLineNameCustomizable">
+    <t
+        t-name="l10n_ve_reports.TaxReportLineName"
+        t-inherit="l10n_ve_reports.AccountReportLineNameCustomizable"
+    >
         <xpath expr="//div[@data-id='content']" position="before">
             <t t-if="props.line.alert">
-                <i class="fa fa-exclamation-circle consistency_warning"/>
+                <i class="fa fa-exclamation-circle consistency_warning" />
             </t>
         </xpath>
     </t>

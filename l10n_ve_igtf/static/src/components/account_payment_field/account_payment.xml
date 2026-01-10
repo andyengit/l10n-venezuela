@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <templates xml:space="preserve">
     <t t-inherit="account.AccountPaymentField" t-inherit-mode="extension">
         <xpath expr="//tr[1]" position="after">
@@ -9,7 +9,9 @@
                         <t t-out="line.l10n_ve_igtf_amount_formatted" />
                         <t t-if="line.l10n_ve_igtf_amount_company_currency_formatted">
                             <span> (</span>
-                            <t t-out="line.l10n_ve_igtf_amount_company_currency_formatted" />
+                            <t
+                                t-out="line.l10n_ve_igtf_amount_company_currency_formatted"
+                            />
                             <span>)</span>
                         </t>
                     </td>
@@ -26,7 +28,9 @@
                     <t t-out="props.l10n_ve_igtf_amount_formatted" />
                     <t t-if="props.l10n_ve_igtf_amount_company_currency_formatted">
                         <span> (</span>
-                        <t t-out="props.l10n_ve_igtf_amount_company_currency_formatted" />
+                        <t
+                            t-out="props.l10n_ve_igtf_amount_company_currency_formatted"
+                        />
                         <span>)</span>
                     </t>
                 </td>
@@ -40,5 +44,3 @@
         </xpath>
     </t>
 </templates>
-
-

@@ -1,9 +1,9 @@
-import { Component, useState, useRef, useEffect } from "@odoo/owl";
-import { useAutofocus, useService } from "@web/core/utils/hooks";
-import { _t } from "@web/core/l10n/translation";
-import { DateTimeInput } from "@web/core/datetime/datetime_input";
+import {Component, useState, useRef, useEffect} from "@odoo/owl";
+import {useAutofocus, useService} from "@web/core/utils/hooks";
+import {_t} from "@web/core/l10n/translation";
+import {DateTimeInput} from "@web/core/datetime/datetime_input";
 
-const { DateTime } = luxon;
+const {DateTime} = luxon;
 
 export class AnnotationPopoverLine extends Component {
     static template = "account_report.AnnotationPopoverLine";
@@ -11,10 +11,10 @@ export class AnnotationPopoverLine extends Component {
         annotation: {
             type: Object,
             shape: {
-                date: { type: [DateTime, { value: false }, { value: null }], optional: true },
+                date: {type: [DateTime, {value: false}, {value: null}], optional: true},
                 text: String,
                 lineID: String,
-                id: { type: Number, optional: true },
+                id: {type: Number, optional: true},
             },
         },
         onEdit: Function,
@@ -31,7 +31,7 @@ export class AnnotationPopoverLine extends Component {
         if (this.annotation.text.length) {
             this.textArea = useRef("annotationText");
         } else {
-            this.textArea = useAutofocus({ refName: "annotationText" });
+            this.textArea = useAutofocus({refName: "annotationText"});
         }
     }
 
@@ -69,7 +69,9 @@ export class AnnotationPopoverLine extends Component {
                 this.props.onEdit(this.annotation);
             }
         } else {
-            this.notificationService.add(_t("The annotation shouldn't have an empty value."));
+            this.notificationService.add(
+                _t("The annotation shouldn't have an empty value.")
+            );
         }
     }
 

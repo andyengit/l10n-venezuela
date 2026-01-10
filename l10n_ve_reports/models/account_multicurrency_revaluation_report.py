@@ -1,11 +1,10 @@
-# -*- coding: utf-8 -*-
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 
-from odoo import models, fields, api, _
-from odoo.tools import float_is_zero, SQL
-from odoo.exceptions import UserError
-
 from itertools import chain
+
+from odoo import _, models
+from odoo.exceptions import UserError
+from odoo.tools import SQL, float_is_zero
 
 
 class MulticurrencyRevaluationReportCustomHandler(models.AbstractModel):
@@ -19,196 +18,306 @@ class MulticurrencyRevaluationReportCustomHandler(models.AbstractModel):
     probable expense in reports (and revert it at the end of the period, to
     recon the real gain/loss.
     """
-    _name = 'account.multicurrency.revaluation.report.handler'
-    _inherit = 'account.report.custom.handler'
-    _description = 'Multicurrency Revaluation Report Custom Handler'
+
+    _name = "account.multicurrency.revaluation.report.handler"
+    _inherit = "account.report.custom.handler"
+    _description = "Multicurrency Revaluation Report Custom Handler"
 
     def _get_custom_display_config(self):
         return {
-            'components': {
-                'AccountReportFilters': 'l10n_ve_reports.MulticurrencyRevaluationReportFilters',
+            "components": {
+                "AccountReportFilters": "l10n_ve_reports.MulticurrencyRevaluationReportFilters",
             },
-            'templates': {
-                'AccountReportLineName': 'l10n_ve_reports.MulticurrencyRevaluationReportLineName',
+            "templates": {
+                "AccountReportLineName": "l10n_ve_reports.MulticurrencyRevaluationReportLineName",
             },
         }
 
     def _custom_options_initializer(self, report, options, previous_options):
-        super()._custom_options_initializer(report, options, previous_options=previous_options)
-        active_currencies = self.env['res.currency'].search([('active', '=', True)])
+        super()._custom_options_initializer(
+            report, options, previous_options=previous_options
+        )
+        active_currencies = self.env["res.currency"].search([("active", "=", True)])
         if len(active_currencies) < 2:
-            raise UserError(_("You need to activate more than one currency to access this report."))
-        rates = active_currencies._get_rates(self.env.company, options.get('date').get('date_to'))
+            raise UserError(
+                _("You need to activate more than one currency to access this report.")
+            )
+        rates = active_currencies._get_rates(
+            self.env.company, options.get("date").get("date_to")
+        )
         # Normalize the rates to the company's currency
         company_rate = rates[self.env.company.currency_id.id]
         for key in rates.keys():
             rates[key] /= company_rate
 
-        options['currency_rates'] = {
+        options["currency_rates"] = {
             str(currency_id.id): {
-                'currency_id': currency_id.id,
-                'currency_name': currency_id.name,
-                'currency_main': self.env.company.currency_id.name,
-                'rate': (rates[currency_id.id]
-                         if not previous_options.get('currency_rates', {}).get(str(currency_id.id), {}).get('rate') else
-                         float(previous_options['currency_rates'][str(currency_id.id)]['rate'])),
-            } for currency_id in active_currencies
+                "currency_id": currency_id.id,
+                "currency_name": currency_id.name,
+                "currency_main": self.env.company.currency_id.name,
+                "rate": (
+                    rates[currency_id.id]
+                    if not previous_options.get("currency_rates", {})
+                    .get(str(currency_id.id), {})
+                    .get("rate")
+                    else float(
+                        previous_options["currency_rates"][str(currency_id.id)]["rate"]
+                    )
+                ),
+            }
+            for currency_id in active_currencies
         }
 
-        for currency_rates in options['currency_rates'].values():
-            if currency_rates['rate'] == 0:
+        for currency_rates in options["currency_rates"].values():
+            if currency_rates["rate"] == 0:
                 raise UserError(_("The currency rate cannot be equal to zero"))
 
-        options['company_currency'] = options['currency_rates'].pop(str(self.env.company.currency_id.id))
-        options['custom_rate'] = any(
-            not float_is_zero(cr['rate'] - rates[cr['currency_id']], 20)
-            for cr in options['currency_rates'].values()
+        options["company_currency"] = options["currency_rates"].pop(
+            str(self.env.company.currency_id.id)
+        )
+        options["custom_rate"] = any(
+            not float_is_zero(cr["rate"] - rates[cr["currency_id"]], 20)
+            for cr in options["currency_rates"].values()
         )
 
-        options['multi_currency'] = True
-        options['buttons'].append({'name': _('Adjustment Entry'), 'sequence': 30, 'action': 'action_multi_currency_revaluation_open_revaluation_wizard', 'always_show': True})
+        options["multi_currency"] = True
+        options["buttons"].append(
+            {
+                "name": _("Adjustment Entry"),
+                "sequence": 30,
+                "action": "action_multi_currency_revaluation_open_revaluation_wizard",
+                "always_show": True,
+            }
+        )
 
-    def _customize_warnings(self, report, options, all_column_groups_expression_totals, warnings):
+    def _customize_warnings(
+        self, report, options, all_column_groups_expression_totals, warnings
+    ):
         if len(self.env.companies) > 1:
-            warnings['l10n_ve_reports.multi_currency_revaluation_report_warning_multicompany'] = {'alert_type': 'warning'}
-        if options['custom_rate']:
-            warnings['l10n_ve_reports.multi_currency_revaluation_report_warning_custom_rate'] = {'alert_type': 'warning'}
+            warnings[
+                "l10n_ve_reports.multi_currency_revaluation_report_warning_multicompany"
+            ] = {"alert_type": "warning"}
+        if options["custom_rate"]:
+            warnings[
+                "l10n_ve_reports.multi_currency_revaluation_report_warning_custom_rate"
+            ] = {"alert_type": "warning"}
 
     def _custom_line_postprocessor(self, report, options, lines):
-        line_to_adjust_id = self.env.ref('l10n_ve_reports.multicurrency_revaluation_to_adjust').id
-        line_excluded_id = self.env.ref('l10n_ve_reports.multicurrency_revaluation_excluded').id
+        line_to_adjust_id = self.env.ref(
+            "l10n_ve_reports.multicurrency_revaluation_to_adjust"
+        ).id
+        line_excluded_id = self.env.ref(
+            "l10n_ve_reports.multicurrency_revaluation_excluded"
+        ).id
 
         rslt = []
         for index, line in enumerate(lines):
-            res_model_name, res_id = report._get_model_info_from_id(line['id'])
+            res_model_name, res_id = report._get_model_info_from_id(line["id"])
 
-            if res_model_name == 'account.report.line' and (
-                   (res_id == line_to_adjust_id and report._get_model_info_from_id(lines[index + 1]['id']) == ('account.report.line', line_excluded_id)) or
-                   (res_id == line_excluded_id and index == len(lines) - 1)
+            if res_model_name == "account.report.line" and (
+                (
+                    res_id == line_to_adjust_id
+                    and report._get_model_info_from_id(lines[index + 1]["id"])
+                    == ("account.report.line", line_excluded_id)
+                )
+                or (res_id == line_excluded_id and index == len(lines) - 1)
             ):
                 # 'To Adjust' and 'Excluded' lines need to be hidden if they have no child
                 continue
 
-            elif res_model_name == 'res.currency':
+            elif res_model_name == "res.currency":
                 # Include the rate in the currency_id group lines
-                line['name'] = '{for_cur} (1 {comp_cur} = {rate:.6} {for_cur})'.format(
-                    for_cur=line['name'],
+                line["name"] = "{for_cur} (1 {comp_cur} = {rate:.6} {for_cur})".format(
+                    for_cur=line["name"],
                     comp_cur=self.env.company.currency_id.display_name,
-                    rate=float(options['currency_rates'][str(res_id)]['rate']),
+                    rate=float(options["currency_rates"][str(res_id)]["rate"]),
                 )
 
-            elif res_model_name == 'account.account':
+            elif res_model_name == "account.account":
                 # Mark the included/excluded lines, so that the custom component templates knows what label to put on them
-                line['is_included_line'] = report._get_res_id_from_line_id(line['id'], 'account.account') == line_to_adjust_id
+                line["is_included_line"] = (
+                    report._get_res_id_from_line_id(line["id"], "account.account")
+                    == line_to_adjust_id
+                )
 
             # Inject the related model into the line dict in order to use it on the custom component template on js side to display buttons
-            line['cur_revaluation_line_model'] = res_model_name
+            line["cur_revaluation_line_model"] = res_model_name
 
             rslt.append(line)
 
         return rslt
 
     def _custom_groupby_line_completer(self, report, options, line_dict):
-        model_info_from_id = report._get_model_info_from_id(line_dict['id'])
-        if model_info_from_id[0] == 'res.currency':
-            line_dict['unfolded'] = True
-            line_dict['unfoldable'] = False
+        model_info_from_id = report._get_model_info_from_id(line_dict["id"])
+        if model_info_from_id[0] == "res.currency":
+            line_dict["unfolded"] = True
+            line_dict["unfoldable"] = False
 
     def action_multi_currency_revaluation_open_revaluation_wizard(self, options):
         """Open the revaluation wizard."""
-        form = self.env.ref('l10n_ve_reports.view_account_multicurrency_revaluation_wizard', False)
+        form = self.env.ref(
+            "l10n_ve_reports.view_account_multicurrency_revaluation_wizard", False
+        )
         return {
-            'name': _("Make Adjustment Entry"),
-            'type': 'ir.actions.act_window',
-            'res_model': 'account.multicurrency.revaluation.wizard',
-            'view_mode': 'form',
-            'view_id': form.id,
-            'views': [(form.id, 'form')],
-            'multi': 'True',
-            'target': 'new',
-            'context': {
+            "name": _("Make Adjustment Entry"),
+            "type": "ir.actions.act_window",
+            "res_model": "account.multicurrency.revaluation.wizard",
+            "view_mode": "form",
+            "view_id": form.id,
+            "views": [(form.id, "form")],
+            "multi": "True",
+            "target": "new",
+            "context": {
                 **self._context,
-                'multicurrency_revaluation_report_options': options,
+                "multicurrency_revaluation_report_options": options,
             },
         }
 
     # ACTIONS
     def action_multi_currency_revaluation_open_general_ledger(self, options, params):
-        report = self.env['account.report'].browse(options['report_id'])
-        account_id = report._get_res_id_from_line_id(params['line_id'], 'account.account')
-        account_line_id = report._get_generic_line_id('account.account', account_id)
-        general_ledger_options = self.env.ref('l10n_ve_reports.general_ledger_report').get_options(options)
-        general_ledger_options['unfolded_lines'] = [account_line_id]
+        report = self.env["account.report"].browse(options["report_id"])
+        account_id = report._get_res_id_from_line_id(
+            params["line_id"], "account.account"
+        )
+        account_line_id = report._get_generic_line_id("account.account", account_id)
+        general_ledger_options = self.env.ref(
+            "l10n_ve_reports.general_ledger_report"
+        ).get_options(options)
+        general_ledger_options["unfolded_lines"] = [account_line_id]
 
-        general_ledger_action = self.env['ir.actions.actions']._for_xml_id('l10n_ve_reports.action_account_report_general_ledger')
-        general_ledger_action['params'] = {
-            'options': general_ledger_options,
-            'ignore_session': True,
+        general_ledger_action = self.env["ir.actions.actions"]._for_xml_id(
+            "l10n_ve_reports.action_account_report_general_ledger"
+        )
+        general_ledger_action["params"] = {
+            "options": general_ledger_options,
+            "ignore_session": True,
         }
 
         return general_ledger_action
 
     def action_multi_currency_revaluation_toggle_provision(self, options, params):
-        """ Include/exclude an account from the provision. """
-        res_ids_map = self.env['account.report']._get_res_ids_from_line_id(params['line_id'], ['res.currency', 'account.account'])
-        account = self.env['account.account'].browse(res_ids_map['account.account'])
-        currency = self.env['res.currency'].browse(res_ids_map['res.currency'])
+        """Include/exclude an account from the provision."""
+        res_ids_map = self.env["account.report"]._get_res_ids_from_line_id(
+            params["line_id"], ["res.currency", "account.account"]
+        )
+        account = self.env["account.account"].browse(res_ids_map["account.account"])
+        currency = self.env["res.currency"].browse(res_ids_map["res.currency"])
         if currency in account.exclude_provision_currency_ids:
             account.exclude_provision_currency_ids -= currency
         else:
             account.exclude_provision_currency_ids += currency
         return {
-            'type': 'ir.actions.client',
-            'tag': 'reload',
+            "type": "ir.actions.client",
+            "tag": "reload",
         }
 
-    def action_multi_currency_revaluation_open_currency_rates(self, options, params=None):
-        """ Open the currency rate list. """
-        currency_id = self.env['account.report']._get_res_id_from_line_id(params['line_id'], 'res.currency')
+    def action_multi_currency_revaluation_open_currency_rates(
+        self, options, params=None
+    ):
+        """Open the currency rate list."""
+        currency_id = self.env["account.report"]._get_res_id_from_line_id(
+            params["line_id"], "res.currency"
+        )
         return {
-            'type': 'ir.actions.act_window',
-            'name': _('Currency Rates (%s)', self.env['res.currency'].browse(currency_id).display_name),
-            'views': [(False, 'list')],
-            'res_model': 'res.currency.rate',
-            'context': {**self.env.context, **{'default_currency_id': currency_id, 'active_id': currency_id}},
-            'domain': [('currency_id', '=', currency_id)],
+            "type": "ir.actions.act_window",
+            "name": _(
+                "Currency Rates (%s)",
+                self.env["res.currency"].browse(currency_id).display_name,
+            ),
+            "views": [(False, "list")],
+            "res_model": "res.currency.rate",
+            "context": {
+                **self.env.context,
+                **{"default_currency_id": currency_id, "active_id": currency_id},
+            },
+            "domain": [("currency_id", "=", currency_id)],
         }
 
-    def _report_custom_engine_multi_currency_revaluation_to_adjust(self, expressions, options, date_scope, current_groupby, next_groupby, offset=0, limit=None, warnings=None):
-        return self._multi_currency_revaluation_get_custom_lines(options, 'to_adjust', current_groupby, next_groupby, offset=offset, limit=limit)
+    def _report_custom_engine_multi_currency_revaluation_to_adjust(
+        self,
+        expressions,
+        options,
+        date_scope,
+        current_groupby,
+        next_groupby,
+        offset=0,
+        limit=None,
+        warnings=None,
+    ):
+        return self._multi_currency_revaluation_get_custom_lines(
+            options,
+            "to_adjust",
+            current_groupby,
+            next_groupby,
+            offset=offset,
+            limit=limit,
+        )
 
-    def _report_custom_engine_multi_currency_revaluation_excluded(self, expressions, options, date_scope, current_groupby, next_groupby, offset=0, limit=None, warnings=None):
-        return self._multi_currency_revaluation_get_custom_lines(options, 'excluded', current_groupby, next_groupby, offset=offset, limit=limit)
+    def _report_custom_engine_multi_currency_revaluation_excluded(
+        self,
+        expressions,
+        options,
+        date_scope,
+        current_groupby,
+        next_groupby,
+        offset=0,
+        limit=None,
+        warnings=None,
+    ):
+        return self._multi_currency_revaluation_get_custom_lines(
+            options,
+            "excluded",
+            current_groupby,
+            next_groupby,
+            offset=offset,
+            limit=limit,
+        )
 
-    def _multi_currency_revaluation_get_custom_lines(self, options, line_code, current_groupby, next_groupby, offset=0, limit=None):
+    def _multi_currency_revaluation_get_custom_lines(
+        self, options, line_code, current_groupby, next_groupby, offset=0, limit=None
+    ):
         def build_result_dict(report, query_res):
             return {
-                'balance_currency': query_res['balance_currency'] if len(query_res['currency_id']) == 1 else None,
-                'currency_id': query_res['currency_id'][0] if len(query_res['currency_id']) == 1 else None,
-                'balance_operation': query_res['balance_operation'],
-                'balance_current': query_res['balance_current'],
-                'adjustment': query_res['adjustment'],
-                'has_sublines': query_res['aml_count'] > 0,
+                "balance_currency": query_res["balance_currency"]
+                if len(query_res["currency_id"]) == 1
+                else None,
+                "currency_id": query_res["currency_id"][0]
+                if len(query_res["currency_id"]) == 1
+                else None,
+                "balance_operation": query_res["balance_operation"],
+                "balance_current": query_res["balance_current"],
+                "adjustment": query_res["adjustment"],
+                "has_sublines": query_res["aml_count"] > 0,
             }
 
-        report = self.env['account.report'].browse(options['report_id'])
-        report._check_groupby_fields((next_groupby.split(',') if next_groupby else []) + ([current_groupby] if current_groupby else []))
+        report = self.env["account.report"].browse(options["report_id"])
+        report._check_groupby_fields(
+            (next_groupby.split(",") if next_groupby else [])
+            + ([current_groupby] if current_groupby else [])
+        )
 
         # No need to run any SQL if we're computing the main line: it does not display any total
         if not current_groupby:
             return {
-                'balance_currency': None,
-                'currency_id': None,
-                'balance_operation': None,
-                'balance_current': None,
-                'adjustment': None,
-                'has_sublines': False,
+                "balance_currency": None,
+                "currency_id": None,
+                "balance_operation": None,
+                "balance_current": None,
+                "adjustment": None,
+                "has_sublines": False,
             }
 
-        query = "(VALUES {})".format(', '.join("(%s, %s)" for rate in options['currency_rates']))
-        params = list(chain.from_iterable((cur['currency_id'], cur['rate']) for cur in options['currency_rates'].values()))
+        query = "(VALUES {})".format(
+            ", ".join("(%s, %s)" for rate in options["currency_rates"])
+        )
+        params = list(
+            chain.from_iterable(
+                (cur["currency_id"], cur["rate"])
+                for cur in options["currency_rates"].values()
+            )
+        )
         custom_currency_table_query = SQL(query, *params)
-        date_to = options['date']['date_to']
+        date_to = options["date"]["date_to"]
         select_part_not_an_exchange_move_id = SQL(
             """
             NOT EXISTS (
@@ -218,11 +327,13 @@ class MulticurrencyRevaluationReportCustomHandler(models.AbstractModel):
                    AND part_exch.max_date <= %s
             )
             """,
-            date_to
+            date_to,
         )
 
-        query = report._get_report_query(options, 'strict_range')
-        groupby_field_sql = self.env['account.move.line']._field_to_sql("account_move_line", current_groupby, query)
+        query = report._get_report_query(options, "strict_range")
+        groupby_field_sql = self.env["account.move.line"]._field_to_sql(
+            "account_move_line", current_groupby, query
+        )
         tail_query = report._get_engine_query_tail(offset, limit)
         full_query = SQL(
             """
@@ -367,7 +478,9 @@ class MulticurrencyRevaluationReportCustomHandler(models.AbstractModel):
             """,
             groupby_field_sql=groupby_field_sql,
             custom_currency_table_query=custom_currency_table_query,
-            exist_condition=SQL('NOT EXISTS') if line_code == 'to_adjust' else SQL('EXISTS'),
+            exist_condition=SQL("NOT EXISTS")
+            if line_code == "to_adjust"
+            else SQL("EXISTS"),
             table_references=query.from_clause,
             date_to=date_to,
             tail_query=tail_query,
@@ -378,10 +491,12 @@ class MulticurrencyRevaluationReportCustomHandler(models.AbstractModel):
         query_res_lines = self._cr.dictfetchall()
 
         if not current_groupby:
-            return build_result_dict(report, query_res_lines and query_res_lines[0] or {})
+            return build_result_dict(
+                report, query_res_lines and query_res_lines[0] or {}
+            )
         else:
             rslt = []
             for query_res in query_res_lines:
-                grouping_key = query_res['grouping_key']
+                grouping_key = query_res["grouping_key"]
                 rslt.append((grouping_key, build_result_dict(report, query_res)))
             return rslt

@@ -3,9 +3,9 @@
     <t t-name="l10n_ve_reports.AccountReportFilterExtraOptions">
         <Dropdown>
             <button class="btn btn-secondary">
-                <i class="fa fa-sliders me-1"/>
+                <i class="fa fa-sliders me-1" />
                 <t t-if="selectedExtraOptions">
-                    <t t-out="selectedExtraOptions"/>
+                    <t t-out="selectedExtraOptions" />
                 </t>
                 <t t-else="">
                     Options
@@ -13,7 +13,9 @@
             </button>
 
             <t t-set-slot="content">
-                <t t-if="controller.groups.account_readonly and controller.filters.show_draft">
+                <t
+                    t-if="controller.groups.account_readonly and controller.filters.show_draft"
+                >
                     <DropdownItem
                         class="{ 'filter_show_draft_hook': true, 'selected': controller.options.all_entries }"
                         onSelected="() => this.filterClicked({ optionKey: 'all_entries', reload: true})"
@@ -23,7 +25,9 @@
                     </DropdownItem>
                 </t>
 
-                <t t-if="controller.groups.account_readonly and controller.filters.show_analytic_groupby">
+                <t
+                    t-if="controller.groups.account_readonly and controller.filters.show_analytic_groupby"
+                >
                     <DropdownItem
                         class="{ 'selected': controller.options.include_analytic_without_aml }"
                         onSelected="() => this.filterClicked({ optionKey: 'include_analytic_without_aml', reload: true})"
@@ -73,7 +77,7 @@
                     </DropdownItem>
                 </t>
 
-                <div class="dropdown-divider" t-if="hasUIFilter"/>
+                <div class="dropdown-divider" t-if="hasUIFilter" />
 
                 <t t-if="controller.filters.show_hide_0_lines !== 'never'">
                     <DropdownItem

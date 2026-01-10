@@ -25,4 +25,3 @@ class AccountStatementImportSheetMapping(models.Model):
         string="Columna del Saldo Final",
         help="Columna donde se encuentra el saldo final (puede ser número 1-based o letra como 'E')",
     )
-

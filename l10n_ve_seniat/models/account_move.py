@@ -10,9 +10,9 @@ class AccountMove(models.Model):
     _inherit = "account.move"
 
     audit_log_ids = fields.One2many(
-        'account.move.audit.log',
-        'move_id',
-        string='Audit Log',
+        "account.move.audit.log",
+        "move_id",
+        string="Audit Log",
         readonly=True,
     )
 
@@ -20,7 +20,7 @@ class AccountMove(models.Model):
     def create(self, vals_list):
         moves = super().create(vals_list)
         for move in moves:
-            self.env['account.move.audit.log'].log_action(move, 'create')
+            self.env["account.move.audit.log"].log_action(move, "create")
         return moves
 
     def write(self, vals):
@@ -28,30 +28,33 @@ class AccountMove(models.Model):
         if vals:
             changes = self._format_changes(vals)
             for move in self:
-                self.env['account.move.audit.log'].log_action(move, 'write', changes)
+                self.env["account.move.audit.log"].log_action(move, "write", changes)
         if "l10n_ve_control_number" in vals:
             for rec in self:
-                if rec.l10n_ve_control_number and rec.move_type in ("out_invoice", "out_refund"):
+                if rec.l10n_ve_control_number and rec.move_type in (
+                    "out_invoice",
+                    "out_refund",
+                ):
                     rec._check_control_number_unique()
         return res
 
     def unlink(self):
-        audit_log_model = self.env['account.move.audit.log']
+        audit_log_model = self.env["account.move.audit.log"]
         ip_address = audit_log_model._get_ip_address()
-        
+
         for move in self:
             move_data = {
-                'move_id': move.id,
-                'move_name': move.name or f'Move ID: {move.id}',
-                'user_id': self.env.user.id,
-                'action': 'unlink',
-                'ip_address': ip_address or '',
-                'changes': move._format_move_data_for_audit(),
+                "move_id": move.id,
+                "move_name": move.name or f"Move ID: {move.id}",
+                "user_id": self.env.user.id,
+                "action": "unlink",
+                "ip_address": ip_address or "",
+                "changes": move._format_move_data_for_audit(),
             }
             audit_log_model.create(move_data)
-        
+
         return super().unlink()
-    
+
     def _format_move_data_for_audit(self):
         """Formatea los datos del movimiento para el log de auditoría"""
         self.ensure_one()
@@ -61,7 +64,7 @@ class AccountMove(models.Model):
         data.append(f"Partner: {self.partner_id.name if self.partner_id else ''}")
         data.append(f"Total: {self.amount_total}")
         data.append(f"Estado: {self.state}")
-        
+
         if self.line_ids:
             data.append("\nLíneas:")
             for line in self.line_ids[:10]:
@@ -71,7 +74,7 @@ class AccountMove(models.Model):
                 data.append(line_info)
             if len(self.line_ids) > 10:
                 data.append(f"  ... y {len(self.line_ids) - 10} líneas más")
-        
+
         return "\n".join(data)
 
     def _format_changes(self, vals):
@@ -87,7 +90,9 @@ class AccountMove(models.Model):
                     elif value[0] == 5:
                         changes_list.append(f"{field_label}: Removed all")
                     elif value[0] == 6:
-                        changes_list.append(f"{field_label}: Replaced with {len(value[2])} items")
+                        changes_list.append(
+                            f"{field_label}: Replaced with {len(value[2])} items"
+                        )
                 else:
                     changes_list.append(f"{field_label}: {value}")
             else:
@@ -137,10 +142,17 @@ class AccountMove(models.Model):
                 continue
 
             # Validar que el total de la factura no sea 0
-            if move_id.move_type in ("out_invoice", "out_refund", "in_invoice", "in_refund"):
+            if move_id.move_type in (
+                "out_invoice",
+                "out_refund",
+                "in_invoice",
+                "in_refund",
+            ):
                 if abs(move_id.amount_total) < 0.01:
                     raise ValidationError(
-                        _("No se puede facturar con un total de 0. Por favor, verifique las líneas de la factura.")
+                        _(
+                            "No se puede facturar con un total de 0. Por favor, verifique las líneas de la factura."
+                        )
                     )
 
             lines = []
@@ -163,17 +175,21 @@ class AccountMove(models.Model):
     def button_cancel(self):
         # No permitir cancelar facturas de clientes ni notas de crédito en Venezuela
         for move in self:
-            if (
-                move.country_code == self.env.ref("base.ve").code
-                and move.move_type in ("out_invoice", "out_refund")
+            if move.country_code == self.env.ref("base.ve").code and move.move_type in (
+                "out_invoice",
+                "out_refund",
             ):
                 if move.move_type == "out_invoice":
                     raise ValidationError(
-                        _("No se pueden cancelar las facturas de clientes. Por favor, cree una nota de crédito en su lugar.")
+                        _(
+                            "No se pueden cancelar las facturas de clientes. Por favor, cree una nota de crédito en su lugar."
+                        )
                     )
                 elif move.move_type == "out_refund":
                     raise ValidationError(
-                        _("No se pueden cancelar las notas de crédito. Por favor, cree una nueva nota de crédito o factura en su lugar.")
+                        _(
+                            "No se pueden cancelar las notas de crédito. Por favor, cree una nueva nota de crédito o factura en su lugar."
+                        )
                     )
         self = self.with_context(force_draft=True)
         return super().button_cancel()
@@ -215,26 +231,26 @@ Please create a credit note instead.
         if self.l10n_ve_control_number:
             return
 
-        sequence_code = "l10n_ve_control_number"
-        # Generar el número usando la secuencia con el contexto de la compañía
-        # Odoo maneja automáticamente la multicompañía buscando primero una secuencia
-        # específica de la compañía y luego una global
+        journal = self.journal_id
+        sequence_id = None
+
+        if journal and journal.type == "sale":
+            if self.move_type == "out_invoice" and journal.l10n_ve_invoice_sequence_id:
+                sequence_id = journal.l10n_ve_invoice_sequence_id.id
+            elif (
+                self.move_type == "out_refund"
+                and journal.l10n_ve_credit_note_sequence_id
+            ):
+                sequence_id = journal.l10n_ve_credit_note_sequence_id.id
+
+        if not sequence_id:
+            return
+
         self.l10n_ve_control_number = (
             self.env["ir.sequence"]
             .with_company(self.company_id.id)
-            .next_by_code(sequence_code)
+            .next_by_id(sequence_id)
         )
-
-        if not self.l10n_ve_control_number:
-            raise UserError(
-                _(
-                    "No se pudo generar el número de control para la compañía '%s'. "
-                    "Por favor, verifique que la secuencia 'l10n_ve_control_number' esté configurada."
-                )
-                % self.company_id.name
-            )
-
-        # Validar que no exista duplicado en la misma compañía
         self._check_control_number_unique()
 
     def _check_control_number_unique(self):
@@ -278,10 +294,13 @@ Please create a credit note instead.
         help="Estructura: {tax_group_id: {'base': X, 'amount': Y, 'tax_type': 'exempt|reduced|general|extend'}}",
     )
 
-    @api.depends('tax_totals', 'move_type', 'state', 'company_id')
+    @api.depends("tax_totals", "move_type", "state", "company_id")
     def _compute_sale_tax_data(self):
         for move in self:
-            if move.state != 'posted' or move.move_type not in ['out_invoice', 'out_refund']:
+            if move.state != "posted" or move.move_type not in [
+                "out_invoice",
+                "out_refund",
+            ]:
                 move.sale_tax_data = {}
                 continue
 
@@ -291,32 +310,42 @@ Please create a credit note instead.
 
             tax_data = {}
             tax_totals = move.tax_totals or {}
-            multiplier = -1 if move.move_type == 'out_refund' else 1
+            multiplier = -1 if move.move_type == "out_refund" else 1
 
             company = move.company_id
             tax_config = {}
-            if hasattr(company, 'exent_aliquot_sale') and company.exent_aliquot_sale:
-                tax_config['exempt'] = company.exent_aliquot_sale.tax_group_id.id
-            if hasattr(company, 'reduced_aliquot_sale') and company.reduced_aliquot_sale:
-                tax_config['reduced'] = company.reduced_aliquot_sale.tax_group_id.id
-            if hasattr(company, 'general_aliquot_sale') and company.general_aliquot_sale:
-                tax_config['general'] = company.general_aliquot_sale.tax_group_id.id
-            if hasattr(company, 'extend_aliquot_sale') and company.extend_aliquot_sale:
-                tax_config['extend'] = company.extend_aliquot_sale.tax_group_id.id
+            if hasattr(company, "exent_aliquot_sale") and company.exent_aliquot_sale:
+                tax_config["exempt"] = company.exent_aliquot_sale.tax_group_id.id
+            if (
+                hasattr(company, "reduced_aliquot_sale")
+                and company.reduced_aliquot_sale
+            ):
+                tax_config["reduced"] = company.reduced_aliquot_sale.tax_group_id.id
+            if (
+                hasattr(company, "general_aliquot_sale")
+                and company.general_aliquot_sale
+            ):
+                tax_config["general"] = company.general_aliquot_sale.tax_group_id.id
+            if hasattr(company, "extend_aliquot_sale") and company.extend_aliquot_sale:
+                tax_config["extend"] = company.extend_aliquot_sale.tax_group_id.id
 
-            subtotals = tax_totals.get('subtotals', [])
-            _logger.info("_compute_sale_tax_data - move=%s, subtotals count=%s, tax_config=%s", 
-                        move.name, len(subtotals), tax_config)
+            subtotals = tax_totals.get("subtotals", [])
+            _logger.info(
+                "_compute_sale_tax_data - move=%s, subtotals count=%s, tax_config=%s",
+                move.name,
+                len(subtotals),
+                tax_config,
+            )
             for subtotal in subtotals:
                 if not isinstance(subtotal, dict):
                     continue
-                tax_groups = subtotal.get('tax_groups', [])
+                tax_groups = subtotal.get("tax_groups", [])
                 if not isinstance(tax_groups, list):
                     continue
                 for tax_info in tax_groups:
                     if not isinstance(tax_info, dict):
                         continue
-                    tax_group_id = tax_info.get('id')
+                    tax_group_id = tax_info.get("id")
                     if not tax_group_id:
                         continue
 
@@ -326,33 +355,56 @@ Please create a credit note instead.
                             tax_type = ttype
                             break
 
-                    base_amount = tax_info.get('base_amount', tax_info.get('base_amount_currency', 0.0)) * multiplier
-                    tax_amount = tax_info.get('tax_amount', tax_info.get('tax_amount_currency', 0.0)) * multiplier
-                    _logger.info("_compute_sale_tax_data - move=%s, tax_group_id=%s, tax_type=%s, base=%s, amount=%s", 
-                                move.name, tax_group_id, tax_type, base_amount, tax_amount)
+                    base_amount = (
+                        tax_info.get(
+                            "base_amount", tax_info.get("base_amount_currency", 0.0)
+                        )
+                        * multiplier
+                    )
+                    tax_amount = (
+                        tax_info.get(
+                            "tax_amount", tax_info.get("tax_amount_currency", 0.0)
+                        )
+                        * multiplier
+                    )
+                    _logger.info(
+                        "_compute_sale_tax_data - move=%s, tax_group_id=%s, tax_type=%s, base=%s, amount=%s",
+                        move.name,
+                        tax_group_id,
+                        tax_type,
+                        base_amount,
+                        tax_amount,
+                    )
                     tax_data[str(tax_group_id)] = {
-                        'base': base_amount,
-                        'amount': tax_amount,
-                        'tax_type': tax_type,
+                        "base": base_amount,
+                        "amount": tax_amount,
+                        "tax_type": tax_type,
                     }
 
             total_taxed = 0.0
             for tax_group_id_str, tax_info in tax_data.items():
-                if tax_group_id_str.startswith('_'):
+                if tax_group_id_str.startswith("_"):
                     continue
-                if isinstance(tax_info, dict) and tax_info.get('tax_type') != 'exempt':
-                    total_taxed += tax_info.get('base', 0.0) + tax_info.get('amount', 0.0)
-            
-            tax_data['_total_taxed'] = total_taxed
+                if isinstance(tax_info, dict) and tax_info.get("tax_type") != "exempt":
+                    total_taxed += tax_info.get("base", 0.0) + tax_info.get(
+                        "amount", 0.0
+                    )
+
+            tax_data["_total_taxed"] = total_taxed
             if tax_totals:
-                base_untaxed = tax_totals.get('base_amount', tax_totals.get('base_amount_currency', tax_totals.get('amount_untaxed', 0.0)))
-                tax_data['_total_untaxed'] = base_untaxed * multiplier
+                base_untaxed = tax_totals.get(
+                    "base_amount",
+                    tax_totals.get(
+                        "base_amount_currency", tax_totals.get("amount_untaxed", 0.0)
+                    ),
+                )
+                tax_data["_total_untaxed"] = base_untaxed * multiplier
             else:
-                tax_data['_total_untaxed'] = 0.0
+                tax_data["_total_untaxed"] = 0.0
 
             move.sale_tax_data = tax_data
 
-    def get_sale_tax_values_by_type(self, tax_type='general'):
+    def get_sale_tax_values_by_type(self, tax_type="general"):
         """
         Obtiene los valores de impuestos almacenados por tipo de alícuota.
 
@@ -364,29 +416,32 @@ Please create a credit note instead.
         """
         self.ensure_one()
         if not self.sale_tax_data:
-            return {'base': 0.0, 'amount': 0.0}
+            return {"base": 0.0, "amount": 0.0}
 
         company = self.company_id
         tax_config = {}
-        if hasattr(company, 'exent_aliquot_sale') and company.exent_aliquot_sale:
-            tax_config['exempt'] = company.exent_aliquot_sale.tax_group_id.id
-        if hasattr(company, 'reduced_aliquot_sale') and company.reduced_aliquot_sale:
-            tax_config['reduced'] = company.reduced_aliquot_sale.tax_group_id.id
-        if hasattr(company, 'general_aliquot_sale') and company.general_aliquot_sale:
-            tax_config['general'] = company.general_aliquot_sale.tax_group_id.id
-        if hasattr(company, 'extend_aliquot_sale') and company.extend_aliquot_sale:
-            tax_config['extend'] = company.extend_aliquot_sale.tax_group_id.id
+        if hasattr(company, "exent_aliquot_sale") and company.exent_aliquot_sale:
+            tax_config["exempt"] = company.exent_aliquot_sale.tax_group_id.id
+        if hasattr(company, "reduced_aliquot_sale") and company.reduced_aliquot_sale:
+            tax_config["reduced"] = company.reduced_aliquot_sale.tax_group_id.id
+        if hasattr(company, "general_aliquot_sale") and company.general_aliquot_sale:
+            tax_config["general"] = company.general_aliquot_sale.tax_group_id.id
+        if hasattr(company, "extend_aliquot_sale") and company.extend_aliquot_sale:
+            tax_config["extend"] = company.extend_aliquot_sale.tax_group_id.id
 
         tax_group_id = tax_config.get(tax_type)
         if not tax_group_id:
-            return {'base': 0.0, 'amount': 0.0}
+            return {"base": 0.0, "amount": 0.0}
 
-        return self.sale_tax_data.get(tax_group_id, {'base': 0.0, 'amount': 0.0})
+        return self.sale_tax_data.get(tax_group_id, {"base": 0.0, "amount": 0.0})
 
-    @api.depends('tax_totals', 'move_type', 'state', 'company_id')
+    @api.depends("tax_totals", "move_type", "state", "company_id")
     def _compute_purchase_tax_data(self):
         for move in self:
-            if move.state != 'posted' or move.move_type not in ['in_invoice', 'in_refund']:
+            if move.state != "posted" or move.move_type not in [
+                "in_invoice",
+                "in_refund",
+            ]:
                 move.purchase_tax_data = {}
                 continue
 
@@ -396,30 +451,42 @@ Please create a credit note instead.
 
             tax_data = {}
             tax_totals = move.tax_totals or {}
-            multiplier = -1 if move.move_type == 'in_refund' else 1
+            multiplier = -1 if move.move_type == "in_refund" else 1
 
             company = move.company_id
             tax_config = {}
-            if hasattr(company, 'exent_aliquot_purchase') and company.exent_aliquot_purchase:
-                tax_config['exempt'] = company.exent_aliquot_purchase.tax_group_id.id
-            if hasattr(company, 'reduced_aliquot_purchase') and company.reduced_aliquot_purchase:
-                tax_config['reduced'] = company.reduced_aliquot_purchase.tax_group_id.id
-            if hasattr(company, 'general_aliquot_purchase') and company.general_aliquot_purchase:
-                tax_config['general'] = company.general_aliquot_purchase.tax_group_id.id
-            if hasattr(company, 'extend_aliquot_purchase') and company.extend_aliquot_purchase:
-                tax_config['extend'] = company.extend_aliquot_purchase.tax_group_id.id
+            if (
+                hasattr(company, "exent_aliquot_purchase")
+                and company.exent_aliquot_purchase
+            ):
+                tax_config["exempt"] = company.exent_aliquot_purchase.tax_group_id.id
+            if (
+                hasattr(company, "reduced_aliquot_purchase")
+                and company.reduced_aliquot_purchase
+            ):
+                tax_config["reduced"] = company.reduced_aliquot_purchase.tax_group_id.id
+            if (
+                hasattr(company, "general_aliquot_purchase")
+                and company.general_aliquot_purchase
+            ):
+                tax_config["general"] = company.general_aliquot_purchase.tax_group_id.id
+            if (
+                hasattr(company, "extend_aliquot_purchase")
+                and company.extend_aliquot_purchase
+            ):
+                tax_config["extend"] = company.extend_aliquot_purchase.tax_group_id.id
 
-            subtotals = tax_totals.get('subtotals', [])
+            subtotals = tax_totals.get("subtotals", [])
             for subtotal in subtotals:
                 if not isinstance(subtotal, dict):
                     continue
-                tax_groups = subtotal.get('tax_groups', [])
+                tax_groups = subtotal.get("tax_groups", [])
                 if not isinstance(tax_groups, list):
                     continue
                 for tax_info in tax_groups:
                     if not isinstance(tax_info, dict):
                         continue
-                    tax_group_id = tax_info.get('id')
+                    tax_group_id = tax_info.get("id")
                     if not tax_group_id:
                         continue
 
@@ -429,29 +496,44 @@ Please create a credit note instead.
                             tax_type = ttype
                             break
 
-                    base_amount = tax_info.get('base_amount', tax_info.get('base_amount_currency', 0.0)) * multiplier
-                    tax_amount = tax_info.get('tax_amount', tax_info.get('tax_amount_currency', 0.0)) * multiplier
+                    base_amount = (
+                        tax_info.get(
+                            "base_amount", tax_info.get("base_amount_currency", 0.0)
+                        )
+                        * multiplier
+                    )
+                    tax_amount = (
+                        tax_info.get(
+                            "tax_amount", tax_info.get("tax_amount_currency", 0.0)
+                        )
+                        * multiplier
+                    )
                     tax_data[str(tax_group_id)] = {
-                        'base': base_amount,
-                        'amount': tax_amount,
-                        'tax_type': tax_type,
+                        "base": base_amount,
+                        "amount": tax_amount,
+                        "tax_type": tax_type,
                     }
 
             total_taxed = 0.0
             for tax_group_id_str, tax_info in tax_data.items():
-                if tax_group_id_str.startswith('_'):
+                if tax_group_id_str.startswith("_"):
                     continue
-                if isinstance(tax_info, dict) and tax_info.get('tax_type') != 'exempt':
-                    tax_amount = tax_info.get('amount', 0.0)
+                if isinstance(tax_info, dict) and tax_info.get("tax_type") != "exempt":
+                    tax_amount = tax_info.get("amount", 0.0)
                     if tax_amount != 0.0:
-                        total_taxed += tax_info.get('base', 0.0) + tax_amount
-            
-            tax_data['_total_taxed'] = total_taxed
+                        total_taxed += tax_info.get("base", 0.0) + tax_amount
+
+            tax_data["_total_taxed"] = total_taxed
             if tax_totals:
-                base_untaxed = tax_totals.get('base_amount', tax_totals.get('base_amount_currency', tax_totals.get('amount_untaxed', 0.0)))
-                tax_data['_total_untaxed'] = base_untaxed * multiplier
+                base_untaxed = tax_totals.get(
+                    "base_amount",
+                    tax_totals.get(
+                        "base_amount_currency", tax_totals.get("amount_untaxed", 0.0)
+                    ),
+                )
+                tax_data["_total_untaxed"] = base_untaxed * multiplier
             else:
-                tax_data['_total_untaxed'] = 0.0
+                tax_data["_total_untaxed"] = 0.0
 
             move.purchase_tax_data = tax_data
 
@@ -462,7 +544,7 @@ Please create a credit note instead.
         help="Tasa de cambio inversa (inverse_rate) de la moneda de la factura para la fecha de la factura",
     )
 
-    @api.depends('currency_id', 'date', 'company_id')
+    @api.depends("currency_id", "date", "company_id")
     def _compute_l10n_ve_inverse_rate(self):
         for move in self:
             if not move.currency_id or not move.date or not move.company_id:
@@ -473,11 +555,15 @@ Please create a credit note instead.
                 move.l10n_ve_inverse_rate = 1.0
                 continue
 
-            currency_rate = self.env['res.currency.rate'].search([
-                ('currency_id', '=', move.currency_id.id),
-                ('name', '<=', move.date),
-                ('company_id', '=', move.company_id.id),
-            ], order='name desc', limit=1)
+            currency_rate = self.env["res.currency.rate"].search(
+                [
+                    ("currency_id", "=", move.currency_id.id),
+                    ("name", "<=", move.date),
+                    ("company_id", "=", move.company_id.id),
+                ],
+                order="name desc",
+                limit=1,
+            )
             if currency_rate and currency_rate.rate and currency_rate.rate != 0.0:
                 move.l10n_ve_inverse_rate = 1.0 / currency_rate.rate
             else:
@@ -485,7 +571,10 @@ Please create a credit note instead.
 
     def action_print_invoice_ve_free_form(self):
         self.ensure_one()
-        if self.company_id.account_fiscal_country_id.code == "VE" and self.move_type in ("out_invoice", "out_refund"):
+        if (
+            self.company_id.account_fiscal_country_id.code == "VE"
+            and self.move_type in ("out_invoice", "out_refund")
+        ):
             self.sudo().write({"l10n_ve_ve_invoice_original_printed": True})
         report = self.env.ref("l10n_ve_seniat.account_invoices_ve")
         return report.with_context(l10n_ve_ve_free_form=True).report_action(self)

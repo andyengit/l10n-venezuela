@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8" ?>
 <odoo>
     <data>
         <record id="tax_closing_activity_type" model="mail.activity.type">
@@ -20,9 +20,14 @@
             <field name="chaining_type">suggest</field>
         </record>
 
-        <record id="mail_activity_type_tax_report_to_be_sent" model="mail.activity.type">
+        <record
+            id="mail_activity_type_tax_report_to_be_sent"
+            model="mail.activity.type"
+        >
             <field name="name">Tax Report Ready</field>
-            <field name="summary">Tax report is ready to be sent to the administration</field>
+            <field
+                name="summary"
+            >Tax report is ready to be sent to the administration</field>
             <field name="category">tax_report</field>
             <field name="delay_count">0</field>
             <field name="delay_unit">days</field>

@@ -1,8 +1,5 @@
 <odoo>
-    <record
-        id="view_signature_config_list_l10n_ve_withholding"
-        model="ir.ui.view"
-    >
+    <record id="view_signature_config_list_l10n_ve_withholding" model="ir.ui.view">
         <field name="name">view.signature.config.list.l10n.ve.payment.extension</field>
         <field name="model">signature.config</field>
         <field name="arch" type="xml">
@@ -14,10 +11,7 @@
         </field>
     </record>
 
-    <record
-        id="view_signature_config_form_l10n_ve_withholding"
-        model="ir.ui.view"
-    >
+    <record id="view_signature_config_form_l10n_ve_withholding" model="ir.ui.view">
         <field name="name">view.signature.config.form.l10n.ve.payment.extension</field>
         <field name="model">signature.config</field>
         <field name="arch" type="xml">
@@ -34,10 +28,7 @@
         </field>
     </record>
 
-    <record
-        id="view_signature_config_search_l10n_ve_withholding"
-        model="ir.ui.view"
-    >
+    <record id="view_signature_config_search_l10n_ve_withholding" model="ir.ui.view">
         <field
             name="name"
         >view.signature.config.search.l10n.ve.payment.extension</field>

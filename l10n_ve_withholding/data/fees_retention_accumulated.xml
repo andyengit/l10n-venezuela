@@ -2,15 +2,20 @@
     <!-- This file handles the fees.retention with accumulated_rate=True
          which requires accumulated_rate_ids to be set. We need to update
          it after accumulated.fees are loaded -->
-    <record id="fees_retention_data_percentage_five_l10n_ve_withholding" model="fees.retention">
-        <field name="accumulated_rate" eval="True"/>
-        <field name="accumulated_rate_ids" eval="[
+    <record
+        id="fees_retention_data_percentage_five_l10n_ve_withholding"
+        model="fees.retention"
+    >
+        <field name="accumulated_rate" eval="True" />
+        <field
+            name="accumulated_rate_ids"
+            eval="[
             (6, 0, [
                 ref('accumulated_fees_l10n_ve_withholding'),
                 ref('accumulated_fees_two_l10n_ve_withholding'),
                 ref('accumulated_fees_three_l10n_ve_withholding'),
             ])
-        ]"/>
+        ]"
+        />
     </record>
 </odoo>
-

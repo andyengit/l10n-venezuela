@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <odoo noupdate="1">
-    <record id="banco_mercantil_statement_map" model="account.statement.import.sheet.mapping">
+    <record
+        id="banco_mercantil_statement_map"
+        model="account.statement.import.sheet.mapping"
+    >
         <field name="name">Banco Mercantil - Estado de Cuenta</field>
         <field name="footer_lines_skip_count">0</field>
         <field name="header_lines_skip_count">9</field>
@@ -23,4 +26,3 @@
         <field name="final_balance_column">E</field>
     </record>
 </odoo>
-

@@ -28,9 +28,7 @@ class PaymentConcept(models.Model):
 
     @api.model
     def _handle_payment_concept_one(self):
-        id_concept = (
-            "l10n_ve_withholding.payment_concept_one_l10n_ve_withholding"
-        )
+        id_concept = "l10n_ve_withholding.payment_concept_one_l10n_ve_withholding"
         name_concept = "Honorarios Profesionales Pagados a"
 
         concept_lines = [
@@ -89,9 +87,7 @@ class PaymentConcept(models.Model):
 
     @api.model
     def _handle_payment_concept_two(self):
-        id_concept = (
-            "l10n_ve_withholding.payment_concept_two_l10n_ve_withholding"
-        )
+        id_concept = "l10n_ve_withholding.payment_concept_two_l10n_ve_withholding"
         name_concept = "Gastos de Transporte (Fletes) Pagados a"
 
         concept_lines = [
@@ -128,9 +124,7 @@ class PaymentConcept(models.Model):
 
     @api.model
     def _handle_payment_concept_three(self):
-        id_concept = (
-            "l10n_ve_withholding.payment_concept_three_l10n_ve_withholding"
-        )
+        id_concept = "l10n_ve_withholding.payment_concept_three_l10n_ve_withholding"
         name_concept = "(Contratista) Ejecución de obras y prestación de servicios en Venezuela pagadas a:"  # noqa: E501
 
         concept_lines = [
@@ -189,9 +183,7 @@ class PaymentConcept(models.Model):
 
     @api.model
     def _handle_payment_concept_four(self):
-        id_concept = (
-            "l10n_ve_withholding.payment_concept_four_l10n_ve_withholding"
-        )
+        id_concept = "l10n_ve_withholding.payment_concept_four_l10n_ve_withholding"
         name_concept = "Arrendamiento de bienes muebles pagado a:"
 
         concept_lines = [
@@ -250,9 +242,7 @@ class PaymentConcept(models.Model):
 
     @api.model
     def _handle_payment_concept_five(self):
-        id_concept = (
-            "l10n_ve_withholding.payment_concept_five_l10n_ve_withholding"
-        )
+        id_concept = "l10n_ve_withholding.payment_concept_five_l10n_ve_withholding"
         name_concept = "Arrendamiento o cesión de uso de bienes inmuebles, pagados al arrendador por personas jurídicas, comunidades o los administradores:"  # noqa: E501
 
         concept_lines = [
@@ -311,9 +301,7 @@ class PaymentConcept(models.Model):
 
     @api.model
     def _handle_payment_concept_six(self):
-        id_concept = (
-            "l10n_ve_withholding.payment_concept_six_l10n_ve_withholding"
-        )
+        id_concept = "l10n_ve_withholding.payment_concept_six_l10n_ve_withholding"
         name_concept = "Publicidad, propaganda y venta de espacios pagadas a"
 
         concept_lines = [
@@ -372,9 +360,7 @@ class PaymentConcept(models.Model):
 
     @api.model
     def _handle_payment_concept_seven(self):
-        id_concept = (
-            "l10n_ve_withholding.payment_concept_seven_l10n_ve_withholding"
-        )
+        id_concept = "l10n_ve_withholding.payment_concept_seven_l10n_ve_withholding"
         name_concept = "Comisiones pagadas a"
 
         concept_lines = [

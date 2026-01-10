@@ -1,4 +1,4 @@
-from odoo import api, fields, models, _
+from odoo import _, api, fields, models
 from odoo.exceptions import UserError
 
 
@@ -118,18 +118,27 @@ class AccountPayment(models.Model):
         """
         self.ensure_one()
         currencies = self.company_id.l10n_ve_igtf_currency_ids
-        return currencies or self.env.ref("base.USD", raise_if_not_found=False) or self.env["res.currency"]
+        return (
+            currencies
+            or self.env.ref("base.USD", raise_if_not_found=False)
+            or self.env["res.currency"]
+        )
 
     @api.depends("currency_id", "company_id", "company_id.l10n_ve_igtf_currency_ids")
     def _compute_l10n_ve_show_apply_igtf(self):
         for payment in self:
-            if payment.country_code != 'VE':
+            if payment.country_code != "VE":
                 payment.l10n_ve_show_apply_igtf = False
                 continue
             allowed = payment.company_id.l10n_ve_igtf_currency_ids
             if not allowed:
-                allowed = payment.env.ref("base.USD", raise_if_not_found=False) or payment.env["res.currency"]
-            payment.l10n_ve_show_apply_igtf = bool(payment.currency_id and payment.currency_id in allowed)
+                allowed = (
+                    payment.env.ref("base.USD", raise_if_not_found=False)
+                    or payment.env["res.currency"]
+                )
+            payment.l10n_ve_show_apply_igtf = bool(
+                payment.currency_id and payment.currency_id in allowed
+            )
 
     @api.depends(
         "l10n_ve_apply_igtf",
@@ -154,11 +163,15 @@ class AccountPayment(models.Model):
         None
         """
         for payment in self:
-            if payment.country_code != 'VE':
+            if payment.country_code != "VE":
                 payment.l10n_ve_igtf_amount_currency = 0.0
                 continue
             percent = payment.company_id.l10n_ve_igtf_percent or 0.0
-            if not payment.l10n_ve_apply_igtf or percent <= 0.0 or not payment.currency_id:
+            if (
+                not payment.l10n_ve_apply_igtf
+                or percent <= 0.0
+                or not payment.currency_id
+            ):
                 payment.l10n_ve_igtf_amount_currency = 0.0
                 continue
 
@@ -171,7 +184,9 @@ class AccountPayment(models.Model):
                 igtf_amount = payment.amount * p / (1.0 + p)
             else:
                 igtf_amount = payment.amount * p
-            payment.l10n_ve_igtf_amount_currency = payment.currency_id.round(igtf_amount)
+            payment.l10n_ve_igtf_amount_currency = payment.currency_id.round(
+                igtf_amount
+            )
 
     def _compute_l10n_ve_igtf_amount_company_currency(self):
         """
@@ -186,20 +201,24 @@ class AccountPayment(models.Model):
         None
         """
         for payment in self:
-            if payment.country_code != 'VE':
+            if payment.country_code != "VE":
                 payment.l10n_ve_igtf_amount_company_currency = 0.0
                 continue
             igtf_amount_currency = payment.l10n_ve_igtf_amount_currency
-            if not payment.currency_id or payment.currency_id.is_zero(igtf_amount_currency):
+            if not payment.currency_id or payment.currency_id.is_zero(
+                igtf_amount_currency
+            ):
                 payment.l10n_ve_igtf_amount_company_currency = 0.0
                 continue
 
-            payment.l10n_ve_igtf_amount_company_currency = payment.company_currency_id.round(
-                payment.currency_id._convert(
-                    igtf_amount_currency,
-                    payment.company_currency_id,
-                    payment.company_id,
-                    payment.date,
+            payment.l10n_ve_igtf_amount_company_currency = (
+                payment.company_currency_id.round(
+                    payment.currency_id._convert(
+                        igtf_amount_currency,
+                        payment.company_currency_id,
+                        payment.company_id,
+                        payment.date,
+                    )
                 )
             )
 
@@ -233,7 +252,7 @@ class AccountPayment(models.Model):
             force_balance=force_balance,
         )
 
-        if self.country_code != 'VE':
+        if self.country_code != "VE":
             return line_vals_list
 
         company = self.company_id
@@ -263,7 +282,9 @@ class AccountPayment(models.Model):
 
         p = igtf_percent / 100.0
         if self.l10n_ve_igtf_included:
-            igtf_amount_currency_abs = self.currency_id.round(self.amount * p / (1.0 + p))
+            igtf_amount_currency_abs = self.currency_id.round(
+                self.amount * p / (1.0 + p)
+            )
         else:
             igtf_amount_currency_abs = self.currency_id.round(self.amount * p)
         if self.currency_id.is_zero(igtf_amount_currency_abs):

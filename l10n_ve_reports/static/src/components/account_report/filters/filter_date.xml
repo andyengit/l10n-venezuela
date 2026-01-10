@@ -1,14 +1,18 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <templates>
     <t t-name="l10n_ve_reports.AccountReportFilterDateSelection">
-        <t t-foreach="this.dateFilters(controller.options.date.mode)" t-as="dateFilter" t-key="dateFilter_index">
+        <t
+            t-foreach="this.dateFilters(controller.options.date.mode)"
+            t-as="dateFilter"
+            t-key="dateFilter_index"
+        >
             <DropdownItem
                 class="{ 'd-flex justify-content-between date_filter': true, 'selected': (this.isPeriodSelected(dateFilter.period)) }"
                 onSelected="() => this.selectDateFilter(dateFilter.period, dateFilter.period != controller.options.date.period_type)"
                 closingMode="'none'"
             >
                 <div class="filter_name pe-3">
-                    <t t-out="dateFilter.name"/>
+                    <t t-out="dateFilter.name" />
                 </div>
 
                 <div class="d-flex justify-content-between">
@@ -17,7 +21,7 @@
                         t-on-click="() => this.selectPreviousPeriod(dateFilter.period)"
                     />
                     <time class="d-flex justify-content-center time_text">
-                        <t t-out="this.displayPeriod(dateFilter.period)"/>
+                        <t t-out="this.displayPeriod(dateFilter.period)" />
                     </time>
                     <button
                         class="btn_next_date fa fa-caret-right"
@@ -29,12 +33,10 @@
     </t>
 
     <t t-name="l10n_ve_reports.AccountReportFilterDate">
-        <Dropdown
-            menuClass="'account_report_filter date'"
-        >
+        <Dropdown menuClass="'account_report_filter date'">
             <button class="btn btn-secondary">
-                <i class="fa fa-calendar me-1"/>
-                <t t-out="controller.options.date.string"/>
+                <i class="fa fa-calendar me-1" />
+                <t t-out="controller.options.date.string" />
             </button>
 
             <t t-set-slot="content">
@@ -47,9 +49,9 @@
                         Today
                     </DropdownItem>
 
-                    <t t-call="l10n_ve_reports.AccountReportFilterDateSelection"/>
+                    <t t-call="l10n_ve_reports.AccountReportFilterDateSelection" />
 
-                    <div id="filter_date_divider_single" class="dropdown-divider"/>
+                    <div id="filter_date_divider_single" class="dropdown-divider" />
 
                     <div
                         class="dropdown-item date d-flex justify-content-between"
@@ -74,9 +76,9 @@
                 </t>
 
                 <t t-if="controller.options.date.mode === 'range'">
-                    <t t-call="l10n_ve_reports.AccountReportFilterDateSelection"/>
+                    <t t-call="l10n_ve_reports.AccountReportFilterDateSelection" />
 
-                    <div id="filter_date_divider_range" class="dropdown-divider"/>
+                    <div id="filter_date_divider_range" class="dropdown-divider" />
 
                     <div
                         class="dropdown-item date d-flex flex-row justify-space-between"
@@ -86,8 +88,10 @@
                         <label class="d-flex align-items-center">
                             Custom Dates
                         </label>
-                        <div class="d-flex flex-row"
-                             t-att-class="{ 'invisible': controller.options.date.filter !== 'custom' }">
+                        <div
+                            class="d-flex flex-row"
+                            t-att-class="{ 'invisible': controller.options.date.filter !== 'custom' }"
+                        >
                             <DateTimeInput
                                 type="'date'"
                                 value="dateFrom('date')"

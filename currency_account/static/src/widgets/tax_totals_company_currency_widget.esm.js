@@ -1,9 +1,9 @@
 /** @odoo-module **/
 
-import { Component, onWillRender, toRaw } from "@odoo/owl";
-import { formatMonetary } from "@web/views/fields/formatters";
-import { registry } from "@web/core/registry";
-import { standardFieldProps } from "@web/views/fields/standard_field_props";
+import {Component, onWillRender, toRaw} from "@odoo/owl";
+import {formatMonetary} from "@web/views/fields/formatters";
+import {registry} from "@web/core/registry";
+import {standardFieldProps} from "@web/views/fields/standard_field_props";
 
 export class TaxTotalsCompanyCurrencyWidget extends Component {
     static props = {...standardFieldProps};
@@ -19,7 +19,7 @@ export class TaxTotalsCompanyCurrencyWidget extends Component {
     }
 
     formatData(props) {
-        let totals = JSON.parse(JSON.stringify(toRaw(props.record.data.tax_totals)));
+        const totals = JSON.parse(JSON.stringify(toRaw(props.record.data.tax_totals)));
         if (!totals) {
             this.taxTotals = null;
             return;
@@ -37,12 +37,13 @@ export class TaxTotalsCompanyCurrencyWidget extends Component {
         if (amount === undefined || amount === null) {
             return "";
         }
-        const currencyId = useCompanyCurrency ? this.companyCurrencyId : this.currencyId;
-        return formatMonetary(amount, { currencyId });
+        const currencyId = useCompanyCurrency
+            ? this.companyCurrencyId
+            : this.currencyId;
+        return formatMonetary(amount, {currencyId});
     }
 }
 
-registry
-    .category("fields")
-    .add("tax_totals_company_currency_widget", { component: TaxTotalsCompanyCurrencyWidget });
-
+registry.category("fields").add("tax_totals_company_currency_widget", {
+    component: TaxTotalsCompanyCurrencyWidget,
+});

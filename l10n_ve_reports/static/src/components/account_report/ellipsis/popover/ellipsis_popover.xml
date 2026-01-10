@@ -2,9 +2,12 @@
 <templates>
     <t t-name="l10n_ve_reports.AccountReportEllipsisPopover">
         <div class="account_report_popover_ellipsis">
-            <p t-out="props.name"/>
-            <button class="btn account_report_btn_clone" t-on-click="() => props.copyEllipsisText()">
-                <i class="fa fa-clone"/>
+            <p t-out="props.name" />
+            <button
+                class="btn account_report_btn_clone"
+                t-on-click="() => props.copyEllipsisText()"
+            >
+                <i class="fa fa-clone" />
             </button>
         </div>
     </t>

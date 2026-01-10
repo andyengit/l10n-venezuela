@@ -1,6 +1,9 @@
 <odoo>
     <!-- Template para Presupuestos (Sale Orders) -->
-    <template id="report_saleorder_document_inherit_l10n_ve_seniat_sale" inherit_id="sale.report_saleorder_document">
+    <template
+        id="report_saleorder_document_inherit_l10n_ve_seniat_sale"
+        inherit_id="sale.report_saleorder_document"
+    >
         <xpath expr="//div[@id='informations']" position="inside">
             <div class="col" t-if="o.company_id.account_fiscal_country_id.code == 'VE'">
                 <strong>Sin derecho a crédito fiscal.</strong>
@@ -8,4 +11,3 @@
         </xpath>
     </template>
 </odoo>
-

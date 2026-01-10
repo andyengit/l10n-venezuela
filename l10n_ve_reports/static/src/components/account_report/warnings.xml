@@ -6,7 +6,10 @@
 
     <t t-name="l10n_ve_reports.common_warning_draft_in_period">
         There are
-        <a type="button" t-on-click="(ev) => controller.reportAction(ev, 'open_unposted_moves', {})">unposted Journal Entries</a>
+        <a
+        type="button"
+        t-on-click="(ev) => controller.reportAction(ev, 'open_unposted_moves', {})"
+    >unposted Journal Entries</a>
         prior or included in this period.
     </t>
 

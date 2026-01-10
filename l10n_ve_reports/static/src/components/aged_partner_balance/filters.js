@@ -1,9 +1,9 @@
 /** @odoo-module */
 
-import { _t } from "@web/core/l10n/translation";
-import { WarningDialog } from "@web/core/errors/error_dialogs";
-import { AccountReport } from "@l10n_ve_reports/components/account_report/account_report";
-import { AccountReportFilters } from "@l10n_ve_reports/components/account_report/filters/filters";
+import {_t} from "@web/core/l10n/translation";
+import {WarningDialog} from "@web/core/errors/error_dialogs";
+import {AccountReport} from "@l10n_ve_reports/components/account_report/account_report";
+import {AccountReportFilters} from "@l10n_ve_reports/components/account_report/filters/filters";
 
 export class AgedPartnerBalanceFilters extends AccountReportFilters {
     static template = "l10n_ve_reports.AgedPartnerBalanceFilters";
@@ -21,9 +21,12 @@ export class AgedPartnerBalanceFilters extends AccountReportFilters {
             return;
         }
 
-        await this.filterClicked({ optionKey:"aging_interval", optionValue: agingInterval, reload: true });
+        await this.filterClicked({
+            optionKey: "aging_interval",
+            optionValue: agingInterval,
+            reload: true,
+        });
     }
-
 }
 
 AccountReport.registerCustomComponent(AgedPartnerBalanceFilters);

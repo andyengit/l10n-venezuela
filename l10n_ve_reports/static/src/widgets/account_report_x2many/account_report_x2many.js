@@ -1,15 +1,15 @@
 /** @odoo-module **/
 
-import { useRef, onWillRender } from "@odoo/owl";
-import { ConfirmationDialog } from "@web/core/confirmation_dialog/confirmation_dialog";
-import { WarningDialog } from "@web/core/errors/error_dialogs";
-import { _t } from "@web/core/l10n/translation";
-import { useService } from "@web/core/utils/hooks";
-import { useNestedSortable } from "@web/core/utils/nested_sortable";
-import { registry } from "@web/core/registry";
-import { ListRenderer } from "@web/views/list/list_renderer";
-import { X2ManyField, x2ManyField } from "@web/views/fields/x2many/x2many_field";
-import { useOpenX2ManyRecord, useX2ManyCrud } from "@web/views/fields/relational_utils";
+import {useRef, onWillRender} from "@odoo/owl";
+import {ConfirmationDialog} from "@web/core/confirmation_dialog/confirmation_dialog";
+import {WarningDialog} from "@web/core/errors/error_dialogs";
+import {_t} from "@web/core/l10n/translation";
+import {useService} from "@web/core/utils/hooks";
+import {useNestedSortable} from "@web/core/utils/nested_sortable";
+import {registry} from "@web/core/registry";
+import {ListRenderer} from "@web/views/list/list_renderer";
+import {X2ManyField, x2ManyField} from "@web/views/fields/x2many/x2many_field";
+import {useOpenX2ManyRecord, useX2ManyCrud} from "@web/views/fields/relational_utils";
 
 export class AccountReportListRenderer extends ListRenderer {
     static template = "l10n_ve_reports.AccountReportList";
@@ -20,21 +20,24 @@ export class AccountReportListRenderer extends ListRenderer {
 
         // From ListRenderer
         // We can't really use `super.setup()` because it expects to be used on a html table.
-        this.allColumns = this.processAllColumn(this.props.archInfo.columns, this.props.list);
+        this.allColumns = this.processAllColumn(
+            this.props.archInfo.columns,
+            this.props.list
+        );
         this.keyOptionalFields = `optional_fields,${this.createViewKey()}`;
         this.optionalActiveFields = this.computeOptionalActiveFields();
         this.columns = this.getActiveColumns(this.props.list);
 
         this.env.model.config.activeFields.line_ids.defaultOrderBy = [
             {
-                "name": "sequence",
-                "asc": true
+                name: "sequence",
+                asc: true,
             },
             {
-                "name": "id",
-                "asc": true
-            }
-        ]
+                name: "id",
+                asc: true,
+            },
+        ];
 
         useNestedSortable({
             ref: useRef("root"),
@@ -47,7 +50,10 @@ export class AccountReportListRenderer extends ListRenderer {
         });
 
         onWillRender(() => {
-            this.allColumns = this.processAllColumn(this.props.archInfo.columns, this.props.list);
+            this.allColumns = this.processAllColumn(
+                this.props.archInfo.columns,
+                this.props.list
+            );
             this.columns = this.getActiveColumns(this.props.list);
         });
     }
@@ -61,8 +67,7 @@ export class AccountReportListRenderer extends ListRenderer {
         return records.map((record) => {
             let recordData = {};
 
-            for (const field of fields)
-                recordData[field] = record.data[field];
+            for (const field of fields) recordData[field] = record.data[field];
 
             return recordData;
         });
@@ -113,8 +118,12 @@ export class AccountReportListRenderer extends ListRenderer {
     //------------------------------------------------------------------------------------------------------------------
     onDragStart(ctx) {
         function sanitize(element) {
-            if (element.nodeName === 'LI') {
-                ["data-record_index", "data-record_id", "data-descendants_count"].forEach((attribute) => {
+            if (element.nodeName === "LI") {
+                [
+                    "data-record_index",
+                    "data-record_id",
+                    "data-descendants_count",
+                ].forEach((attribute) => {
                     element.removeAttribute(attribute);
                 });
 
@@ -159,13 +168,15 @@ export class AccountReportListRenderer extends ListRenderer {
             ];
         }
 
-        await this.props.list.records[currentRecordIndex].update({'parent_id': parent});
+        await this.props.list.records[currentRecordIndex].update({parent_id: parent});
     }
 
     async setRecordHierarchy(currentElement, parentElement) {
         const currentRecordIndex = parseInt(currentElement.dataset.record_index);
         const parentRecordIndex = parentElement?.dataset.record_index;
-        const parentRecord = (parentRecordIndex) ? this.props.list.records[parentRecordIndex].data : null;
+        const parentRecord = parentRecordIndex
+            ? this.props.list.records[parentRecordIndex].data
+            : null;
 
         const hierarchyLevels = {};
 
@@ -174,20 +185,26 @@ export class AccountReportListRenderer extends ListRenderer {
 
         const ancestors = new Set();
 
-        for (let index = currentRecordIndex; index < this.props.list.records.length; index++) {
+        for (
+            let index = currentRecordIndex;
+            index < this.props.list.records.length;
+            index++
+        ) {
             const record = this.props.list.records[index];
-            const parentId = (record.data.parent_id) ? record.data.parent_id[0] : false;
+            const parentId = record.data.parent_id ? record.data.parent_id[0] : false;
 
-            if (ancestors.size && !ancestors.has(parentId))
-                break;
+            if (ancestors.size && !ancestors.has(parentId)) break;
 
-            let parentHierarchyLevel = (record.data.parent_id) ? hierarchyLevels[record.data.parent_id[0]] : null;
+            let parentHierarchyLevel = record.data.parent_id
+                ? hierarchyLevels[record.data.parent_id[0]]
+                : null;
 
             if (parentHierarchyLevel != null) {
-                parentHierarchyLevel = (parentHierarchyLevel === 0) ? 1 : parentHierarchyLevel;
-                await record.update({'hierarchy_level': parentHierarchyLevel + 2});
+                parentHierarchyLevel =
+                    parentHierarchyLevel === 0 ? 1 : parentHierarchyLevel;
+                await record.update({hierarchy_level: parentHierarchyLevel + 2});
             } else {
-                await record.update({'hierarchy_level': 1});
+                await record.update({hierarchy_level: 1});
             }
 
             ancestors.add(record.data.id);
@@ -195,11 +212,23 @@ export class AccountReportListRenderer extends ListRenderer {
         }
     }
 
-    async setRecordSequence(currentElement, parentElement, previousElement, previousElementDescendantCount, nextElement) {
+    async setRecordSequence(
+        currentElement,
+        parentElement,
+        previousElement,
+        previousElementDescendantCount,
+        nextElement
+    ) {
         const currentRecordIndex = currentElement.dataset.record_index;
-        const currentRecordDescendantsCount = parseInt(currentElement.dataset.descendants_count);
-        const lastDescendantIndex = parseInt(currentRecordIndex) + currentRecordDescendantsCount
-        const recordsToMove = this.props.list.records.slice(currentRecordIndex, lastDescendantIndex + 1);
+        const currentRecordDescendantsCount = parseInt(
+            currentElement.dataset.descendants_count
+        );
+        const lastDescendantIndex =
+            parseInt(currentRecordIndex) + currentRecordDescendantsCount;
+        const recordsToMove = this.props.list.records.slice(
+            currentRecordIndex,
+            lastDescendantIndex + 1
+        );
 
         // We remove the element(s) we are moving
         this.props.list.records.splice(currentRecordIndex, recordsToMove.length);
@@ -210,7 +239,10 @@ export class AccountReportListRenderer extends ListRenderer {
         let newCurrentRecordIndex;
 
         if (previousRecordIndex) {
-            newCurrentRecordIndex = parseInt(previousRecordIndex) + 1 + parseInt(previousElementDescendantCount);
+            newCurrentRecordIndex =
+                parseInt(previousRecordIndex) +
+                1 +
+                parseInt(previousElementDescendantCount);
         } else if (nextRecordIndex) {
             // We add the element in the first position
             newCurrentRecordIndex = parseInt(nextRecordIndex);
@@ -222,14 +254,14 @@ export class AccountReportListRenderer extends ListRenderer {
         // If the original position of the line we want to move is before the position we want to drop it, then we need
         // to adjust the index because all the indexes of the lines after it have changed (we removed lines).
         if (currentRecordIndex < newCurrentRecordIndex) {
-            newCurrentRecordIndex -= (1 + currentRecordDescendantsCount);
+            newCurrentRecordIndex -= 1 + currentRecordDescendantsCount;
         }
 
         // We add the element(s) we are moving into the new position
         this.props.list.records.splice(newCurrentRecordIndex, 0, ...recordsToMove);
 
         for (const [index, record] of this.props.list.records.entries())
-            await record.update({'sequence': index + 1});
+            await record.update({sequence: index + 1});
     }
 
     async onDrop(ctx) {
@@ -242,26 +274,37 @@ export class AccountReportListRenderer extends ListRenderer {
             });
 
         // We need to save it before as it's value might change during calculations below
-        const previousElementDescendantCount = ctx.previous?.dataset.descendants_count
+        const previousElementDescendantCount = ctx.previous?.dataset.descendants_count;
 
         await this.setRecordParent(ctx.element, ctx.parent);
         await this.setRecordHierarchy(ctx.element, ctx.parent);
-        await this.setRecordSequence(ctx.element, ctx.parent, ctx.previous, previousElementDescendantCount, ctx.next);
+        await this.setRecordSequence(
+            ctx.element,
+            ctx.parent,
+            ctx.previous,
+            previousElementDescendantCount,
+            ctx.next
+        );
     }
 
     //------------------------------------------------------------------------------------------------------------------
     // Delete
     //------------------------------------------------------------------------------------------------------------------
     onDeleteRecord(recordIndex) {
-        const currentRecordId = this.props.list.records[recordIndex].data.id
-        const nextRecordParentId = this.props.list.records[recordIndex + 1]?.data.parent_id[0]
+        const currentRecordId = this.props.list.records[recordIndex].data.id;
+        const nextRecordParentId =
+            this.props.list.records[recordIndex + 1]?.data.parent_id[0];
 
         // We check if the next line is a children of the current one
         if (nextRecordParentId === currentRecordId)
             return this.dialog.add(ConfirmationDialog, {
-                body: _t("This line and all its children will be deleted. Are you sure you want to proceed?"),
+                body: _t(
+                    "This line and all its children will be deleted. Are you sure you want to proceed?"
+                ),
                 confirmLabel: "Delete",
-                confirm: () => { this.deleteRecord(recordIndex) },
+                confirm: () => {
+                    this.deleteRecord(recordIndex);
+                },
                 cancel: () => {},
             });
 
@@ -275,18 +318,20 @@ export class AccountReportListRenderer extends ListRenderer {
         const ancestors = new Set([recordToDelete.data.id]);
 
         // We get all the children of the line we are deleting
-        for (let index = recordIndex + 1; index < this.props.list.records.length; index++) {
+        for (
+            let index = recordIndex + 1;
+            index < this.props.list.records.length;
+            index++
+        ) {
             const record = this.props.list.records[index];
 
-            if (!ancestors.has(record.data.parent_id[0]))
-                break;
+            if (!ancestors.has(record.data.parent_id[0])) break;
 
             recordsToDelete.push(record);
             ancestors.add(record.data.id);
         }
 
-        for (const record of recordsToDelete)
-            this.props.list.delete(record);
+        for (const record of recordsToDelete) this.props.list.delete(record);
     }
 }
 
@@ -294,13 +339,13 @@ export class AccountReportsLinesListX2ManyField extends X2ManyField {
     static components = {
         ...X2ManyField.components,
         ListRenderer: AccountReportListRenderer,
-    }
+    };
 
     // Overrides the "openRecord" method to overload the save. This will force the record to be saved in the database.
     setup() {
         super.setup();
 
-        const { saveRecord, updateRecord } = useX2ManyCrud(
+        const {saveRecord, updateRecord} = useX2ManyCrud(
             () => this.list,
             this.isMany2Many
         );
@@ -311,11 +356,14 @@ export class AccountReportsLinesListX2ManyField extends X2ManyField {
             activeActions: this.activeActions,
             getList: () => this.list,
             saveRecord: async (record) => {
-                for (const [index, record] of this.props.record.data.line_ids.records.entries())
-                    record.update({'sequence': index + 1});
+                for (const [
+                    index,
+                    record,
+                ] of this.props.record.data.line_ids.records.entries())
+                    record.update({sequence: index + 1});
 
                 record.update({
-                    'sequence': this.props.record.data.line_ids.records.length,
+                    sequence: this.props.record.data.line_ids.records.length,
                 });
 
                 await saveRecord(record);
