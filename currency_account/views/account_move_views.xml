@@ -14,6 +14,34 @@
                     nolabel="1"
                 />
             </xpath>
+            <xpath expr="//field[@name='invoice_line_ids']//list//field[@name='price_total']" position="after">
+                <field name="currency_rate" string="Tasa de Cambio" optional="hide" readonly="0" digits="[16,16]"/>
+                <field name="force_company_currency_amount" string="Forzar Monto en Moneda Empresa" optional="hide"/>
+                <field name="amount_currency_usd" string="Saldo en USD" optional="hide" readonly="1" />
+            </xpath>
         </field>
+    </record>
+
+
+     <record id="account_invoice_report_view_tree" model="ir.ui.view">
+         <field name="name">account.invoice.report.view.list</field>
+         <field name="model">account.invoice.report</field>
+         <field name="inherit_id" ref="account.account_invoice_report_view_tree" />
+         <field name="arch" type="xml">
+            <xpath expr="//field[@name='price_total']" position="after">
+                <field name="amount_currency_usd" string="Saldo en USD" sum="Monto USD"/>
+            </xpath>
+        </field>
+     </record>
+
+    <record id="view_account_invoice_report_pivot" model="ir.ui.view">
+         <field name="name">account.invoice.report.pivot</field>
+         <field name="model">account.invoice.report</field>
+         <field name="inherit_id" ref="account.view_account_invoice_report_pivot" />
+         <field name="arch" type="xml">
+            <xpath expr="//field[@name='price_subtotal']" position="after">
+                <field name="amount_currency_usd" string="Saldo en USD" sum="Monto USD"/>
+            </xpath>
+         </field>
     </record>
 </odoo>
