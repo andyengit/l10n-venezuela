@@ -55,5 +55,5 @@
                 <field name="amount_currency_usd" string="Saldo en USD" sum="Monto USD"/>
             </xpath>
          </field> -->
-    </record>
+    <!-- </record> -->
 </odoo>
