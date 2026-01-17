@@ -35,7 +35,7 @@
     </record>
 
 
-     <record id="account_invoice_report_view_tree" model="ir.ui.view">
+     <!-- <record id="account_invoice_report_view_tree" model="ir.ui.view">
          <field name="name">account.invoice.report.view.list</field>
          <field name="model">account.invoice.report</field>
          <field name="inherit_id" ref="account.account_invoice_report_view_tree" />
@@ -54,6 +54,6 @@
             <xpath expr="//field[@name='price_subtotal']" position="after">
                 <field name="amount_currency_usd" string="Saldo en USD" sum="Monto USD"/>
             </xpath>
-         </field>
+         </field> -->
     </record>
 </odoo>
