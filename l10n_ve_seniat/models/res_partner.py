@@ -20,6 +20,17 @@ class ResPartner(models.Model):
             return "V"
         return False
 
+    # @api.depends('complete_name', 'email', 'vat', 'state_id', 'country_id', 'commercial_company_name')
+    # def _compute_display_name(self):
+    #     super(ResPartner, self)._compute_display_name()
+
+    #     for partner in self:
+    #         if partner.vat:
+    #             partner.display_name = f"{partner.vat or ""} - {partner.display_name or ""}"
+    #             continue
+    #         partner.display_name = partner.display_name
+            
+
     taxpayer_type = fields.Selection(
         [
             ("ordinary", "Ordinary"),

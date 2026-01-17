@@ -22,6 +22,14 @@ class AccountJournal(models.Model):
         help="Secuencia para generar números de control de notas de crédito de venta",
     )
 
+    def action_create_seniat_sequences(self):
+        for journal in self:
+            if journal.type != "sale":
+                continue
+            journal._create_seniat_sequences()
+        return True
+
+
     @api.model_create_multi
     def create(self, vals_list):
         journals = super().create(vals_list)

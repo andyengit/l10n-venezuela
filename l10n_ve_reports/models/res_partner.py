@@ -52,18 +52,6 @@ class ResPartner(models.Model):
             "target": "current",
         }
 
-    @api.depends_context("show_more_partner_info")
-    def _compute_display_name(self):
-        if not self.env.context.get("show_more_partner_info"):
-            return super()._compute_display_name()
-        for partner in self:
-            res = ""
-            if partner.vat:
-                res += f" {partner.vat},"
-            if partner.country_id:
-                res += f" {partner.country_id.code},"
-            partner.display_name = f"{partner.name} - " + res
-
     def _get_partner_account_report_attachment(self, report, options=None):
         self.ensure_one()
         if self.lang:

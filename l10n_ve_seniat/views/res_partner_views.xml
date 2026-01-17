@@ -12,6 +12,9 @@
                     invisible="country_code != 'VE'"
                 />
             </xpath>
+            <xpath expr="//field[@name='vat']" position="attributes">
+                <attribute name="invisible">country_code == 'VE'</attribute>
+            </xpath>
             <xpath
                 expr="//sheet/group/group/div/field[@name='street2']"
                 position="after"
@@ -30,6 +33,11 @@
                     domain="[('municipality_id', '=', municipality_id)]"
                     invisible="country_code != 'VE'"
                 />
+            </xpath>
+            <xpath expr="//field[@name='company_type']" position="after">
+                <h1 invisible="country_code != 'VE'">
+                    <field name="vat" default_focus="1"  placeholder="VAT"/>
+                </h1>
             </xpath>
         </field>
     </record>

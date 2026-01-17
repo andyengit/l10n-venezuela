@@ -37,7 +37,7 @@
                     type="object"
                     groups="account.group_account_invoice"
                     data-hotkey="x"
-                    invisible="True"
+                    invisible="move_type == 'out_invoice'"
                     confirm="This action will cancel the document. Are you sure you want to proceed?"
                 />
                 <button
@@ -45,18 +45,10 @@
                     string="Imprimir Factura Forma Libre"
                     type="object"
                     groups="account.group_account_invoice"
-                    invisible="country_code != 'VE' or move_type not in ('out_invoice', 'out_refund') or state != 'posted' or l10n_ve_ve_invoice_original_printed"
+                    invisible="country_code != 'VE' or move_type not in ('out_invoice','out_refund') or state != 'posted' or l10n_ve_ve_invoice_original_printed"
                 />
             </xpath>
             <!-- Hacer los impuestos readonly en las líneas de factura para Venezuela -->
-            <xpath
-                expr="//field[@name='invoice_line_ids']//field[@name='tax_ids']"
-                position="attributes"
-            >
-                <attribute
-                    name="readonly"
-                >parent.country_code == 'VE' and parent.move_type in ('out_invoice', 'out_refund', 'in_invoice', 'in_refund')</attribute>
-            </xpath>
             <xpath expr="//group[@id='header_left_group']/*[1]" position="before">
                 <label
                     for="l10n_ve_control_number"
@@ -68,7 +60,6 @@
                     name="l10n_ve_control_number"
                     placeholder="00-00000000-0"
                     nolabel="1"
-                    readonly="move_type in ('out_invoice', 'out_refund')"
                     invisible="move_type not in ('out_invoice', 'out_refund', 'in_invoice')"
                 />
             </xpath>
@@ -81,12 +72,7 @@
                 />
             </xpath>
             <xpath expr="//field[@name='delivery_date']" position="after">
-                <field
-                    name="fiscal_position_id"
-                    options="{'no_create': True, 'no_open': True}"
-                    readonly="state != 'draft'"
-                    class="mb-2"
-                />
+                <field name="l10n_ve_ve_invoice_original_printed" string="Factura Original Impresa"/>
             </xpath>
             <xpath
                 expr="//div[@name='currency_conversion_div']//field[@name='invoice_currency_rate']"
@@ -129,6 +115,24 @@
                     <field name="l10n_ve_invoice_number" placeholder="N° Factura" />
                     <field name="l10n_ve_report_z" placeholder="Reporte Z" />
                 </group>
+            </xpath>
+            <xpath expr="//field[@name='invoice_line_ids']//list//field[@name='product_id']" position="attributes">
+                <attribute name="options">{'no_create': True, 'no_create_edit': True}</attribute>
+            </xpath>
+
+            <xpath expr="//field[@name='partner_id']" position="attributes">
+                <attribute name="context">{'show_vat': True}</attribute>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_invoice_tree" model="ir.ui.view">
+        <field name="name">account.invoice.list</field>
+        <field name="model">account.move</field>
+        <field name="inherit_id" ref="account.view_invoice_tree" />
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='name']" position="after">
+                <field name="l10n_ve_control_number" />
             </xpath>
         </field>
     </record>

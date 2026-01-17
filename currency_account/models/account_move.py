@@ -4,6 +4,8 @@ from odoo import api, fields, models
 
 import logging
 
+from odoo.tools.float_utils import float_compare, float_is_zero
+
 _logger = logging.getLogger(__name__)
 
 
@@ -16,6 +18,19 @@ class AccountMove(models.Model):
         store=True,
         help="Almacena el total de la factura y el residuo pendiente en cada moneda habilitada.",  # noqa: E501
     )
+
+    lines_with_rate_difference = fields.Boolean(
+        string="Lineas con diferencia de tasa de cambio",
+        help="Lineas con diferencia de tasa de cambio",
+        compute="_compute_lines_with_rate_difference",
+    )
+
+    @api.depends(
+        "line_ids.has_rate_difrerence",
+    )
+    def _compute_lines_with_rate_difference(self):
+        for move in self:
+            move.lines_with_rate_difference = any(line.has_rate_difrerence for line in move.invoice_line_ids)
 
     @api.depends(
         "line_ids.price_subtotal",
@@ -68,7 +83,7 @@ class AccountMove(models.Model):
         is_invoice = self.is_invoice(include_receipts=True)
         sign = self.direction_sign if is_invoice else 1
         if is_invoice:
-            if product_line.force_company_currency_amount:
+            if product_line.price_subtotal_currency:
                 rate = product_line.currency_rate
             else:
                 rate = self.invoice_currency_rate
@@ -92,58 +107,3 @@ class AccountMove(models.Model):
             name=product_line.name,
         )
 
-
-class AccountMoveLine(models.Model):
-    _inherit = "account.move.line"
-
-    force_company_currency_amount = fields.Float(
-        string="Saldo en Moneda Empresa",
-        help="Saldo forzado en moneda de la empresa",
-    )
-
-    amount_currency_usd = fields.Float(
-        string="Saldo en USD",
-        help="Saldo en USD",
-        compute="_compute_amount_currency_usd",
-        store=True,
-    )
-
-
-    @api.depends(
-        "amount_currency",
-        "balance",
-        "company_id.currency_id",
-    )
-    def _compute_amount_currency_usd(self):
-        for line in self:
-            if line.currency_id == line.company_id.currency_id:
-                line.amount_currency_usd = line.amount_currency
-            else:
-                line.amount_currency_usd = line.balance / line.currency_rate
-
-    @api.depends(
-        "currency_id",
-        "company_id",
-        "move_id.invoice_currency_rate",
-        "move_id.date",
-        "force_company_currency_amount",
-    )
-    def _compute_currency_rate(self):
-        for line in self:
-            if line.force_company_currency_amount:
-                line.currency_rate = abs(line.amount_currency) / abs(
-                    line.force_company_currency_amount
-                )
-            elif line.move_id.is_invoice(include_receipts=True):
-                line.currency_rate = line.move_id.invoice_currency_rate or 1.0
-            elif line.currency_id:
-                line.currency_rate = self.env["res.currency"]._get_conversion_rate(
-                    from_currency=line.company_currency_id,
-                    to_currency=line.currency_id,
-                    company=line.company_id,
-                    date=line.move_id.invoice_date
-                    or line.move_id.date
-                    or fields.Date.context_today(line),
-                )
-            else:
-                line.currency_rate = 1

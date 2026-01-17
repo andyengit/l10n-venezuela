@@ -246,10 +246,16 @@ Please create a credit note instead.
         if not sequence_id:
             return
 
+        # Verificar que la secuencia existe y es válida
+        sequence = self.env["ir.sequence"].browse(sequence_id)
+        if not sequence.exists():
+            _logger.warning("Sequence with ID %s does not exist for move %s", sequence_id, self.name)
+            return
+
         self.l10n_ve_control_number = (
-            self.env["ir.sequence"]
+            sequence
             .with_company(self.company_id.id)
-            .next_by_id(sequence_id)
+            .next_by_id()
         )
         self._check_control_number_unique()
 

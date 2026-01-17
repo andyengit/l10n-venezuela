@@ -9,6 +9,7 @@
     "depends": ["base", "web", "sale", "l10n_ve_seniat", "account"],
     "data": [
         "views/report_sale_inherit.xml",
+        "views/sale_order_views.xml",
     ],
     "license": "AGPL-3",
     "auto_install": ["account", "sale", "l10n_ve_seniat"],

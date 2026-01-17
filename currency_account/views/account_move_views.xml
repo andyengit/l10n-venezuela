@@ -13,11 +13,23 @@
                     widget="total_currencies_widget"
                     nolabel="1"
                 />
+                <field name="lines_with_rate_difference" />
             </xpath>
-            <xpath expr="//field[@name='invoice_line_ids']//list//field[@name='price_total']" position="after">
+            <xpath expr="//field[@name='invoice_line_ids']//list" position="attributes">
+                <attribute name="decoration-danger">warning_rate_difference</attribute>
+            </xpath>
+            <xpath expr="//field[@name='invoice_line_ids']//list//field[@name='price_subtotal']" position="after">
+                <field name="price_subtotal_currency" column_invisible="parent.currency_id == parent.company_currency_id"/>
+                <field name="has_rate_difrerence" column_invisible="1"/>
+                <field name="manually_price_subtotal_currency" column_invisible="1"/>
+                <button 
+                    name="reset_price_subtotal_currency" 
+                    string="Reset" 
+                    type="object" 
+                    icon="fa-refresh" 
+                    invisible="not has_rate_difrerence" 
+                    column_invisible="not parent.lines_with_rate_difference"/>
                 <field name="currency_rate" string="Tasa de Cambio" optional="hide" readonly="0" digits="[16,16]"/>
-                <field name="force_company_currency_amount" string="Forzar Monto en Moneda Empresa" optional="hide"/>
-                <field name="amount_currency_usd" string="Saldo en USD" optional="hide" readonly="1" />
             </xpath>
         </field>
     </record>
