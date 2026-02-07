@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_order_form_credit_authorization" model="ir.ui.view">
+        <field name="name">sale.order.form.credit.authorization</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_order_form"/>
+        <field name="arch" type="xml">
+            <field name="payment_term_id" position="after">
+                <field name="is_credit_sale" invisible="1"/>
+                <field name="can_authorize_credit" invisible="1"/>
+                <field name="credit_authorized"
+                       invisible="not is_credit_sale"
+                       readonly="not can_authorize_credit"
+                       widget="boolean_toggle"/>
+            </field>
+        </field>
+    </record>
+
+</odoo>
