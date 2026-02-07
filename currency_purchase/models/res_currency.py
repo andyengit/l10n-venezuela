@@ -27,5 +27,5 @@ class ResCurrency(models.Model):
         if model == "purchase.order":
             return ["amount_total"]
         if model == "purchase.order.line":
-            return ["price_subtotal"]
+            return ["price_subtotal", "price_unit", "product_qty", "discount"]
         return super()._available_fields_depends_on(model)

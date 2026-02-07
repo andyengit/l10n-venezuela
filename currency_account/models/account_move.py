@@ -157,6 +157,7 @@ class AccountMove(models.Model):
             field_el = etree.Element('field')
             field_el.set('name', af.name)
             field_el.set('optional', 'show')
+            field_el.set('readonly', '1')
             field_el.set(
                 'column_invisible',
                 f'parent.currency_id == {currency_id}'
