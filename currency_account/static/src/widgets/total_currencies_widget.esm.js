@@ -12,25 +12,26 @@ export class TotalCurrenciesWidget extends Component {
     setup() {
         super.setup();
         this.totals = [];
+        this.hasResidual = false;
         this.formatData(this.props);
         onWillRender(() => this.formatData(this.props));
     }
 
     formatData(props) {
-        const totals = JSON.parse(props.record.data[this.props.name]);
+        const raw = props.record.data[this.props.name];
+        if (!raw) {
+            this.totals = [];
+            this.hasResidual = false;
+            return;
+        }
+        const totals = typeof raw === "string" ? JSON.parse(raw) : raw;
         if (!totals) {
+            this.totals = [];
+            this.hasResidual = false;
             return;
         }
         this.totals = Object.values(totals);
-    }
-
-    parseJson(value) {
-        try {
-            return JSON.parse(value);
-        } catch (e) {
-            console.error("Error al parsear JSON para total_currencies:", e);
-            return {};
-        }
+        this.hasResidual = this.totals.length > 0 && "residual" in this.totals[0];
     }
 
     formatAmount(total, key) {

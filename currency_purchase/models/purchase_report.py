@@ -1,17 +1,17 @@
 from lxml import etree
 
-from odoo import models, fields, api
+from odoo import models, api
 from odoo.tools import SQL
 
 
-class AccountInvoiceReport(models.Model):
-    _inherit = "account.invoice.report"
+class PurchaseReport(models.Model):
+    _inherit = "purchase.report"
 
     @api.model
     def _select(self):
         select = super()._select()
         amount_fields = self.env['ir.model.fields'].sudo().search([
-            ('model', '=', 'account.move.line'),
+            ('model', '=', 'purchase.order.line'),
             ('name', 'like', 'x_amount_currency_%'),
         ])
         if not amount_fields:
@@ -20,9 +20,8 @@ class AccountInvoiceReport(models.Model):
         for af in amount_fields:
             currency_id = int(af.name.replace('x_amount_currency_', ''))
             extra.append(SQL(
-                "line.%s * (CASE WHEN move.move_type IN"
-                " ('in_invoice','out_refund','in_receipt')"
-                " THEN -1 ELSE 1 END) AS %s",
+                "SUM(l.%s / COALESCE(po.currency_rate, 1.0))::decimal(16,2)"
+                " * account_currency_table.rate AS %s",
                 SQL.identifier(af.name),
                 SQL.identifier(af.name),
             ))

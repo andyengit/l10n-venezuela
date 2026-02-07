@@ -2,7 +2,6 @@
 <templates xml:space="preserve">
     <t t-name="currency_account.TotalCurrenciesWidget" owl="1">
         <div class="o_total_currencies_widget">
-            <t t-log="totals" />
             <t t-if="totals.length > 0">
                 <table class="table table-sm">
                     <thead>
@@ -10,8 +9,9 @@
                             <th
                                 class="text-end"
                                 style="min-width: 100px;"
-                            >Total Factura</th>
+                            >Total</th>
                             <th
+                                t-if="hasResidual"
                                 class="text-end"
                                 style="min-width: 100px;"
                             >Pendiente por Pagar</th>
@@ -23,7 +23,7 @@
                                 <td class="text-end">
                                     <t t-esc="formatAmount(total, 'total')" />
                                 </td>
-                                <td class="text-end">
+                                <td t-if="hasResidual" class="text-end">
                                     <t t-esc="formatAmount(total, 'residual')" />
                                 </td>
                             </tr>

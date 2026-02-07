@@ -1,37 +1,25 @@
 from lxml import etree
 
-from odoo import models, fields, api
-from odoo.tools import SQL
+from odoo import models, api
 
 
-class AccountInvoiceReport(models.Model):
-    _inherit = "account.invoice.report"
+class SaleReport(models.Model):
+    _inherit = "sale.report"
 
-    @api.model
-    def _select(self):
-        select = super()._select()
+    def _select_additional_fields(self):
+        res = super()._select_additional_fields()
         amount_fields = self.env['ir.model.fields'].sudo().search([
-            ('model', '=', 'account.move.line'),
+            ('model', '=', 'sale.order.line'),
             ('name', 'like', 'x_amount_currency_%'),
         ])
-        if not amount_fields:
-            return select
-        extra = []
         for af in amount_fields:
-            currency_id = int(af.name.replace('x_amount_currency_', ''))
-            extra.append(SQL(
-                "line.%s * (CASE WHEN move.move_type IN"
-                " ('in_invoice','out_refund','in_receipt')"
-                " THEN -1 ELSE 1 END) AS %s",
-                SQL.identifier(af.name),
-                SQL.identifier(af.name),
-            ))
-            extra.append(SQL(
-                "%s AS %s",
-                currency_id,
-                SQL.identifier(f'x_currency_id_{currency_id}'),
-            ))
-        return SQL("%s, %s", select, SQL(", ").join(extra))
+            currency_id = af.name.replace('x_amount_currency_', '')
+            res[af.name] = (
+                f"CASE WHEN l.product_id IS NOT NULL"
+                f" THEN SUM(l.{af.name}) ELSE 0 END"
+            )
+            res[f'x_currency_id_{currency_id}'] = currency_id
+        return res
 
     def _get_view(self, view_id=None, view_type='form', **options):
         arch, view = super()._get_view(view_id, view_type, **options)

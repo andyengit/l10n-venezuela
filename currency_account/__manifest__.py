@@ -6,7 +6,10 @@
     "author": "Andyengit,Odoo Community Association (OCA)",
     "website": "https://github.com/OCA/l10n-venezuela",
     "depends": ["account"],
-    "data": ["views/account_move_views.xml"],
+    "data": [
+        "views/account_move_views.xml",
+        "views/res_currency_views.xml"
+    ],
     "license": "LGPL-3",
     "installable": True,
     "auto_install": False,
