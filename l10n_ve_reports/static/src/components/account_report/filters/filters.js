@@ -689,15 +689,19 @@ export class AccountReportFilters extends Component {
 
     async filterDisplayCurrency(currencyId) {
         await this.controller.updateOption("display_currency_id", currencyId, false);
-        this.controller.saveSessionOptions(this.controller.options);
-
-        // Reload the report to apply currency conversion
-        await this.controller.displayReport(this.controller.options.report_id);
+        this.currencyDateLoadingState.isLoading = true;
+        try {
+            await this.controller.reload(
+                "display_currency_id",
+                this.controller.options
+            );
+        } finally {
+            this.currencyDateLoadingState.isLoading = false;
+        }
     }
 
     async filterCurrencyRateDateType(dateType) {
         await this.controller.updateOption("currency_rate_date_type", dateType, false);
-        // If switching to manual, set default date to today if not set
         if (dateType === "manual" && !this.controller.options.currency_rate_date) {
             const today = DateTime.now();
             await this.controller.updateOption(
@@ -706,63 +710,45 @@ export class AccountReportFilters extends Component {
                 false
             );
         }
-        // Don't save currency_rate_date_type to session, so it resets to 'current' when reopening
-        const optionsToSave = {...this.controller.options};
-        delete optionsToSave.currency_rate_date_type;
-        delete optionsToSave.currency_rate_date;
-        this.controller.saveSessionOptions(optionsToSave);
-
-        // Reload the report to apply currency conversion with new date type
-        await this.controller.displayReport(this.controller.options.report_id);
+        this.currencyDateLoadingState.isLoading = true;
+        try {
+            await this.controller.reload(
+                "currency_rate_date_type",
+                this.controller.options
+            );
+        } finally {
+            this.currencyDateLoadingState.isLoading = false;
+        }
     }
 
     async onCurrencyRateDateChanged(date) {
-        if (date) {
-            // Format date as YYYY-MM-DD from DateTime object
-            let dateStr;
-            if (date instanceof DateTime) {
-                dateStr = date.toISODate();
-            } else if (date instanceof Date) {
-                dateStr = date.toISOString().split("T")[0];
-            } else if (typeof date === "string") {
-                // If it's already a string, use it directly
-                dateStr = date;
-            } else {
-                // Try to convert to DateTime
-                try {
-                    const dt = DateTime.fromJSDate(date);
-                    dateStr = dt.toISODate();
-                } catch (e) {
-                    console.error("Error converting date:", e);
-                    return;
-                }
+        if (!date) return;
+
+        let dateStr;
+        if (date instanceof DateTime) {
+            dateStr = date.toISODate();
+        } else if (date instanceof Date) {
+            dateStr = date.toISOString().split("T")[0];
+        } else if (typeof date === "string") {
+            dateStr = date;
+        } else {
+            try {
+                const dt = DateTime.fromJSDate(date);
+                dateStr = dt.toISODate();
+            } catch (e) {
+                console.error("Error converting date:", e);
+                return;
             }
+        }
 
-            if (dateStr) {
-                // Show loading indicator
-                this.currencyDateLoadingState.isLoading = true;
+        if (!dateStr) return;
 
-                try {
-                    await this.controller.updateOption(
-                        "currency_rate_date",
-                        dateStr,
-                        false
-                    );
-                    // Don't save currency_rate_date to session, so it resets when reopening
-                    const optionsToSave = {...this.controller.options};
-                    delete optionsToSave.currency_rate_date_type;
-                    delete optionsToSave.currency_rate_date;
-                    this.controller.saveSessionOptions(optionsToSave);
-
-                    // Reload the report to apply currency conversion with new date
-                    await this.controller.displayReport(
-                        this.controller.options.report_id
-                    );
-                } finally {
-                    // Hide loading indicator
-                    this.currencyDateLoadingState.isLoading = false;
-                }
-            }
+        this.currencyDateLoadingState.isLoading = true;
+        try {
+            await this.controller.updateOption("currency_rate_date", dateStr, false);
+            await this.controller.reload("currency_rate_date", this.controller.options);
+        } finally {
+            this.currencyDateLoadingState.isLoading = false;
         }
     }
 

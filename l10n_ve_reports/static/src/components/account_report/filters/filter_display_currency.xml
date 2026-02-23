@@ -1,12 +1,15 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <templates>
     <t t-name="l10n_ve_reports.AccountReportFilterDisplayCurrency">
-        <div class="d-flex gap-1">
+        <div class="d-flex gap-1 align-items-center">
             <Dropdown
                 menuClass="'account_report_filter display_currency'"
                 onStateChanged="(isOpen) => !isOpen ? this.applyFilters('display_currency') : null"
             >
-                <button class="btn btn-secondary">
+                <button
+                    class="btn btn-secondary"
+                    t-att-disabled="currencyDateLoadingState.isLoading"
+                >
                     <i class="fa fa-money me-1" />
                     <t t-out="selectedDisplayCurrencyName" />
                 </button>
@@ -32,7 +35,10 @@
                 menuClass="'account_report_filter currency_rate_date_type'"
                 onStateChanged="(isOpen) => !isOpen ? this.applyFilters('currency_rate_date_type') : null"
             >
-                <button class="btn btn-secondary">
+                <button
+                    class="btn btn-secondary"
+                    t-att-disabled="currencyDateLoadingState.isLoading"
+                >
                     <i class="fa fa-calendar me-1" />
                     <t t-out="selectedCurrencyRateDateTypeName" />
                 </button>
@@ -61,20 +67,20 @@
 
             <!-- Manual Date Selector (only shown when currency_rate_date_type is 'manual') -->
             <t t-if="controller.options.currency_rate_date_type == 'manual'">
-                <div class="d-flex align-items-center gap-2">
-                    <DateTimeInput
-                        type="'date'"
-                        value="currencyRateDateValue"
-                        onChange="(date) => this.onCurrencyRateDateChanged(date)"
-                        disabled="currencyDateLoadingState.isLoading"
-                    />
-                    <t t-if="currencyDateLoadingState.isLoading">
-                        <i
-                            class="fa fa-spinner fa-spin"
-                            title="Convirtiendo moneda..."
-                        />
-                    </t>
-                </div>
+                <DateTimeInput
+                    type="'date'"
+                    value="currencyRateDateValue"
+                    onChange="(date) => this.onCurrencyRateDateChanged(date)"
+                    disabled="currencyDateLoadingState.isLoading"
+                />
+            </t>
+
+            <!-- Loading indicator (visible for any currency-related reload) -->
+            <t t-if="currencyDateLoadingState.isLoading">
+                <i
+                    class="fa fa-spinner fa-spin text-primary"
+                    title="Actualizando reporte..."
+                />
             </t>
         </div>
     </t>

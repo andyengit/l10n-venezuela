@@ -10,7 +10,9 @@ from ast import literal_eval
 from collections import defaultdict
 from functools import cmp_to_key
 from itertools import groupby
+import logging
 
+_logger = logging.getLogger(__name__)
 import markupsafe
 from dateutil.relativedelta import relativedelta
 from PIL import ImageFont
@@ -3480,12 +3482,208 @@ class AccountReport(models.Model):
 
         return lines
 
-    def _format_column_values(self, options, line_dict_list, force_format=False):
+    def _get_document_dates_for_lines(self, options, line_dict_list):
+        """Extract document dates for each line in the list.
+        First tries to get the date from the line's columns (invoice_date or date).
+        If not found, batch-fetches the date from the associated account.move.line records.
+        Returns a dict mapping line_dict id to its document date.
+        """
+        document_dates = {}
+        currency_rate_date_type = options.get("currency_rate_date_type", "current")
+        if currency_rate_date_type != "document":
+            return document_dates
+
+        aml_ids_map = {}
         for line_dict in line_dict_list:
+            line_id = line_dict.get("id", "")
+            doc_date = None
+            for col in line_dict.get("columns", []):
+                if (
+                    col
+                    and col.get("expression_label") in ("invoice_date", "date")
+                    and col.get("no_format")
+                ):
+                    doc_date = col["no_format"]
+                    break
+
+            if doc_date:
+                document_dates[line_id] = doc_date
+            elif line_id:
+                aml_id = self._get_res_id_from_line_id(line_id, "account.move.line")
+                if aml_id:
+                    aml_ids_map[line_id] = aml_id
+
+        if aml_ids_map:
+            reverse_map = {v: k for k, v in aml_ids_map.items()}
+            amls = self.env["account.move.line"].browse(list(reverse_map.keys()))
+            for aml in amls:
+                date = aml.move_id.invoice_date or aml.date
+                document_dates[reverse_map[aml.id]] = date
+
+        return document_dates
+
+    def _precompute_grouped_line_converted_values(self, options, line_dict_list, document_dates):
+        """For grouped/folded lines when currency_rate_date_type is 'document',
+        compute correct converted monetary totals by expanding children,
+        converting each child's values individually with its document date, and summing.
+        This ensures that the folded line shows the same total as the sum of expanded
+        individually-converted child lines.
+        """
+        currency_rate_date_type = options.get("currency_rate_date_type", "current")
+        display_currency_id = options.get("display_currency_id")
+        if currency_rate_date_type != "document" or not display_currency_id:
+            return
+
+        company_currency = self.env.company.currency_id
+        if display_currency_id == company_currency.id:
+            return
+
+        display_currency = self.env["res.currency"].browse(display_currency_id)
+
+        for line_dict in line_dict_list:
+            line_id = line_dict.get("id", "")
+
+            if line_id in document_dates:
+                continue
+
+            groupby = line_dict.get("groupby")
+            expand_function = line_dict.get("expand_function")
+            if not groupby or not expand_function:
+                continue
+
+            report_line_id = None
+            for markup, model, value in reversed(self._parse_line_id(line_id)):
+                if model == "account.report.line":
+                    report_line_id = value
+                    break
+
+            if not report_line_id:
+                continue
+
+            report_line = self.env["account.report.line"].browse(report_line_id)
+
+            try:
+                child_lines = report_line._expand_groupby(
+                    line_id,
+                    groupby,
+                    options,
+                    offset=0,
+                    limit=None,
+                )
+            except Exception:
+                continue
+
+            if not child_lines:
+                continue
+
+            child_doc_dates = self._get_document_dates_for_lines(options, child_lines)
+
+            self._precompute_grouped_line_converted_values(
+                options, child_lines, child_doc_dates
+            )
+
+            total_col_idx = None
+            converted_period_sum = 0.0
+            any_column_converted = False
+
+            for col_idx, parent_col in enumerate(line_dict.get("columns", [])):
+                if not parent_col or parent_col.get("figure_type") != "monetary":
+                    continue
+
+                if parent_col.get("no_format") is None:
+                    continue
+
+                expr_label = parent_col.get("expression_label", "")
+                if expr_label == "total":
+                    total_col_idx = col_idx
+                    continue
+
+                converted_total = 0.0
+                has_child_values = False
+
+                for child in child_lines:
+                    child_cols = child.get("columns", [])
+                    if col_idx >= len(child_cols):
+                        continue
+                    child_col = child_cols[col_idx]
+                    if not child_col:
+                        continue
+
+                    child_value = child_col.get("no_format")
+                    if child_value is None:
+                        continue
+
+                    has_child_values = True
+                    if child_value == 0:
+                        continue
+
+                    child_id = child.get("id", "")
+                    doc_date = child_doc_dates.get(child_id)
+
+                    if not doc_date:
+                        doc_date = (
+                            options.get("date", {}).get("date_to")
+                            or fields.Date.today()
+                        )
+
+                    if isinstance(doc_date, str):
+                        doc_date = fields.Date.from_string(doc_date)
+
+                    child_format_params = child_col.get("format_params", {})
+                    source_currency_id = child_format_params.get("currency_id")
+                    source_currency = (
+                        self.env["res.currency"].browse(source_currency_id)
+                        if source_currency_id
+                        else company_currency
+                    )
+
+                    if source_currency.id == display_currency_id:
+                        converted_total += child_value
+                    else:
+                        try:
+                            converted = source_currency._convert(
+                                child_value,
+                                display_currency,
+                                self.env.company,
+                                doc_date,
+                            )
+                            converted_total += converted
+                        except Exception:
+                            converted_total += child_value
+
+                if has_child_values:
+                    parent_col["no_format"] = converted_total
+                    format_params = parent_col.get("format_params") or {}
+                    format_params["currency_id"] = display_currency_id
+                    parent_col["format_params"] = format_params
+                    parent_col["is_zero"] = self._is_value_zero(
+                        converted_total, "monetary", format_params
+                    )
+                    converted_period_sum += converted_total
+                    any_column_converted = True
+
+            if any_column_converted and total_col_idx is not None:
+                total_col = line_dict["columns"][total_col_idx]
+                if total_col:
+                    total_col["no_format"] = converted_period_sum
+                    format_params = total_col.get("format_params") or {}
+                    format_params["currency_id"] = display_currency_id
+                    total_col["format_params"] = format_params
+                    total_col["is_zero"] = self._is_value_zero(
+                        converted_period_sum, "monetary", format_params
+                    )
+
+    def _format_column_values(self, options, line_dict_list, force_format=False):
+        document_dates = self._get_document_dates_for_lines(options, line_dict_list)
+        self._precompute_grouped_line_converted_values(
+            options, line_dict_list, document_dates
+        )
+
+        for line_dict in line_dict_list:
+            line_document_date = document_dates.get(line_dict.get("id"))
+
             for column_dict in line_dict["columns"]:
                 if "name" in column_dict and not force_format:
-                    # Columns which have already received a name are assumed to be already formatted; nothing needs to be done for them.
-                    # This gives additional flexibility to custom reports, if needed.
                     continue
 
                 if not column_dict:
@@ -3495,11 +3693,16 @@ class AccountReport(models.Model):
                 elif options.get("export_mode") == "file":
                     rslt = column_dict.get("no_format", "")
                 else:
+                    format_params = column_dict.get("format_params") or {}
+                    if line_document_date and "document_date" not in format_params:
+                        format_params["document_date"] = line_document_date
+                        column_dict["format_params"] = format_params
+
                     rslt = self.format_value(
                         options,
                         column_dict.get("no_format"),
                         column_dict.get("figure_type"),
-                        format_params=column_dict.get("format_params"),
+                        format_params=format_params,
                     )
 
                 column_dict["name"] = rslt
@@ -3928,12 +4131,7 @@ class AccountReport(models.Model):
 
         format_params = {}
         if figure_type == "monetary" and currency:
-            # Use display currency if available in options, otherwise use the currency from the column
-            display_currency_id = options.get("display_currency_id")
-            if display_currency_id and display_currency_id != currency.id:
-                format_params["currency_id"] = display_currency_id
-            else:
-                format_params["currency_id"] = currency.id
+            format_params["currency_id"] = currency.id
         elif figure_type in ("float", "percentage"):
             format_params["digits"] = digits
 
@@ -7743,8 +7941,15 @@ class AccountReport(models.Model):
             )
 
             # Check if we need to convert to display currency
+            # Only convert when the source is the company currency.
+            # Foreign currency columns (e.g. amount_currency) keep their original format.
             display_currency_id = options.get("display_currency_id")
-            if display_currency_id and display_currency_id != source_currency.id:
+            company_currency = self.env.company.currency_id
+            if (
+                display_currency_id
+                and display_currency_id != source_currency.id
+                and source_currency.id == company_currency.id
+            ):
                 display_currency = self.env["res.currency"].browse(display_currency_id)
                 # Convert value from source currency to display currency
                 # Determine which date to use for the conversion rate

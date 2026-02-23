@@ -3,6 +3,9 @@
 import datetime
 from itertools import chain
 
+import logging
+_logger = logging.getLogger(__name__)
+
 from dateutil.relativedelta import relativedelta
 
 from odoo import _, fields, models
@@ -199,6 +202,8 @@ class AgedPartnerBalanceCustomHandler(models.AbstractModel):
                     if len(query_res["currency_id"]) == 1
                     else None
                 )
+                _logger.info(f"Query res: {query_res}")
+                _logger.info(f"Currency: {currency}")
                 rslt.update(
                     {
                         "invoice_date": query_res["invoice_date"][0]
