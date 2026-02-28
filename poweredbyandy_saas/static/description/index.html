@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <style>
+        body {
+            font-family: 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            color: #333;
+            line-height: 1.6;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 16px;
+        }
+        h1 {
+            color: #7C7BAD;
+            border-bottom: 2px solid #7C7BAD;
+            padding-bottom: 8px;
+        }
+        h2 {
+            color: #555;
+            margin-top: 32px;
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 6px;
+        }
+        h3 {
+            color: #666;
+            margin-top: 24px;
+        }
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin: 12px 0 20px 0;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px 12px;
+            text-align: left;
+        }
+        th {
+            background-color: #7C7BAD;
+            color: #fff;
+        }
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        code {
+            background-color: #f4f4f4;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-size: 0.9em;
+        }
+        pre {
+            background-color: #2d2d2d;
+            color: #f8f8f2;
+            padding: 16px;
+            border-radius: 6px;
+            overflow-x: auto;
+            font-size: 0.85em;
+            line-height: 1.5;
+        }
+        .note {
+            background-color: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 10px 14px;
+            margin: 12px 0;
+            border-radius: 4px;
+        }
+        .section-core {
+            background-color: #e8f5e9;
+            border-left: 4px solid #4caf50;
+            padding: 10px 14px;
+            margin: 12px 0;
+            border-radius: 4px;
+        }
+        hr {
+            border: none;
+            border-top: 1px solid #eee;
+            margin: 24px 0;
+        }
+    </style>
+</head>
+<body>
+
+<h1>Powered By Andy — SaaS</h1>
+<p>
+    Módulo integrador que instala todos los módulos base necesarios para el
+    <strong>SaaS de Venezuela</strong> en <strong>Odoo 18.0</strong>.
+</p>
+
+<h2>Repositorios Necesarios</h2>
+
+<!-- 1. l10n-venezuela -->
+<h3>1. andyengit/l10n-venezuela (este repositorio)</h3>
+<p>Contiene los módulos de localización venezolana:</p>
+<table>
+    <tr><th>Módulo</th><th>Descripción</th></tr>
+    <tr><td><code>l10n_ve_seniat</code></td><td>Plan contable SENIAT</td></tr>
+    <tr><td><code>l10n_ve_seniat_sale</code></td><td>Extensión de ventas para SENIAT</td></tr>
+    <tr><td><code>l10n_ve_stock</code></td><td>Inventario Venezuela</td></tr>
+    <tr><td><code>l10n_ve_reports</code></td><td>Reportes Venezuela</td></tr>
+    <tr><td><code>l10n_ve_igtf</code></td><td>IGTF (Impuesto a Grandes Transacciones Financieras)</td></tr>
+    <tr><td><code>l10n_ve_withholding</code></td><td>Retenciones</td></tr>
+    <tr><td><code>l10n_ve_exchange_rates</code></td><td>Tasas de cambio</td></tr>
+    <tr><td><code>l10n_ve_bank_statement_import</code></td><td>Importación de estados de cuenta bancarios</td></tr>
+    <tr><td><code>currency_account</code></td><td>Moneda en contabilidad</td></tr>
+    <tr><td><code>currency_purchase</code></td><td>Moneda en compras</td></tr>
+    <tr><td><code>currency_sale</code></td><td>Moneda en ventas</td></tr>
+    <tr><td><code>res_currency_rate_provider_BCV</code></td><td>Proveedor de tasas BCV</td></tr>
+    <tr><td><code>poweredbyandy_saas</code></td><td>Este módulo</td></tr>
+</table>
+
+<hr/>
+
+<!-- 2. OCA/web -->
+<h3>2. OCA/web — Módulos Web</h3>
+<p>Repositorio: <code>https://github.com/OCA/web.git</code> — Rama: <code>18.0</code></p>
+<table>
+    <tr><th>Módulo</th></tr>
+    <tr><td><code>web_responsive</code></td></tr>
+    <tr><td><code>web_chatter_position</code></td></tr>
+    <tr><td><code>web_dialog_size</code></td></tr>
+    <tr><td><code>web_dark_mode</code></td></tr>
+    <tr><td><code>web_datetime_picker_default_time</code></td></tr>
+    <tr><td><code>web_excel_export_dynamic_expand</code></td></tr>
+    <tr><td><code>web_search_with_and</code></td></tr>
+    <tr><td><code>web_widget_numeric_step</code></td></tr>
+    <tr><td><code>web_copy_confirm</code></td></tr>
+    <tr><td><code>web_company_color</code></td></tr>
+    <tr><td><code>web_group_expand</code></td></tr>
+    <tr><td><code>web_pwa_customize</code></td></tr>
+</table>
+
+<hr/>
+
+<!-- 3. OCA/currency -->
+<h3>3. OCA/currency — Monedas</h3>
+<p>Repositorio: <code>https://github.com/OCA/currency.git</code> — Rama: <code>18.0</code></p>
+<table>
+    <tr><th>Módulo</th></tr>
+    <tr><td><code>currency_rate_update</code></td></tr>
+</table>
+
+<hr/>
+
+<!-- 4. OCA/partner-contact -->
+<h3>4. OCA/partner-contact — Contactos</h3>
+<p>Repositorio: <code>https://github.com/OCA/partner-contact.git</code> — Rama: <code>18.0</code></p>
+<table>
+    <tr><th>Módulo</th></tr>
+    <tr><td><code>partner_vat_unique</code></td></tr>
+    <tr><td><code>partner_ref_unique</code></td></tr>
+    <tr><td><code>partner_external_map</code></td></tr>
+    <tr><td><code>partner_contact_birthdate</code></td></tr>
+    <tr><td><code>partner_contact_age_range</code></td></tr>
+</table>
+
+<hr/>
+
+<!-- 5. OCA/account-reconcile -->
+<h3>5. OCA/account-reconcile — Conciliación Contable</h3>
+<p>Repositorio: <code>https://github.com/OCA/account-reconcile.git</code> — Rama: <code>18.0</code></p>
+<table>
+    <tr><th>Módulo</th></tr>
+    <tr><td><code>account_in_payment</code></td></tr>
+    <tr><td><code>account_partner_reconcile</code></td></tr>
+    <tr><td><code>account_reconcile_oca</code></td></tr>
+    <tr><td><code>account_reconcile_model_oca</code></td></tr>
+</table>
+
+<hr/>
+
+<!-- 6. OCA/account-invoicing -->
+<h3>6. OCA/account-invoicing — Facturación</h3>
+<p>Repositorio: <code>https://github.com/OCA/account-invoicing.git</code> — Rama: <code>18.0</code></p>
+<table>
+    <tr><th>Módulo</th></tr>
+    <tr><td><code>account_invoice_refund_link</code></td></tr>
+    <tr><td><code>account_invoice_supplierinfo_update</code></td></tr>
+</table>
+
+<hr/>
+
+<!-- 7. bank-statement-import (fork) -->
+<h3>7. poweredbyandy/bank-statement-import — Importación de Extractos Bancarios</h3>
+<p>Repositorio: <code>https://github.com/poweredbyandy/bank-statement-import.git</code> — Rama: <code>18.0</code></p>
+<div class="note">
+    <strong>Nota:</strong> Este es un fork con adaptaciones propias. No usar el repositorio OCA directamente.
+</div>
+<table>
+    <tr><th>Módulo</th></tr>
+    <tr><td><code>account_statement_import_base</code></td></tr>
+    <tr><td><code>account_statement_import_file_reconcile_oca</code></td></tr>
+    <tr><td><code>account_statement_import_sheet_file</code></td></tr>
+</table>
+
+<hr/>
+
+<!-- 8. OCA/server-brand -->
+<h3>8. OCA/server-brand — Personalización de Marca</h3>
+<p>Repositorio: <code>https://github.com/OCA/server-brand.git</code> — Rama: <code>18.0</code></p>
+<table>
+    <tr><th>Módulo</th></tr>
+    <tr><td><code>portal_odoo_debranding</code></td></tr>
+    <tr><td><code>disable_odoo_online</code></td></tr>
+</table>
+
+<hr/>
+
+<!-- 9. OCA/server-ux -->
+<h3>9. OCA/server-ux — UX del Servidor</h3>
+<p>Repositorio: <code>https://github.com/OCA/server-ux.git</code> — Rama: <code>18.0</code></p>
+<table>
+    <tr><th>Módulo</th></tr>
+    <tr><td><code>developer_menu</code></td></tr>
+</table>
+
+<hr/>
+
+<!-- 10. OCA/social -->
+<h3>10. OCA/social — Social / Correo</h3>
+<p>Repositorio: <code>https://github.com/OCA/social.git</code> — Rama: <code>18.0</code></p>
+<table>
+    <tr><th>Módulo</th></tr>
+    <tr><td><code>mail_notification_with_history</code></td></tr>
+</table>
+
+<hr/>
+
+<!-- Módulos core -->
+<h3>Módulos de Odoo Core (no requieren clonado extra)</h3>
+<div class="section-core">
+    Estos módulos vienen incluidos en Odoo 18.0 Community/Enterprise:
+    <code>account</code>,
+    <code>stock</code>,
+    <code>google_calendar</code>,
+    <code>microsoft_calendar</code>,
+    <code>product_margin</code>,
+    <code>board</code>.
+</div>
+
+<hr/>
+
+<h2>Comando para clonar todos los repositorios</h2>
+
+<p>Comandos para copiar y pegar (ejecutar desde el directorio raíz del proyecto):</p>
+
+<pre>
+BRANCH="18.0"
+
+# Repositorio principal
+git clone -b $BRANCH --depth 1 https://github.com/andyengit/l10n-venezuela.git custom/l10n-venezuela
+
+# OCA
+git clone -b $BRANCH --depth 1 https://github.com/OCA/web.git oca/web
+git clone -b $BRANCH --depth 1 https://github.com/OCA/currency.git oca/currency
+git clone -b $BRANCH --depth 1 https://github.com/OCA/partner-contact.git oca/partner-contact
+git clone -b $BRANCH --depth 1 https://github.com/OCA/account-reconcile.git oca/account-reconcile
+git clone -b $BRANCH --depth 1 https://github.com/OCA/account-invoicing.git oca/account-invoicing
+git clone -b $BRANCH --depth 1 https://github.com/OCA/server-brand.git oca/server-brand
+git clone -b $BRANCH --depth 1 https://github.com/OCA/server-ux.git oca/server-ux
+git clone -b $BRANCH --depth 1 https://github.com/OCA/social.git oca/social
+
+# Fork propio (NO usar el de OCA directamente)
+git clone -b $BRANCH --depth 1 https://github.com/poweredbyandy/bank-statement-import.git oca/bank-statement-import
+</pre>
+
+<h2>Ejemplo de addons_path en odoo.conf</h2>
+<pre>
+addons_path =
+    /ruta/odoo/addons,
+    /ruta/odoo/odoo/addons,
+    /ruta/custom/l10n-venezuela,
+    /ruta/oca/web,
+    /ruta/oca/currency,
+    /ruta/oca/partner-contact,
+    /ruta/oca/account-reconcile,
+    /ruta/oca/account-invoicing,
+    /ruta/oca/bank-statement-import,
+    /ruta/oca/server-brand,
+    /ruta/oca/server-ux,
+    /ruta/oca/social
+</pre>
+
+</body>
+</html>

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_currency_form_inherit_l10n_ve_exchange_rates" model="ir.ui.view">
+        <field name="name">res.currency.form.inherit.l10n.ve.exchange.rates</field>
+        <field name="model">res.currency</field>
+        <field name="inherit_id" ref="base.view_currency_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='active']" position="after">
+                <field
+                    name="l10n_ve_show_in_systray"
+                    widget="boolean_toggle"
+                    invisible="is_current_company_currency"
+                />
+            </xpath>
+        </field>
+    </record>
+</odoo>

@@ -148,5 +148,17 @@
                 <t t-set="currency" t-value="o.currency_id" />
             </t>
         </xpath>
+        <xpath
+            expr="//t[@name='account_invoice_line_accountable']//td[@name='account_invoice_line_name']"
+            position="inside"
+        >
+            <span
+                t-if="o.company_id.account_fiscal_country_id.code == 'VE' and (not line.tax_ids or all(tax.amount == 0 for tax in line.tax_ids))"
+            > (E)</span>
+        </xpath>
     </template>
+
+    <record id="account.account_invoices_without_payment" model="ir.actions.report">
+        <field name="binding_model_id" eval="False"/>
+    </record>
 </odoo>

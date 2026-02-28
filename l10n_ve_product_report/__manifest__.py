@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 {
     'name': 'Venezuela - Product Report',
+    "icon": "/poweredbyandy_saas/static/description/icon.png",
     'version': '18.0.1.0.0',
     'category': 'Localization',
     'summary': 'Reportes de productos con listas de precios para Venezuela',

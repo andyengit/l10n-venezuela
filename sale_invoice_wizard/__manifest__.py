@@ -1,5 +1,6 @@
 {
     "name": "Crear Factura sin Redirección",
+    "icon": "/poweredbyandy_saas/static/description/icon.png",
     "version": "18.0.1.0.0",
     "category": "Sales",
     "summary": "Permite crear facturas desde ventas sin redirigir a la factura",

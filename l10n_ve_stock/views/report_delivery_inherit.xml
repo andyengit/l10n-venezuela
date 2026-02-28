@@ -1,13 +1,142 @@
+<?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <!-- Template para Notas de Entrega (Stock Pickings) -->
     <template
         id="report_delivery_document_inherit_l10n_ve_stock"
         inherit_id="stock.report_delivery_document"
     >
+        <!-- 1. Denominación del documento: "Orden de Entrega" / "Guía de Despacho" -->
+        <xpath expr="//h2/span[@t-field='o.name']" position="before">
+            <t t-if="o.company_id.account_fiscal_country_id.code == 'VE'">
+                <span
+                    t-if="o.picking_type_id.code == 'outgoing'"
+                >Guía de Despacho: </span>
+                <span
+                    t-elif="o.picking_type_id.code == 'internal'"
+                >Orden de Entrega: </span>
+                <span t-else="">Orden de Entrega: </span>
+            </t>
+        </xpath>
+
+        <!-- 2. "Sin derecho a Crédito Fiscal" + Datos del receptor (nombre y RIF) -->
         <xpath expr="//div[@id='informations']" position="inside">
-            <div class="col" t-if="o.company_id.account_fiscal_country_id.code == 'VE'">
-                <strong>Sin derecho a crédito fiscal.</strong>
-            </div>
+            <t t-if="o.company_id.account_fiscal_country_id.code == 'VE'">
+                <!-- Art. 10 Num. 3: Expresión "Sin derecho a Crédito Fiscal" -->
+                <div class="col col-12 mb-2">
+                    <strong class="text-danger"
+                    >Sin derecho a Crédito Fiscal</strong>
+                </div>
+                <!-- Art. 10 Num. 5: Nombre y RIF del receptor -->
+                <div
+                    t-if="o.partner_id"
+                    class="col col-3 mw-100 mb-2"
+                    name="div_partner_name"
+                >
+                    <strong>Receptor</strong>
+                    <div class="m-0">
+                        <span
+                            t-out="o.partner_id.commercial_partner_id.name"
+                        >Nombre del receptor</span>
+                    </div>
+                </div>
+                <div
+                    t-if="o.partner_id.commercial_partner_id.vat"
+                    class="col col-3 mw-100 mb-2"
+                    name="div_partner_rif"
+                >
+                    <strong>RIF del Receptor</strong>
+                    <div class="m-0">
+                        <span
+                            t-out="o.partner_id.commercial_partner_id.vat"
+                        >J-12345678-9</span>
+                    </div>
+                </div>
+                <!-- Art. 10 Num. 4: Motivo del traslado -->
+                <div
+                    t-if="o.l10n_ve_transfer_reason"
+                    class="col col-6 mw-100 mb-2"
+                    name="div_transfer_reason"
+                >
+                    <strong>Motivo del Traslado</strong>
+                    <div class="m-0">
+                        <span
+                            t-field="o.l10n_ve_transfer_reason"
+                        >Consignación</span>
+                    </div>
+                </div>
+            </t>
+        </xpath>
+
+        <!-- Art. 10 Num. 4: Agregar peso y volumen en la tabla de movimientos (estado != done) -->
+        <xpath expr="//table[@name='stock_move_table']//th[@name='th_sm_quantity']" position="after">
+            <t t-if="o.company_id.account_fiscal_country_id.code == 'VE'">
+                <th name="th_sm_weight" class="text-end">
+                    <strong>Peso</strong>
+                </th>
+                <th name="th_sm_volume" class="text-end">
+                    <strong>Volumen</strong>
+                </th>
+            </t>
+        </xpath>
+
+        <xpath expr="//table[@name='stock_move_table']//tbody//tr/td[@class='o_td_quantity text-end'][last()]" position="after">
+            <t t-if="o.company_id.account_fiscal_country_id.code == 'VE'">
+                <td class="text-end">
+                    <span
+                        t-out="'%.2f' % (move.product_id.weight * move.product_uom_qty)"
+                    >0.00</span>
+                    <span
+                        t-out="move.product_id.weight_uom_name"
+                    >kg</span>
+                </td>
+                <td class="text-end">
+                    <span
+                        t-out="'%.4f' % (move.product_id.volume * move.product_uom_qty)"
+                    >0.0000</span>
+                    <span
+                        t-out="move.product_id.volume_uom_name"
+                    >m³</span>
+                </td>
+            </t>
+        </xpath>
+
+        <!-- Art. 10 Num. 4: Peso y volumen en la tabla de movimientos (estado == done) -->
+        <xpath expr="//table[@name='stock_move_line_table']//th[@name='th_sml_quantity']" position="after">
+            <t t-if="o.company_id.account_fiscal_country_id.code == 'VE'">
+                <th name="th_sml_weight" class="text-center">
+                    <strong>Peso</strong>
+                </th>
+                <th name="th_sml_volume" class="text-center">
+                    <strong>Volumen</strong>
+                </th>
+            </t>
+        </xpath>
+
+        <!-- Peso y volumen total al final del reporte -->
+        <xpath expr="//div[@class='oe_structure'][last()]" position="after">
+            <t t-if="o.company_id.account_fiscal_country_id.code == 'VE'">
+                <div class="row mt-3 mb-3">
+                    <div class="col-6">
+                        <table class="table table-sm table-borderless">
+                            <tr>
+                                <td><strong>Peso Total:</strong></td>
+                                <td class="text-end">
+                                    <span
+                                        t-out="'%.2f' % o.shipping_weight"
+                                    >0.00</span> kg
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong>Volumen Total:</strong></td>
+                                <td class="text-end">
+                                    <span
+                                        t-out="'%.4f' % o.shipping_volume"
+                                    >0.0000</span> m³
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </t>
         </xpath>
     </template>
 </odoo>

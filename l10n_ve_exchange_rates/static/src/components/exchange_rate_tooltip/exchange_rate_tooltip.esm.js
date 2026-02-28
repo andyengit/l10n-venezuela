@@ -13,6 +13,7 @@ export class ExchangeRateTooltip extends Component {
         this.state = useState({
             rates: [],
             company_currency: null,
+            featured: false,
             loading: false,
             showTooltip: false,
         });
@@ -33,6 +34,7 @@ export class ExchangeRateTooltip extends Component {
             );
             this.state.rates = data.rates;
             this.state.company_currency = data.company_currency;
+            this.state.featured = data.featured || false;
         } catch (error) {
             console.error("Error fetching exchange rates:", error);
         } finally {

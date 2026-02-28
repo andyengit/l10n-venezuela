@@ -39,6 +39,12 @@
                     <field name="vat" default_focus="1"  placeholder="VAT"/>
                 </h1>
             </xpath>
+            <xpath expr="//page[@name='sales_purchases']//group[@name='sale']" position="inside">
+                <field name="customer_rank" string="Rango de cliente"/>
+            </xpath>
+            <xpath expr="//page[@name='sales_purchases']//group[@name='purchase']" position="inside">
+                <field name="supplier_rank" string="Rango de proveedor"/>
+            </xpath>
         </field>
     </record>
 </odoo>

@@ -101,6 +101,18 @@ class ResPartner(models.Model):
 
         return True
 
+    @api.model
+    def _name_search(self, name='', domain=None, operator='ilike', limit=100, order=None):
+        domain = domain or []
+        search_mode = self.env.context.get('res_partner_search_mode')
+        if search_mode == 'customer':
+            domain = [('customer_rank', '>=', 1)] + domain
+        elif search_mode == 'supplier':
+            domain = [('supplier_rank', '>=', 1)] + domain
+        return super()._name_search(
+            name, domain=domain, operator=operator, limit=limit, order=order
+        )
+
     @api.constrains("country_id", "taxpayer_type")
     def _check_taxpayer_type_country(self):
         for rec in self:

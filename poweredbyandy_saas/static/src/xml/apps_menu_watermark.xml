@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<templates>
+    <t t-inherit="web_responsive.AppsMenu" t-inherit-mode="extension">
+        <xpath expr="//div[hasclass('app-menu-container')]" position="inside">
+            <img
+                class="poweredbyandy_watermark"
+                src="/poweredbyandy_saas/static/src/img/watermark_logo.png"
+                alt="Powered by Andy"
+            />
+        </xpath>
+    </t>
+</templates>

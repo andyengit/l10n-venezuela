@@ -1,7 +1,7 @@
 {
     "name": "Venezuela IGTF",
     "website": "https://github.com/OCA/l10n-venezuela",
-    "icon": "/account/static/description/l10n.png",
+    "icon": "/poweredbyandy_saas/static/description/icon.png",
     "countries": ["ve"],
     "author": "Odoo Community Association (OCA)",
     "category": "Accounting/Localizations",

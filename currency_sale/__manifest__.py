@@ -1,5 +1,6 @@
 {
     "name": "Multicurrency Sale",
+    "icon": "/poweredbyandy_saas/static/description/icon.png",
     "version": "18.0.1.0.0",
     "category": "Sales",
     "summary": "Multimoneda para Ventas",

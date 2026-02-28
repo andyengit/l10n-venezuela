@@ -121,7 +121,12 @@
             </xpath>
 
             <xpath expr="//field[@name='partner_id']" position="attributes">
-                <attribute name="context">{'show_vat': True}</attribute>
+                <attribute name="context">{
+                    'res_partner_search_mode': (move_type in ('out_invoice', 'out_refund', 'out_receipt') and 'customer') or (move_type in ('in_invoice', 'in_refund', 'in_receipt') and 'supplier') or False,
+                    'show_address': 1,
+                    'default_is_company': True,
+                    'show_vat': True,
+                }</attribute>
             </xpath>
         </field>
     </record>

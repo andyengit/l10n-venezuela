@@ -286,12 +286,17 @@
                                                 t-if="line.display_type == 'product'"
                                                 name="account_invoice_line_accountable"
                                             >
+                                                <t
+                                                    t-set="is_exempt"
+                                                    t-value="not line.tax_ids or all(tax.amount == 0 for tax in line.tax_ids)"
+                                                />
                                                 <td name="account_invoice_line_name">
                                                     <span
                                                         t-if="line.name"
                                                         t-field="line.name"
                                                         t-options="{'widget': 'text'}"
                                                     >Bacon Burger</span>
+                                                    <span t-if="is_exempt"> (E)</span>
                                                 </td>
                                                 <td
                                                     name="td_quantity"
@@ -422,6 +427,18 @@
                                     <div id="total" class="clearfix row">
                                         <div class="ms-auto">
                                             <t
+                                                t-set="l10n_ve_exempt_lines"
+                                                t-value="o.invoice_line_ids.filtered(lambda l: l.display_type == 'product' and not l.tax_ids)"
+                                            />
+                                            <t
+                                                t-set="l10n_ve_exempt_currency"
+                                                t-value="sum(l.price_subtotal for l in l10n_ve_exempt_lines)"
+                                            />
+                                            <t
+                                                t-set="l10n_ve_exempt_company"
+                                                t-value="sum(abs(l.balance) for l in l10n_ve_exempt_lines)"
+                                            />
+                                            <t
                                                 t-if="o.company_currency_id != o.currency_id"
                                             >
                                                 <table class="l10n_ve_totals_grid">
@@ -439,86 +456,49 @@
                                                                     t-value="o.company_currency_id"
                                                                 />
                                                                 <t
-                                                                    t-set="same_tax_base"
-                                                                    t-value="tax_totals['same_tax_base']"
-                                                                />
-                                                                <t
                                                                     t-foreach="tax_totals['subtotals']"
                                                                     t-as="subtotal"
                                                                 >
-                                                                    <tr
-                                                                        class="o_subtotal"
-                                                                    >
-                                                                        <td>
-                                                                            <span
-                                                                                t-out="subtotal['name']"
-                                                                            >Untaxed Amount</span>
-                                                                        </td>
-                                                                        <td
-                                                                            class="text-end"
-                                                                        >
-                                                                            <span
-                                                                                t-out="subtotal['base_amount']"
-                                                                                t-options='{"widget": "monetary", "display_currency": currency}'
-                                                                            >0.00</span>
-                                                                        </td>
-                                                                    </tr>
                                                                     <t
                                                                         t-foreach="subtotal['tax_groups']"
                                                                         t-as="tax_group"
                                                                     >
-                                                                        <tr
-                                                                            class="o_taxes"
-                                                                        >
-                                                                            <t
-                                                                                t-if="same_tax_base or tax_group['display_base_amount'] is None"
-                                                                            >
-                                                                                <td
-                                                                                    style="max-width: 200px;"
-                                                                                >
-                                                                                    <span
-                                                                                        t-out="tax_group['group_name']"
-                                                                                    >Tax</span>
-                                                                                </td>
-                                                                                <td
-                                                                                    class="text-end o_price_total"
-                                                                                >
-                                                                                    <span
-                                                                                        class="text-nowrap"
-                                                                                        t-out="tax_group['tax_amount']"
-                                                                                        t-options='{"widget": "monetary", "display_currency": currency}'
-                                                                                    >0.00</span>
-                                                                                </td>
-                                                                            </t>
-                                                                            <t
-                                                                                t-else=""
-                                                                            >
-                                                                                <td
+                                                                        <tr class="o_taxes">
+                                                                            <td>
+                                                                                <span
+                                                                                    t-out="tax_group['group_name']"
+                                                                                >IVA 16%</span>
+                                                                                <span> (</span>
+                                                                                <span
                                                                                     class="text-nowrap"
-                                                                                >
-                                                                                    <span
-                                                                                        t-out="tax_group['group_name']"
-                                                                                    >Tax</span>
-                                                                                    <span
-                                                                                    > on </span>
-                                                                                    <span
-                                                                                        t-out="tax_group['display_base_amount']"
-                                                                                        t-options='{"widget": "monetary", "display_currency": currency}'
-                                                                                    >0.00</span>
-                                                                                </td>
-                                                                                <td
-                                                                                    class="text-end o_price_total"
-                                                                                >
-                                                                                    <span
-                                                                                        class="text-nowrap"
-                                                                                        t-out="tax_group['tax_amount']"
-                                                                                        t-options='{"widget": "monetary", "display_currency": currency}'
-                                                                                    >0.00</span>
-                                                                                </td>
-                                                                            </t>
+                                                                                    t-out="tax_group['base_amount']"
+                                                                                    t-options='{"widget": "monetary", "display_currency": currency}'
+                                                                                >100.00</span>
+                                                                                <span>)</span>
+                                                                            </td>
+                                                                            <td class="text-end o_price_total">
+                                                                                <span
+                                                                                    class="text-nowrap"
+                                                                                    t-out="tax_group['tax_amount']"
+                                                                                    t-options='{"widget": "monetary", "display_currency": currency}'
+                                                                                >16.00</span>
+                                                                            </td>
                                                                         </tr>
                                                                     </t>
                                                                 </t>
+                                                                <tr
+                                                                    t-if="l10n_ve_exempt_company > 0.005"
+                                                                    class="o_taxes"
+                                                                >
+                                                                    <td>Exento/Exonerado</td>
+                                                                    <td class="text-end">
+                                                                        <span
+                                                                            class="text-nowrap"
+                                                                            t-out="l10n_ve_exempt_company"
+                                                                            t-options='{"widget": "monetary", "display_currency": currency}'
+                                                                        >0.00</span>
+                                                                    </td>
+                                                                </tr>
                                                                 <tr
                                                                     t-if="'cash_rounding_base_amount' in tax_totals"
                                                                 >
@@ -549,44 +529,167 @@
                                                             </table>
                                                         </td>
                                                         <td>
+                                                            <t
+                                                                t-set="tax_totals"
+                                                                t-value="o.tax_totals"
+                                                            />
+                                                            <t
+                                                                t-set="currency"
+                                                                t-value="o.currency_id"
+                                                            />
                                                             <table
                                                                 class="o_total_table table-borderless avoid-page-break-inside l10n_ve_totals_table"
                                                             >
                                                                 <t
-                                                                    t-if="o.tax_totals"
-                                                                    t-call="account.document_tax_totals"
+                                                                    t-foreach="tax_totals['subtotals']"
+                                                                    t-as="subtotal"
                                                                 >
                                                                     <t
-                                                                        t-set="tax_totals"
-                                                                        t-value="o.tax_totals"
-                                                                    />
-                                                                    <t
-                                                                        t-set="currency"
-                                                                        t-value="o.currency_id"
-                                                                    />
+                                                                        t-foreach="subtotal['tax_groups']"
+                                                                        t-as="tax_group"
+                                                                    >
+                                                                        <tr class="o_taxes">
+                                                                            <td>
+                                                                                <span
+                                                                                    t-out="tax_group['group_name']"
+                                                                                >IVA 16%</span>
+                                                                                <span> (</span>
+                                                                                <span
+                                                                                    class="text-nowrap"
+                                                                                    t-out="tax_group['base_amount_currency']"
+                                                                                    t-options='{"widget": "monetary", "display_currency": currency}'
+                                                                                >100.00</span>
+                                                                                <span>)</span>
+                                                                            </td>
+                                                                            <td class="text-end o_price_total">
+                                                                                <span
+                                                                                    class="text-nowrap"
+                                                                                    t-out="tax_group['tax_amount_currency']"
+                                                                                    t-options='{"widget": "monetary", "display_currency": currency}'
+                                                                                >16.00</span>
+                                                                            </td>
+                                                                        </tr>
+                                                                    </t>
                                                                 </t>
+                                                                <tr
+                                                                    t-if="l10n_ve_exempt_currency > 0.005"
+                                                                    class="o_taxes"
+                                                                >
+                                                                    <td>Exento/Exonerado</td>
+                                                                    <td class="text-end">
+                                                                        <span
+                                                                            class="text-nowrap"
+                                                                            t-out="l10n_ve_exempt_currency"
+                                                                            t-options='{"widget": "monetary", "display_currency": currency}'
+                                                                        >0.00</span>
+                                                                    </td>
+                                                                </tr>
+                                                                <tr
+                                                                    t-if="'cash_rounding_base_amount_currency' in tax_totals"
+                                                                >
+                                                                    <td>Redondeo</td>
+                                                                    <td class="text-end">
+                                                                        <span
+                                                                            t-out="tax_totals['cash_rounding_base_amount_currency']"
+                                                                            t-options='{"widget": "monetary", "display_currency": currency}'
+                                                                        >0</span>
+                                                                    </td>
+                                                                </tr>
+                                                                <tr class="o_total">
+                                                                    <td>
+                                                                        <strong>Total</strong>
+                                                                    </td>
+                                                                    <td class="text-end">
+                                                                        <strong
+                                                                            t-out="tax_totals['total_amount_currency']"
+                                                                            t-options='{"widget": "monetary", "display_currency": currency}'
+                                                                        >0.00</strong>
+                                                                    </td>
+                                                                </tr>
                                                             </table>
                                                         </td>
                                                     </tr>
                                                 </table>
                                             </t>
                                             <t t-else="">
+                                                <t
+                                                    t-set="tax_totals"
+                                                    t-value="o.tax_totals"
+                                                />
+                                                <t
+                                                    t-set="currency"
+                                                    t-value="o.currency_id"
+                                                />
                                                 <table
                                                     class="o_total_table table-borderless avoid-page-break-inside l10n_ve_totals_table"
+                                                    t-if="tax_totals"
                                                 >
                                                     <t
-                                                        t-if="o.tax_totals"
-                                                        t-call="account.document_tax_totals"
+                                                        t-foreach="tax_totals['subtotals']"
+                                                        t-as="subtotal"
                                                     >
                                                         <t
-                                                            t-set="tax_totals"
-                                                            t-value="o.tax_totals"
-                                                        />
-                                                        <t
-                                                            t-set="currency"
-                                                            t-value="o.currency_id"
-                                                        />
+                                                            t-foreach="subtotal['tax_groups']"
+                                                            t-as="tax_group"
+                                                        >
+                                                            <tr class="o_taxes">
+                                                                <td>
+                                                                    <span
+                                                                        t-out="tax_group['group_name']"
+                                                                    >IVA 16%</span>
+                                                                    <span> (</span>
+                                                                    <span
+                                                                        class="text-nowrap"
+                                                                        t-out="tax_group['base_amount_currency']"
+                                                                        t-options='{"widget": "monetary", "display_currency": currency}'
+                                                                    >100.00</span>
+                                                                    <span>)</span>
+                                                                </td>
+                                                                <td class="text-end o_price_total">
+                                                                    <span
+                                                                        class="text-nowrap"
+                                                                        t-out="tax_group['tax_amount_currency']"
+                                                                        t-options='{"widget": "monetary", "display_currency": currency}'
+                                                                    >16.00</span>
+                                                                </td>
+                                                            </tr>
+                                                        </t>
                                                     </t>
+                                                    <tr
+                                                        t-if="l10n_ve_exempt_currency > 0.005"
+                                                        class="o_taxes"
+                                                    >
+                                                        <td>Exento/Exonerado</td>
+                                                        <td class="text-end">
+                                                            <span
+                                                                class="text-nowrap"
+                                                                t-out="l10n_ve_exempt_currency"
+                                                                t-options='{"widget": "monetary", "display_currency": currency}'
+                                                            >0.00</span>
+                                                        </td>
+                                                    </tr>
+                                                    <tr
+                                                        t-if="'cash_rounding_base_amount_currency' in tax_totals"
+                                                    >
+                                                        <td>Redondeo</td>
+                                                        <td class="text-end">
+                                                            <span
+                                                                t-out="tax_totals['cash_rounding_base_amount_currency']"
+                                                                t-options='{"widget": "monetary", "display_currency": currency}'
+                                                            >0</span>
+                                                        </td>
+                                                    </tr>
+                                                    <tr class="o_total">
+                                                        <td>
+                                                            <strong>Total</strong>
+                                                        </td>
+                                                        <td class="text-end">
+                                                            <strong
+                                                                t-out="tax_totals['total_amount_currency']"
+                                                                t-options='{"widget": "monetary", "display_currency": currency}'
+                                                            >0.00</strong>
+                                                        </td>
+                                                    </tr>
                                                 </table>
                                             </t>
                                         </div>

@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Acción: Todos los productos (sin filtro de venta, vista kanban) -->
+    <record id="action_all_products" model="ir.actions.act_window">
+        <field name="name">Productos</field>
+        <field name="res_model">product.template</field>
+        <field name="view_mode">kanban,list,form,activity</field>
+        <field name="view_id" ref="product.product_template_kanban_view"/>
+        <field name="search_view_id" ref="product.product_template_search_view"/>
+        <field name="context"></field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Crear un nuevo producto
+            </p>
+        </field>
+    </record>
+
+    <!-- Acción: Todas las variantes (sin filtro de venta) -->
+    <record id="action_all_variants" model="ir.actions.act_window">
+        <field name="name">Variantes</field>
+        <field name="res_model">product.product</field>
+        <field name="view_mode">kanban,list,form,activity</field>
+        <field name="context"></field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Crear una nueva variante
+            </p>
+        </field>
+    </record>
+
+    <!-- Main Menu -->
+    <menuitem
+        id="menu_poweredbyandy_root"
+        name="Productos"
+        web_icon="poweredbyandy_saas,static/src/icon.svg"
+        action="action_all_products"
+        sequence="11"
+    />
+
+    <!-- Productos > Productos -->
+    <menuitem
+        id="menu_poweredbyandy_products_parent"
+        name="Productos"
+        parent="menu_poweredbyandy_root"
+        sequence="1"
+    />
+    <menuitem
+        id="menu_poweredbyandy_products"
+        name="Productos"
+        parent="menu_poweredbyandy_products_parent"
+        action="action_all_products"
+        sequence="1"
+    />
+    <!-- Productos > Variantes -->
+    <menuitem
+        id="menu_poweredbyandy_variants"
+        name="Variantes"
+        parent="menu_poweredbyandy_products_parent"
+        action="action_all_variants"
+        sequence="2"
+    />
+    <!-- Productos > Atributos -->
+    <menuitem
+        id="menu_poweredbyandy_attributes"
+        name="Atributos"
+        parent="menu_poweredbyandy_products_parent"
+        action="product.attribute_action"
+        sequence="3"
+    />
+
+    <!-- Listas de Precios -->
+    <menuitem
+        id="menu_poweredbyandy_pricelists"
+        name="Listas de Precios"
+        parent="menu_poweredbyandy_root"
+        action="product.product_pricelist_action2"
+        sequence="2"
+    />
+</odoo>

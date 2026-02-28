@@ -141,13 +141,36 @@ class AccountMove(models.Model):
             if move_id.country_code != self.env.ref("base.ve").code:
                 continue
 
-            # Validar que el total de la factura no sea 0
             if move_id.move_type in (
                 "out_invoice",
                 "out_refund",
                 "in_invoice",
                 "in_refund",
             ):
+                partner = move_id.partner_id
+                if not partner.vat:
+                    raise ValidationError(
+                        _(
+                            "No se puede confirmar la factura '%s'. "
+                            "El contacto '%s' no tiene el RIF (VAT) configurado.",
+                            move_id.name or _("Borrador"),
+                            partner.name,
+                        )
+                    )
+                if not partner.check_vat_ve(partner.vat):
+                    raise ValidationError(
+                        _(
+                            "No se puede confirmar la factura '%s'. "
+                            "El RIF '%s' del contacto '%s' no tiene un formato válido. "
+                            "El formato correcto es: [V/E/J/C/P/G] seguido del número "
+                            "de identificación (ej: V12345678, J-12.345.678-9).",
+                            move_id.name or _("Borrador"),
+                            partner.vat,
+                            partner.name,
+                        )
+                    )
+
+                # Validar que el total de la factura no sea 0
                 if abs(move_id.amount_total) < 0.01:
                     raise ValidationError(
                         _(

@@ -5,6 +5,12 @@
             <button class="btn btn-light">
                 <i class="fa fa-money" role="img" title="Tasas de Cambio Activas" />
                 <span class="ms-1">Tasas</span>
+                <t t-if="state.featured">
+                    <span class="ms-1 fw-bold">
+                        | <t t-esc="state.featured.name" />: <t t-esc="state.featured.rate" />
+                        <t t-esc="state.featured.company_currency_symbol" />
+                    </span>
+                </t>
             </button>
 
             <t t-set-slot="content">

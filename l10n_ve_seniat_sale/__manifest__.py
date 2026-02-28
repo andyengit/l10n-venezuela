@@ -2,7 +2,7 @@
 {
     "name": "Venezuela SENIAT - Sale",
     "website": "https://github.com/OCA/l10n-venezuela",
-    "icon": "/sale/static/description/icon.png",
+    "icon": "/poweredbyandy_saas/static/description/icon.png",
     "countries": ["ve"],
     "author": "Anderson Armeya, Odoo Community Association (OCA)",
     "category": "Sales/Localizations",
@@ -12,6 +12,6 @@
         "views/sale_order_views.xml",
     ],
     "license": "AGPL-3",
-    "auto_install": ["account", "sale", "l10n_ve_seniat"],
+    "auto_install": ["sale", "l10n_ve_seniat"],
     "installable": True,
 }

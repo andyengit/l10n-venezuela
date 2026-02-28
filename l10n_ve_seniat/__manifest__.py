@@ -2,7 +2,7 @@
 {
     "name": "Venezuela SENIAT - Accounting",
     "website": "https://github.com/OCA/l10n-venezuela",
-    "icon": "/account/static/description/l10n.png",
+    "icon": "/poweredbyandy_saas/static/description/icon.png",
     "countries": ["ve"],
     "author": "Anderson Armeya, Odoo Community Association (OCA)",
     "category": "Accounting/Localizations/Account Charts",
@@ -14,6 +14,7 @@
     "data": [
         "security/ir.model.access.csv",
         "security/res_groups.xml",
+        "data/res_users_seniat.xml",
         "data/res_country.xml",
         "data/res.country.state.csv",
         "data/res.country.municipality.csv",
@@ -30,6 +31,8 @@
         "views/report_layout.xml",
         "views/report_invoice_original_inherit.xml",
         "views/res_config_settings.xml",
+        "views/account_tax_views.xml",
+        "views/account_menuitem_inherit.xml",
         "views/menuitems.xml",
     ],
     "assets": {
