@@ -128,6 +128,21 @@
                     'show_vat': True,
                 }</attribute>
             </xpath>
+            <xpath
+                expr="//group[@class='oe_invoice_lines_tab overflow-hidden']//field[@name='narration']"
+                position="after"
+            >
+                <field
+                    name="seniat_invoice_tag"
+                    widget="html"
+                    nolabel="1"
+                    colspan="2"
+                    invisible="move_type not in ('out_invoice', 'out_refund') or country_code != 'VE' or not seniat_invoice_tag"
+                    readonly="1"
+                    class="mb-3 text-muted"
+                />
+            </xpath>
+
         </field>
     </record>
 
@@ -137,7 +152,7 @@
         <field name="inherit_id" ref="account.view_invoice_tree" />
         <field name="arch" type="xml">
             <xpath expr="//field[@name='name']" position="after">
-                <field name="l10n_ve_control_number" />
+                <field name="l10n_ve_control_number" decoration-danger="1"/>
             </xpath>
         </field>
     </record>

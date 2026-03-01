@@ -39,6 +39,7 @@
         "l10n_ve_product_currency",
         "l10n_ve_sale_product_pricelist_catalog",
         "l10n_ve_pricelist_by_rate",
+        "l10n_ve_audit",
         "currency_account",
         "currency_purchase",
         "currency_sale",

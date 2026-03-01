@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_type_person_list" model="ir.ui.view">
+        <field name="name">type.person.list</field>
+        <field name="model">type.person</field>
+        <field name="arch" type="xml">
+            <list editable="bottom">
+                <field name="name" required="1" />
+                <field name="state" />
+            </list>
+        </field>
+    </record>
+
+    <record id="view_type_person_search" model="ir.ui.view">
+        <field name="name">type.person.search</field>
+        <field name="model">type.person</field>
+        <field name="arch" type="xml">
+            <search string="Type Person">
+                <field name="name" />
+                <filter name="active" string="Active" domain="[('state','=',True)]" />
+            </search>
+        </field>
+    </record>
+
+    <record id="action_type_person" model="ir.actions.act_window">
+        <field name="name">Type Person</field>
+        <field name="res_model">type.person</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="view_mode">list,form</field>
+        <field name="view_id" ref="view_type_person_list" />
+        <field name="context">{"search_default_active": True}</field>
+    </record>
+</odoo>

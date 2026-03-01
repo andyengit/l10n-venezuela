@@ -29,7 +29,6 @@ class ResPartner(models.Model):
     #             partner.display_name = f"{partner.vat or ""} - {partner.display_name or ""}"
     #             continue
     #         partner.display_name = partner.display_name
-            
 
     taxpayer_type = fields.Selection(
         [
@@ -102,13 +101,15 @@ class ResPartner(models.Model):
         return True
 
     @api.model
-    def _name_search(self, name='', domain=None, operator='ilike', limit=100, order=None):
+    def _name_search(
+        self, name="", domain=None, operator="ilike", limit=100, order=None
+    ):
         domain = domain or []
-        search_mode = self.env.context.get('res_partner_search_mode')
-        if search_mode == 'customer':
-            domain = [('customer_rank', '>=', 1)] + domain
-        elif search_mode == 'supplier':
-            domain = [('supplier_rank', '>=', 1)] + domain
+        search_mode = self.env.context.get("res_partner_search_mode")
+        if search_mode == "customer":
+            domain = [("customer_rank", ">=", 1)] + domain
+        elif search_mode == "supplier":
+            domain = [("supplier_rank", ">=", 1)] + domain
         return super()._name_search(
             name, domain=domain, operator=operator, limit=limit, order=order
         )

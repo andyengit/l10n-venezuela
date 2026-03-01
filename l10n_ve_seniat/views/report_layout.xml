@@ -116,6 +116,12 @@
                                 >INV/2023/0001</span>
                             </t>
                             <div
+                                t-if="o.company_id.taxpayer_type == 'formal'"
+                                class="text-center fw-bold mb-2"
+                            >
+                                Contribuyente Formal
+                            </div>
+                            <div
                                 id="informations"
                                 class="row mb-1"
                                 t-if="o.invoice_date or (o.invoice_date_due and o.move_type == 'out_invoice' and o.state == 'posted') or o.delivery_date or o.invoice_origin or o.partner_id.ref or o.ref or o.invoice_incoterm_id"

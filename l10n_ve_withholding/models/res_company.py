@@ -40,6 +40,12 @@ class ResCompany(models.Model):
         string="The condition of this taxpayer requires the withholding of",
     )
 
+    type_person_id = fields.Many2one(
+        "type.person",
+        related="partner_id.type_person_id",
+        readonly=False,
+    )
+
     code_visible = fields.Boolean(string="See payment concept code")
 
     hide_patent_columns_extra = fields.Boolean(

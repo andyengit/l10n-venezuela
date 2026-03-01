@@ -1,37 +1,11 @@
-<?xml version="1.0" encoding="utf-8" ?>
+<?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <menuitem
-        id="l10n_ve_menu_no_one"
-        parent="base.menu_custom"
-        name="Venezuelan Localization"
-    >
-        <menuitem
-            name="Municipalities"
-            id="menu_res_municipality"
-            action="action_res_country_municipality"
-            sequence="2"
-        />
+    <!-- Sub-menu categories under SENIAT -->
+    <menuitem id="menu_seniat_localization" name="Localización" parent="l10n_ve_seniat.menu_seniat_root" sequence="20" />
+    <!-- Sequences -->
+    <menuitem id="menu_seniat_sequences" name="Sequences" parent="l10n_ve_seniat.menu_seniat_root" sequence="30" />
 
-        <menuitem
-            name="Parish"
-            id="menu_res_country_parish"
-            action="action_res_country_parish"
-            sequence="3"
-        />
-
-        <menuitem
-            name="N° de Control"
-            id="menu_l10n_ve_control_number_sequence"
-            action="action_l10n_ve_control_number_sequence"
-            sequence="10"
-        />
-    </menuitem>
-    <menuitem
-        id="menu_account_move_audit_log"
-        name="Audit Log - Moves"
-        action="action_account_move_audit_log"
-        parent="account.menu_finance_reports"
-        sequence="99"
-        groups="account.group_account_user"
-    />
+    <menuitem id="menu_seniat_control_number" name="N° de Control" parent="menu_seniat_sequences" action="action_l10n_ve_control_number_sequence" sequence="10" />
+    <!-- Reports -->
+    <menuitem id="menu_seniat_reports" name="Reports" parent="l10n_ve_seniat.menu_seniat_root" sequence="80" />
 </odoo>

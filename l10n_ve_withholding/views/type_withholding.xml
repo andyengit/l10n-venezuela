@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <record id="view_type_withholding_list_l10n_ve_withholding" model="ir.ui.view">
         <field name="name">IVA Retention</field>
@@ -17,7 +18,7 @@
         <field name="arch" type="xml">
             <search string="IVA Retention">
                 <field name="name" />
-                <filter name="state" domain="[('state','=',True)]" string="Active" />
+                <filter name="state" string="Active" domain="[('state','=',True)]" />
             </search>
         </field>
     </record>

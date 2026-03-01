@@ -28,6 +28,11 @@ class ResConfigSettings(models.TransientModel):
     condition_withholding_id = fields.Many2one(
         related="company_id.condition_withholding_id", readonly=False
     )
+    type_person_id = fields.Many2one(
+        "type.person",
+        related="company_id.type_person_id",
+        readonly=False,
+    )
     code_visible = fields.Boolean(related="company_id.code_visible", readonly=False)
 
     hide_patent_columns_extra = fields.Boolean(

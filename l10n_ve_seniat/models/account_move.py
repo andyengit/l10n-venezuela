@@ -9,26 +9,42 @@ _logger = logging.getLogger(__name__)
 class AccountMove(models.Model):
     _inherit = "account.move"
 
-    audit_log_ids = fields.One2many(
-        "account.move.audit.log",
-        "move_id",
-        string="Audit Log",
+    seniat_invoice_tag = fields.Html(
+        string="SENIAT Invoice Tag",
         readonly=True,
+        compute="_compute_seniat_invoice_tag",
     )
 
-    @api.model_create_multi
-    def create(self, vals_list):
-        moves = super().create(vals_list)
-        for move in moves:
-            self.env["account.move.audit.log"].log_action(move, "create")
-        return moves
+    @api.depends("company_id", "l10n_ve_inverse_rate", "move_type", "country_code")
+    def _compute_seniat_invoice_tag(self):
+        for move in self:
+            if move.country_code == "VE" and move.move_type in (
+                "out_invoice",
+                "out_refund",
+            ):
+                texts = []
+                # Primer texto sobre IGTF
+                texts.append(
+                    "<p>Este pago estará sujeto al cobro adicional del 3% del Impuesto a las Grandes Transacciones Financieras (IGTF), de conformidad con la Providencia Administrativa SNAT/2022/000013 publicada en la G.O N 42.339 del 17-03-2022, en caso de ser cancelado en divisas. No aplica en pago en Bs.</p>"
+                )
+                # Segundo texto sobre tipo de cambio (solo si hay tasa inversa)
+                if (
+                    move.l10n_ve_inverse_rate
+                    and move.company_currency_id != move.currency_id
+                ):
+                    # Formatear la tasa inversa con la moneda de la compañía
+                    rate_formatted = move.company_currency_id.format(
+                        move.l10n_ve_inverse_rate
+                    )
+                    texts.append(
+                        f"<p>Este documento se expresa en Bolívares con su equivalente en Divisas, al tipo de cambio corriente del mercado a la fecha de su emisión, según lo establecido en el articulo 13 numeral 14 de la providencia administrativa SNAT/2011/0071 ({rate_formatted}) en concordancia con el articulo 128 de la Ley del Banco Central de Venezuela (BCV); articulo 15 de la Ley que establece el impuesto al valor agregado (IVA) y 38 del Reglamento General de la Ley que establece el Impuesto de Valor agregado (RLIVA)</p>"
+                    )
+                move.seniat_invoice_tag = "".join(texts) if texts else False
+            else:
+                move.seniat_invoice_tag = False
 
     def write(self, vals):
         res = super().write(vals)
-        if vals:
-            changes = self._format_changes(vals)
-            for move in self:
-                self.env["account.move.audit.log"].log_action(move, "write", changes)
         if "l10n_ve_control_number" in vals:
             for rec in self:
                 if rec.l10n_ve_control_number and rec.move_type in (
@@ -37,67 +53,6 @@ class AccountMove(models.Model):
                 ):
                     rec._check_control_number_unique()
         return res
-
-    def unlink(self):
-        audit_log_model = self.env["account.move.audit.log"]
-        ip_address = audit_log_model._get_ip_address()
-
-        for move in self:
-            move_data = {
-                "move_id": move.id,
-                "move_name": move.name or f"Move ID: {move.id}",
-                "user_id": self.env.user.id,
-                "action": "unlink",
-                "ip_address": ip_address or "",
-                "changes": move._format_move_data_for_audit(),
-            }
-            audit_log_model.create(move_data)
-
-        return super().unlink()
-
-    def _format_move_data_for_audit(self):
-        """Formatea los datos del movimiento para el log de auditoría"""
-        self.ensure_one()
-        data = []
-        data.append(f"Tipo: {self.move_type}")
-        data.append(f"Fecha: {self.date or ''}")
-        data.append(f"Partner: {self.partner_id.name if self.partner_id else ''}")
-        data.append(f"Total: {self.amount_total}")
-        data.append(f"Estado: {self.state}")
-
-        if self.line_ids:
-            data.append("\nLíneas:")
-            for line in self.line_ids[:10]:
-                line_info = f"  - {line.name or ''}: {line.balance}"
-                if line.partner_id:
-                    line_info += f" (Partner: {line.partner_id.name})"
-                data.append(line_info)
-            if len(self.line_ids) > 10:
-                data.append(f"  ... y {len(self.line_ids) - 10} líneas más")
-
-        return "\n".join(data)
-
-    def _format_changes(self, vals):
-        """Format the changes dictionary into a readable string."""
-        changes_list = []
-        for field_name, value in vals.items():
-            field = self._fields.get(field_name)
-            if field:
-                field_label = field.string or field_name
-                if isinstance(value, (list, tuple)) and len(value) >= 2:
-                    if value[0] == 4:
-                        changes_list.append(f"{field_label}: Added (ID: {value[1]})")
-                    elif value[0] == 5:
-                        changes_list.append(f"{field_label}: Removed all")
-                    elif value[0] == 6:
-                        changes_list.append(
-                            f"{field_label}: Replaced with {len(value[2])} items"
-                        )
-                else:
-                    changes_list.append(f"{field_label}: {value}")
-            else:
-                changes_list.append(f"{field_name}: {value}")
-        return "\n".join(changes_list)
 
     l10n_ve_ve_invoice_original_printed = fields.Boolean(
         string="VE Invoice Original Printed",
@@ -272,18 +227,18 @@ Please create a credit note instead.
         # Verificar que la secuencia existe y es válida
         sequence = self.env["ir.sequence"].browse(sequence_id)
         if not sequence.exists():
-            _logger.warning("Sequence with ID %s does not exist for move %s", sequence_id, self.name)
+            _logger.warning(
+                "Sequence with ID %s does not exist for move %s", sequence_id, self.name
+            )
             return
 
-        self.l10n_ve_control_number = (
-            sequence
-            .with_company(self.company_id.id)
-            .next_by_id()
-        )
+        self.l10n_ve_control_number = sequence.with_company(
+            self.company_id.id
+        ).next_by_id()
         self._check_control_number_unique()
 
     def _check_control_number_unique(self):
-        """Valida que el número de control sea único por compañía"""
+        """Valida que el número de control sea único y no inferior al último asignado por compañía"""
         self.ensure_one()
         if not self.l10n_ve_control_number:
             return
@@ -307,6 +262,56 @@ Please create a credit note instead.
                     "Por favor, verifique la secuencia o corrija el número manualmente."
                 )
                 % (self.l10n_ve_control_number, self.company_id.name)
+            )
+
+        # Validar que el número de control no sea inferior al último asignado
+        self._check_control_number_not_inferior()
+
+    def _extract_control_number_numeric(self, control_number):
+        """Extrae la parte numérica del número de control para comparación"""
+        if not control_number:
+            return 0
+        # Extraer solo los dígitos del número de control
+        digits = "".join(c for c in control_number if c.isdigit())
+        return int(digits) if digits else 0
+
+    def _check_control_number_not_inferior(self):
+        """Valida que el número de control no sea inferior al último asignado por compañía"""
+        self.ensure_one()
+        if not self.l10n_ve_control_number:
+            return
+
+        # Buscar el número de control más alto existente en la misma compañía
+        last_move = self.search(
+            [
+                ("l10n_ve_control_number", "!=", False),
+                ("company_id", "=", self.company_id.id),
+                ("move_type", "in", ("out_invoice", "out_refund")),
+                ("id", "!=", self.id),
+            ],
+            order="l10n_ve_control_number desc",
+            limit=1,
+        )
+
+        if not last_move:
+            return
+
+        current_num = self._extract_control_number_numeric(self.l10n_ve_control_number)
+        last_num = self._extract_control_number_numeric(
+            last_move.l10n_ve_control_number
+        )
+
+        if current_num < last_num:
+            raise ValidationError(
+                _(
+                    "El número de control '%s' es inferior al último número de control asignado '%s' "
+                    "en la compañía '%s'. No se permite asignar un número de control anterior al último utilizado."
+                )
+                % (
+                    self.l10n_ve_control_number,
+                    last_move.l10n_ve_control_number,
+                    self.company_id.name,
+                )
             )
 
     sale_tax_data = fields.Json(

@@ -1,0 +1,17 @@
+.l10n_ve_version_label {
+    position: fixed;
+    bottom: 8px;
+    right: 12px;
+    font-size: 14px;
+    font-weight: 500;
+    color: rgba(0, 0, 0, 0.3);
+    letter-spacing: 0.3px;
+    pointer-events: none;
+    z-index: 1000;
+    user-select: none;
+}
+
+.o_dark .l10n_ve_version_label,
+html[data-color-scheme="dark"] .l10n_ve_version_label {
+    color: rgba(255, 255, 255, 0.3);
+}

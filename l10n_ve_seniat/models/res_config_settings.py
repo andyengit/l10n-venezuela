@@ -4,6 +4,11 @@ from odoo import fields, models
 class ResConfigSettings(models.TransientModel):
     _inherit = "res.config.settings"
 
+    taxpayer_type = fields.Selection(
+        related="company_id.taxpayer_type",
+        readonly=False,
+    )
+
     exent_aliquot_sale = fields.Many2one(
         "account.tax", related="company_id.exent_aliquot_sale", readonly=False
     )

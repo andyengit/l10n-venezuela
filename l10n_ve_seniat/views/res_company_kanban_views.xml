@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Kanban View for res.company -->
+    <record id="res_company_kanban_view" model="ir.ui.view">
+        <field name="name">res.company.kanban.seniat</field>
+        <field name="model">res.company</field>
+        <field name="arch" type="xml">
+            <kanban>
+                <templates>
+                    <t t-name="card">
+                        <aside class="o_seniat_company_logo">
+                            <field name="logo" widget="image" class="rounded" options="{'size': [128, 128]}" />
+                        </aside>
+                        <main>
+                            <field name="name" class="fw-bold fs-5" />
+                            <field name="vat" class="text-muted" />
+                            <field name="taxpayer_type" />
+                            <field name="street" />
+                            <field name="street2" />
+                            <field name="city" />
+                            <field name="state_id" />
+                            <field name="country_id" />
+                            <field name="currency_id"/>
+                            <field name="zip" class="text-muted" />
+                        </main>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+    <!-- Company Form View - Inherited -->
+    <record id="res_company_form_view_seniat" model="ir.ui.view">
+        <field name="name">res.company.form.seniat</field>
+        <field name="model">res.company</field>
+        <field name="inherit_id" ref="base.view_company_form" />
+        <field name="arch" type="xml">
+            <field position="after" name="vat">
+                <field name="taxpayer_type" string="Taxpayer Type" />
+            </field>
+        </field>
+    </record>
+    <!-- Window Action -->
+    <record id="action_seniat_companies" model="ir.actions.act_window">
+        <field name="name">Empresas</field>
+        <field name="res_model">res.company</field>
+        <field name="view_mode">kanban,list,form</field>
+        <field name="view_id" ref="res_company_kanban_view" />
+    </record>
+    <!-- Root SENIAT Menu -->
+    <menuitem id="menu_seniat_root" name="SENIAT" sequence="90" web_icon="l10n_ve_seniat,static/src/img/LogoSENIAT.png" />
+    <!-- Sub-menu: Empresas -->
+    <menuitem id="menu_seniat_companies" name="Empresas" parent="menu_seniat_root" action="action_seniat_companies" sequence="10" />
+</odoo>

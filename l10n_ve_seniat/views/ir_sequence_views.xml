@@ -4,14 +4,12 @@
     <record id="action_l10n_ve_control_number_sequence" model="ir.actions.act_window">
         <field name="name">N° de Control (Venezuela)</field>
         <field name="res_model">ir.sequence</field>
-        <field name="view_mode">form</field>
-        <field name="domain">[('code', '=', 'l10n_ve_control_number')]</field>
-        <field
-            name="context"
-        >{'default_code': 'l10n_ve_control_number', 'search_default_code': 'l10n_ve_control_number'}</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('code', 'ilike', 'l10n_ve_journal_')]</field>
+        <field name="context"></field>
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">
-                Configure la secuencia para el N° de Control
+                Configure la secuencia para el N° de Control en los Diarios
             </p>
             <p>
                 Esta secuencia generará automáticamente los números de control para las facturas venezolanas.

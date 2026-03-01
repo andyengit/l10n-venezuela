@@ -13,7 +13,6 @@ access_l10n_ve_account_retention_3,l10n_ve_account_retention,model_account_reten
 access_l10n_ve_account_retention_line_3,l10n_ve_account_retention_line,model_account_retention_line,account.group_account_user,1,1,1,1
 
 access_type_withholdind,id_type_withholdind,model_account_withholding_type,,1,1,1,1
-access_type_person,id_type_person,model_type_person,base.group_user,1,1,1,1
 access_fees,Tarifas,model_fees_retention,,1,1,1,1
 access_fees_acumulative,Tarifas Acumulada,model_accumulated_fees,,1,1,1,1
 access_configurate_signature,Configuraciones de firma,model_signature_config,,1,1,1,1
@@ -37,3 +36,4 @@ access_economy_activity_fiscal_user_user,access_economy_activity_fiscal_user_use
 
 account.access_account_journal_group_manager,account.access_account_journal_group_manager,account.model_account_journal_group,account.group_account_manager,1,1,1,0
 account.access_account_tax_manager,account.access_account_tax_manager,account.model_account_tax,account.group_account_manager,1,1,1,0
+access_type_person,access_type_person,model_type_person,base.group_user,1,1,1,1
