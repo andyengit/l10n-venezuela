@@ -71,7 +71,6 @@
         "developer_menu",
         "disable_odoo_online",
         "google_calendar",
-        "mail_notification_with_history",
         "microsoft_calendar",
         "partner_ref_unique",
         "product_margin",
