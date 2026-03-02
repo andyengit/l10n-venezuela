@@ -1,4 +1,5 @@
 import logging
+from odoo.tools.safe_eval import safe_eval
 
 from odoo import _, api, fields, models
 from odoo.exceptions import UserError, ValidationError
@@ -25,19 +26,16 @@ class AccountMove(models.Model):
                 texts = []
                 # Primer texto sobre IGTF
                 texts.append(
-                    "<p>Este pago estará sujeto al cobro adicional del 3% del Impuesto a las Grandes Transacciones Financieras (IGTF), de conformidad con la Providencia Administrativa SNAT/2022/000013 publicada en la G.O N 42.339 del 17-03-2022, en caso de ser cancelado en divisas. No aplica en pago en Bs.</p>"
+                    "<span>Este pago estará sujeto al cobro adicional del 3% del Impuesto a las Grandes Transacciones Financieras (IGTF), de conformidad con la Providencia Administrativa SNAT/2022/000013 publicada en la G.O N 42.339 del 17-03-2022, en caso de ser cancelado en divisas. No aplica en pago en Bs.</span> "
                 )
                 # Segundo texto sobre tipo de cambio (solo si hay tasa inversa)
-                if (
-                    move.l10n_ve_inverse_rate
-                    and move.company_currency_id != move.currency_id
-                ):
+                if (move.company_currency_id != move.currency_id):
                     # Formatear la tasa inversa con la moneda de la compañía
                     rate_formatted = move.company_currency_id.format(
                         move.l10n_ve_inverse_rate
                     )
                     texts.append(
-                        f"<p>Este documento se expresa en Bolívares con su equivalente en Divisas, al tipo de cambio corriente del mercado a la fecha de su emisión, según lo establecido en el articulo 13 numeral 14 de la providencia administrativa SNAT/2011/0071 ({rate_formatted}) en concordancia con el articulo 128 de la Ley del Banco Central de Venezuela (BCV); articulo 15 de la Ley que establece el impuesto al valor agregado (IVA) y 38 del Reglamento General de la Ley que establece el Impuesto de Valor agregado (RLIVA)</p>"
+                        f"<span>Este documento se expresa en Bolívares con su equivalente en Divisas, al tipo de cambio corriente del mercado a la fecha de su emisión, según lo establecido en el articulo 13 numeral 14 de la providencia administrativa SNAT/2011/0071 ({rate_formatted}) en concordancia con el articulo 128 de la Ley del Banco Central de Venezuela (BCV); articulo 15 de la Ley que establece el impuesto al valor agregado (IVA) y 38 del Reglamento General de la Ley que establece el Impuesto de Valor agregado (RLIVA)</span>"
                     )
                 move.seniat_invoice_tag = "".join(texts) if texts else False
             else:
@@ -54,7 +52,7 @@ class AccountMove(models.Model):
                     rec._check_control_number_unique()
         return res
 
-    l10n_ve_ve_invoice_original_printed = fields.Boolean(
+    l10n_ve_invoice_original_printed = fields.Boolean(
         string="VE Invoice Original Printed",
         copy=False,
         readonly=True,
@@ -250,7 +248,7 @@ Please create a credit note instead.
         domain = [
             ("l10n_ve_control_number", "=", self.l10n_ve_control_number),
             ("company_id", "=", self.company_id.id),
-            ("move_type", "in", ("out_invoice", "out_refund")),
+            ("move_type", "=", self.move_type),
             ("id", "!=", self.id),
         ]
 
@@ -364,12 +362,6 @@ Please create a credit note instead.
                 tax_config["extend"] = company.extend_aliquot_sale.tax_group_id.id
 
             subtotals = tax_totals.get("subtotals", [])
-            _logger.info(
-                "_compute_sale_tax_data - move=%s, subtotals count=%s, tax_config=%s",
-                move.name,
-                len(subtotals),
-                tax_config,
-            )
             for subtotal in subtotals:
                 if not isinstance(subtotal, dict):
                     continue
@@ -400,14 +392,6 @@ Please create a credit note instead.
                             "tax_amount", tax_info.get("tax_amount_currency", 0.0)
                         )
                         * multiplier
-                    )
-                    _logger.info(
-                        "_compute_sale_tax_data - move=%s, tax_group_id=%s, tax_type=%s, base=%s, amount=%s",
-                        move.name,
-                        tax_group_id,
-                        tax_type,
-                        base_amount,
-                        tax_amount,
                     )
                     tax_data[str(tax_group_id)] = {
                         "base": base_amount,
@@ -603,12 +587,11 @@ Please create a credit note instead.
             else:
                 move.l10n_ve_inverse_rate = 0.0
 
-    def action_print_invoice_ve_free_form(self):
+    def _get_name_invoice_report(self):
         self.ensure_one()
-        if (
-            self.company_id.account_fiscal_country_id.code == "VE"
-            and self.move_type in ("out_invoice", "out_refund")
-        ):
-            self.sudo().write({"l10n_ve_ve_invoice_original_printed": True})
-        report = self.env.ref("l10n_ve_seniat.account_invoices_ve")
-        return report.with_context(l10n_ve_ve_free_form=True).report_action(self)
+        if self.company_id.account_fiscal_country_id.code == "VE":
+            return "l10n_ve_seniat.report_invoice_document"
+        return super()._get_name_invoice_report()
+        
+    def action_print_pdf(self):
+        return super(AccountMove, self.with_context(l10n_ve_invoice=True)).action_print_pdf()

@@ -159,3 +159,27 @@
 .o_report_layout_wave #total {
     margin-bottom: 4px !important;
 }
+#total .l10n_ve_totals_dual,
+#total .l10n_ve_totals_dual td,
+#total .l10n_ve_totals_dual span {
+    font-size: 13px !important;
+}
+
+#total .l10n_ve_totals_dual tr.o_total,
+#total .l10n_ve_totals_dual tr.o_total td,
+#total .l10n_ve_totals_dual tr.o_total span {
+    font-size: 15px !important;
+}
+
+#total .l10n_ve_totals_single,
+#total .l10n_ve_totals_single td,
+#total .l10n_ve_totals_single span {
+    font-size: 10px !important;
+}
+
+#total .l10n_ve_totals_single tr.o_total,
+#total .l10n_ve_totals_single tr.o_total td,
+#total .l10n_ve_totals_single tr.o_total span {
+    font-size: 11px !important;
+}
+
