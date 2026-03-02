@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="action_sale_order_to_invoice" model="ir.actions.act_window">
+        <field name="name">Pedidos pendientes de facturar</field>
+        <field name="res_model">sale.order</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('state', '=', 'sale'), ('invoice_status', '=', 'to invoice')]</field>
+        <field name="context">{'search_default_to_invoice': 1}</field>
+    </record>
+
+    <record id="action_sale_order_line_to_invoice" model="ir.actions.act_window">
+        <field name="name">Productos pendientes de facturar</field>
+        <field name="res_model">sale.order.line</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('order_id.state', '=', 'sale'), ('qty_to_invoice', '>', 0)]</field>
+        <field name="context">{}</field>
+    </record>
+</odoo>
