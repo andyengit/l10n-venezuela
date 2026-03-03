@@ -19,6 +19,7 @@
                     ref('base.group_user'),
                     ref('account.group_account_readonly'),
                     ref('l10n_ve_seniat.group_seniat_readonly'),
+                    ref('l10n_ve_seniat.group_seniat'),
                 ])
             ]"/>
         </record>

@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <menuitem
+        id="menu_seniat_report_general_ledger"
+        name="Libro Mayor"
+        action="action_account_report_general_ledger"
+        parent="l10n_ve_seniat.menu_seniat_reports"
+        sequence="50"
+        groups="account.group_account_readonly"
+    />
+    <menuitem
+        id="menu_seniat_report_diary_book"
+        name="Libro Diario"
+        action="action_account_report_diary_book"
+        parent="l10n_ve_seniat.menu_seniat_reports"
+        sequence="60"
+        groups="account.group_account_readonly"
+    />
+    <menuitem
+        id="menu_seniat_report_sales_book"
+        name="Libro de Ventas"
+        action="action_account_report_sales_book"
+        parent="l10n_ve_seniat.menu_seniat_reports"
+        sequence="70"
+        groups="account.group_account_readonly"
+    />
+    <menuitem
+        id="menu_seniat_report_purchases_book"
+        name="Libro de Compras"
+        action="action_account_report_purchases_book"
+        parent="l10n_ve_seniat.menu_seniat_reports"
+        sequence="80"
+        groups="account.group_account_readonly"
+    />
+    <menuitem
+        id="menu_seniat_report_sales_book_fiscal_machine"
+        name="Libro de venta con maquina fiscal"
+        action="action_account_report_sales_book_fiscal_machine"
+        parent="l10n_ve_seniat.menu_seniat_reports"
+        sequence="90"
+        groups="account.group_account_readonly"
+    />
+</odoo>

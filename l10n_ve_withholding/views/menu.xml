@@ -37,16 +37,13 @@
     <menuitem id="menu_seniat_signature" name="Signature" parent="menu_seniat_configuration" action="action_configurate_signature" sequence="80" />
 
     <menuitem id="menu_seniat_type_person" name="Type Person" parent="menu_seniat_configuration" action="action_type_person" sequence="90" />
-    <!-- Reports sub-menu -->
-    <menuitem id="menu_seniat_reports" name="Reports" parent="l10n_ve_seniat.menu_seniat_root" sequence="50" />
+    <menuitem id="menu_seniat_txt_report" name="TXT Report" parent="l10n_ve_seniat.menu_seniat_reports" action="action_generate_txt" groups="account.group_account_manager" sequence="10" />
 
-    <menuitem id="menu_seniat_txt_report" name="TXT Report" parent="menu_seniat_reports" action="action_generate_txt" groups="account.group_account_manager" sequence="10" />
+    <menuitem id="menu_seniat_xml_islr" name="XML ISLR Retention" parent="l10n_ve_seniat.menu_seniat_reports" action="action_retention_islr" sequence="20" />
 
-    <menuitem id="menu_seniat_xml_islr" name="XML ISLR Retention" parent="menu_seniat_reports" action="action_retention_islr" sequence="20" />
+    <menuitem id="menu_seniat_arcv" name="ARCV Report" parent="l10n_ve_seniat.menu_seniat_reports" action="action_arcv_report" groups="account.group_account_manager" sequence="30" />
 
-    <menuitem id="menu_seniat_arcv" name="ARCV Report" parent="menu_seniat_reports" action="action_arcv_report" groups="account.group_account_manager" sequence="30" />
-
-    <menuitem id="menu_seniat_municipal_patent" name="Municipal Patent Report" parent="menu_seniat_reports" action="wizard_report_municipal_retention_report_patent_action" sequence="40" />
+    <menuitem id="menu_seniat_municipal_patent" name="Municipal Patent Report" parent="l10n_ve_seniat.menu_seniat_reports" action="wizard_report_municipal_retention_report_patent_action" sequence="40" />
     <!-- Sequences sub-menu (debug only) -->
     <menuitem id="menu_seniat_sequence_iva" name="Sequence IVA" parent="l10n_ve_seniat.menu_seniat_sequences" action="ir_sequence_form_iva" sequence="10" />
 

@@ -6,6 +6,5 @@
     <menuitem id="menu_seniat_sequences" name="Sequences" parent="l10n_ve_seniat.menu_seniat_root" sequence="30" />
 
     <menuitem id="menu_seniat_control_number" name="N° de Control" parent="menu_seniat_sequences" action="action_l10n_ve_control_number_sequence" sequence="10" />
-    <!-- Reports -->
-    <menuitem id="menu_seniat_reports" name="Reports" parent="l10n_ve_seniat.menu_seniat_root" sequence="80" />
+    <menuitem id="menu_seniat_reports" name="Reports" parent="l10n_ve_seniat.menu_seniat_root" sequence="50" />
 </odoo>

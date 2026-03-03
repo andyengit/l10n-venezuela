@@ -46,8 +46,7 @@
         <field name="view_mode">kanban,list,form</field>
         <field name="view_id" ref="res_company_kanban_view" />
     </record>
-    <!-- Root SENIAT Menu -->
-    <menuitem id="menu_seniat_root" name="SENIAT" sequence="90" web_icon="l10n_ve_seniat,static/src/img/LogoSENIAT.png" />
+    <menuitem id="menu_seniat_root" name="SENIAT" sequence="90" web_icon="l10n_ve_seniat,static/src/img/LogoSENIAT.png" groups="l10n_ve_seniat.group_seniat"/>
     <!-- Sub-menu: Empresas -->
     <menuitem id="menu_seniat_companies" name="Empresas" parent="menu_seniat_root" action="action_seniat_companies" sequence="10" />
 </odoo>

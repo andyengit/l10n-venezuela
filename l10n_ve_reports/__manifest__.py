@@ -10,7 +10,7 @@
 Accounting Reports
 ==================
     """,
-    "depends": ["account"],
+    "depends": ["account", "l10n_ve_seniat"],
     "data": [
         "security/ir.model.access.csv",
         "data/pdf_export_templates.xml",
@@ -36,6 +36,7 @@ Accounting Reports
         "data/account_report_actions.xml",
         "data/report_send_cron.xml",
         "data/menuitems.xml",
+        "data/seniat_reports_menuitems.xml",
         "data/mail_activity_type_data.xml",
         "data/mail_templates.xml",
         "views/account_move_views.xml",
