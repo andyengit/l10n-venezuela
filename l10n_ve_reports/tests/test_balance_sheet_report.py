@@ -69,7 +69,6 @@ class TestBalanceSheetReport(TestAccountReportsCommon):
         )
         options["unfolded_lines"] = [line_id]
         options["hierarchy"] = True
-        self.env.company.totals_below_sections = False
         lines = self.report._get_lines(options)
 
         # The Bank and Cash Accounts section start at index 2
@@ -169,7 +168,6 @@ class TestBalanceSheetReport(TestAccountReportsCommon):
         """Check that exactly the total lines we want exist when we use the 'unfold_all' option. I.e. empty sections should not have total lines (since there are not lines to total).
         This test only tests the function '_get_lines'. It does not test that the total lines are always handled correctly for manual unfolds in the web UI."""
 
-        self.env.company.totals_below_sections = True
         options = self._generate_options(
             self.report,
             fields.Date.from_string("1990-01-01"),

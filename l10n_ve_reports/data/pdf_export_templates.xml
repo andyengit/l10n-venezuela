@@ -418,7 +418,7 @@
                 <t t-foreach="line.get('columns')" t-as="cell">
                     <td class="o_cell_td">
                         <t
-                            t-if="not env.company.totals_below_sections or options.get('ignore_totals_below_sections') or not line.get('unfolded')"
+                            t-if="options.get('ignore_totals_below_sections') or not line.get('unfolded')"
                         >
                             <t
                                 t-call="{{custom_templates.get('pdf_export_cell', 'l10n_ve_reports.pdf_export_cell')}}"

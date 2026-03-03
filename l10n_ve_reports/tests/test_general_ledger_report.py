@@ -1008,7 +1008,6 @@ class TestGeneralLedgerReport(TestAccountReportsCommon, odoo.tests.HttpCase):
         )
         invoice_2.action_post()
 
-        self.env.company.totals_below_sections = False
         options = self._generate_options(
             self.report,
             "2010-01-01",
@@ -1156,8 +1155,6 @@ class TestGeneralLedgerReport(TestAccountReportsCommon, odoo.tests.HttpCase):
 
     def test_general_ledger_same_date_ordering(self):
         self.env.company.account_sale_tax_id = None
-        self.env.company.totals_below_sections = False
-
         report = self.env.ref("account_reports.general_ledger_report")
         options = self._generate_options(
             report,

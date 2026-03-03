@@ -14,18 +14,6 @@
             </field>
         </record>
 
-        <record id="account_report_tree_configure_start_dates" model="ir.ui.view">
-            <field name="name">account.report.tree.configure.start.dates</field>
-            <field name="model">account.report</field>
-            <field name="arch" type="xml">
-                <list edit="True" create="False" editable="bottom">
-                    <field name="sequence" widget="handle" />
-                    <field name="display_name" readonly="1" />
-                    <field name="tax_closing_start_date" width="180px" />
-                </list>
-            </field>
-        </record>
-
         <record id="account_report_add_sections_tree" model="ir.ui.view">
             <field name="name">account.report.add.sections.list</field>
             <field name="model">account.report</field>

@@ -5,7 +5,7 @@ import itertools
 
 from dateutil.relativedelta import relativedelta
 
-from odoo import _, api, fields, models
+from odoo import _, fields, models
 from odoo.exceptions import UserError
 from odoo.tools.misc import format_date
 
@@ -13,33 +13,6 @@ from odoo.tools.misc import format_date
 class ResCompany(models.Model):
     _inherit = "res.company"
 
-    totals_below_sections = fields.Boolean(
-        string="Add totals below sections",
-        help="When ticked, totals and subtotals appear below the sections of the report.",
-    )
-    account_tax_periodicity = fields.Selection(
-        [
-            ("year", "annually"),
-            ("semester", "semi-annually"),
-            ("4_months", "every 4 months"),
-            ("trimester", "quarterly"),
-            ("2_months", "every 2 months"),
-            ("monthly", "monthly"),
-        ],
-        string="Delay units",
-        help="Periodicity",
-        default="monthly",
-        required=True,
-    )
-    account_tax_periodicity_reminder_day = fields.Integer(
-        string="Start from", default=7, required=True
-    )
-    account_tax_periodicity_journal_id = fields.Many2one(
-        "account.journal",
-        string="Journal",
-        domain=[("type", "=", "general")],
-        check_company=True,
-    )
     account_revaluation_journal_id = fields.Many2one(
         "account.journal", domain=[("type", "=", "general")], check_company=True
     )
@@ -54,35 +27,8 @@ class ResCompany(models.Model):
         comodel_name="account.tax.unit",
         help="The tax units this company belongs to.",
     )
-    account_representative_id = fields.Many2one(
-        "res.partner",
-        string="Accounting Firm",
-        help="Specify an Accounting Firm that will act as a representative when exporting reports.",
-    )
-    account_display_representative_field = fields.Boolean(
-        compute="_compute_account_display_representative_field"
-    )
-
-    @api.depends("account_fiscal_country_id.code")
-    def _compute_account_display_representative_field(self):
-        country_set = self._get_countries_allowing_tax_representative()
-        for record in self:
-            record.account_display_representative_field = (
-                record.account_fiscal_country_id.code in country_set
-            )
-
-    def _get_countries_allowing_tax_representative(self):
-        """Returns a set containing the country codes of the countries for which
-        it is possible to use a representative to submit the tax report.
-        This function is a hook that needs to be overridden in localisation modules.
-        """
-        return set()
 
     def _get_default_misc_journal(self):
-        """Returns a default 'miscellanous' journal to use for
-        account_tax_periodicity_journal_id field. This is useful in case a
-        CoA was already installed on the company at the time the module
-        is installed, so that the field is set automatically when added."""
         return self.env["account.journal"].search(
             [
                 *self.env["account.journal"]._check_company_domain(self),
@@ -94,137 +40,11 @@ class ResCompany(models.Model):
     def _get_tax_closing_journal(self):
         journals = self.env["account.journal"]
         for company in self:
-            journals |= (
-                company.account_tax_periodicity_journal_id
-                or company._get_default_misc_journal()
-            )
-
+            journals |= company._get_default_misc_journal()
         return journals
 
-    @api.model_create_multi
-    def create(self, vals_list):
-        companies = super().create(vals_list)
-        companies._initiate_account_onboardings()
-        return companies
-
-    def write(self, values):
-        tax_closing_update_dependencies = (
-            "account_tax_periodicity",
-            "account_tax_periodicity_journal_id.id",
-        )
-        to_update = self.env["res.company"]
-        for company in self:
-            if company._get_tax_closing_journal():
-                need_tax_closing_update = any(
-                    update_dep in values
-                    and company.mapped(update_dep)[0] != values[update_dep]
-                    for update_dep in tax_closing_update_dependencies
-                )
-
-                if need_tax_closing_update:
-                    to_update += company
-
-        res = super().write(values)
-
-        # Early return
-        if not to_update:
-            return res
-
-        to_reset_closing_moves = (
-            self.env["account.move"]
-            .sudo()
-            .search(
-                [
-                    ("company_id", "in", to_update.ids),
-                    ("tax_closing_report_id", "!=", False),
-                    ("state", "=", "draft"),
-                ]
-            )
-        )
-        to_reset_closing_moves.button_cancel()
-        misc_journals = (
-            self.env["account.journal"]
-            .sudo()
-            .search(
-                [
-                    *self.env["account.journal"]._check_company_domain(to_update),
-                    ("type", "=", "general"),
-                ]
-            )
-        )
-        to_reset_closing_reminder_activities = (
-            self.env["mail.activity"]
-            .sudo()
-            .search(
-                [
-                    ("res_id", "in", misc_journals.ids),
-                    (
-                        "res_model_id",
-                        "=",
-                        self.env["ir.model"]._get_id("account.journal"),
-                    ),
-                    (
-                        "activity_type_id",
-                        "=",
-                        self.env.ref("l10n_ve_reports.tax_closing_activity_type").id,
-                    ),
-                    ("active", "=", True),
-                ]
-            )
-        )
-        to_reset_closing_reminder_activities.action_cancel()
-        generic_tax_report = self.env.ref("account.generic_tax_report")
-
-        # Create a new reminder
-        # The user is unlikely to change the periodicity often and for multiple companies at once
-        # So it is fair enough to make this that way as we are obliged to get the tax report for each company
-        # And then loop over all the reports to get their period boudaries and look for activity
-        for company in to_update:
-            tax_reports = self.env["account.report"].search(
-                [
-                    ("availability_condition", "=", "country"),
-                    ("country_id", "in", company.account_enabled_tax_country_ids.ids),
-                    ("root_report_id", "=", generic_tax_report.id),
-                ]
-            )
-            if not tax_reports.filtered(
-                lambda x: x.country_id == company.account_fiscal_country_id
-            ):
-                tax_reports += generic_tax_report
-
-            for tax_report in tax_reports:
-                period_start, period_end = company._get_tax_closing_period_boundaries(
-                    fields.Date.today(), tax_report
-                )
-                activity = company._get_tax_closing_reminder_activity(
-                    tax_report.id, period_end
-                )
-                if (
-                    not activity
-                    and self.env["account.move"].search_count(
-                        [
-                            ("date", "<=", period_end),
-                            ("date", ">=", period_start),
-                            ("tax_closing_report_id", "=", tax_report.id),
-                            ("company_id", "=", company.id),
-                            ("state", "=", "posted"),
-                        ]
-                    )
-                    == 0
-                ):
-                    company._generate_tax_closing_reminder_activity(
-                        tax_report, period_end
-                    )
-
-        hidden_tax_journals = (
-            self._get_tax_closing_journal()
-            .sudo()
-            .filtered(lambda j: not j.show_on_dashboard)
-        )
-        if hidden_tax_journals:
-            hidden_tax_journals.show_on_dashboard = True
-
-        return res
+    def _get_tax_periodicity(self, report):
+        return "monthly"
 
     def _get_and_update_tax_closing_moves(
         self, in_period_date, report, fiscal_positions=None, include_domestic=False
@@ -363,9 +183,7 @@ class ResCompany(models.Model):
             date_in_period, report
         )
         periodicity = self._get_tax_periodicity(report)
-        activity_deadline = period_end + relativedelta(
-            days=self.account_tax_periodicity_reminder_day
-        )
+        activity_deadline = period_end + relativedelta(days=7)
 
         # Reminder title
         summary = _(
@@ -547,17 +365,6 @@ class ResCompany(models.Model):
             ],
             limit=1,
         )
-
-    def _get_tax_periodicity(self, report):
-        main_company = self
-        if (
-            report.filter_multi_company == "tax_units"
-            and report.country_id
-            and (tax_unit := self._get_available_tax_unit(report))
-        ):
-            main_company = tax_unit.main_company_id
-
-        return main_company.account_tax_periodicity
 
     def _get_tax_closing_start_date_attributes(self, report):
         if not report.tax_closing_start_date:

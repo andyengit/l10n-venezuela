@@ -18,9 +18,6 @@ class TestTaxReportCarryover(TestAccountReportsCommon):
         cls.company_2 = cls.company_data_2["company"]
 
         cls.company_2.currency_id = cls.company_1.currency_id
-        cls.company_1.account_tax_periodicity = (
-            cls.company_2.account_tax_periodicity
-        ) = "year"
 
         cls.report = cls.env["account.report"].create(
             {

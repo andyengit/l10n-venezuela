@@ -662,8 +662,6 @@ class TestAgedReceivableReport(TestAccountReportsCommon):
             fields.Date.from_string("2017-03-01"),
             fields.Date.from_string("2017-04-01"),
         )
-        self.env.company.totals_below_sections = False
-
         self.assertLinesValues(
             # pylint: disable=C0326
             self.report._get_lines(options),
@@ -695,8 +693,6 @@ class TestAgedReceivableReport(TestAccountReportsCommon):
             fields.Date.from_string("2017-02-01"),
         )
         options["partner_ids"] = self.partner_a.ids
-        self.env.company.totals_below_sections = False
-
         self.assertLinesValues(
             # pylint: disable=C0326
             self.report._get_lines(options),
@@ -717,8 +713,6 @@ class TestAgedReceivableReport(TestAccountReportsCommon):
             fields.Date.from_string("2017-02-01"),
         )
         options["partner_categories"] = self.partner_category_a.ids
-        self.env.company.totals_below_sections = False
-
         self.assertLinesValues(
             # pylint: disable=C0326
             self.report._get_lines(options),
@@ -748,8 +742,6 @@ class TestAgedReceivableReport(TestAccountReportsCommon):
             fields.Date.from_string("2016-10-31"),
             fields.Date.from_string("2016-10-31"),
         )
-        self.env.company.totals_below_sections = False
-
         self.assertLinesValues(
             # pylint: disable=C0326
             self.report._get_lines(options),
@@ -1517,8 +1509,6 @@ class TestAgedReceivableReport(TestAccountReportsCommon):
         foreign_partner = self.env["res.partner"].create({"name": "foreign_partner"})
         currency = self.other_currency
         currency.active = True
-        self.env.company.totals_below_sections = False
-
         invoice = self.env["account.move"].create(
             {
                 "move_type": "out_invoice",

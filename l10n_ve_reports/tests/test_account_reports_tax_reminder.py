@@ -236,7 +236,6 @@ class TestAccountReportsTaxReminder(TestAccountReportsCommon):
             self.report.id, fields.Date.from_string(self.options["date"]["date_to"])
         )
 
-        self.env.company.account_tax_periodicity = "year"
         _dummy, period_end = self.env.company._get_tax_closing_period_boundaries(
             fields.Date.today(), self.report
         )

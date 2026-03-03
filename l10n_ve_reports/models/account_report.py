@@ -3714,7 +3714,7 @@ class AccountReport(models.Model):
                     continue
                 # In case total below section, some line don't have the value displayed
                 if (
-                    self.env.company.totals_below_sections
+                    False
                     and not options.get("ignore_totals_below_sections")
                     and line_dict["unfolded"]
                 ):
@@ -7264,7 +7264,7 @@ class AccountReport(models.Model):
                 "show_draft": self.filter_show_draft,
                 "show_hierarchy": options.get("display_hierarchy_filter", False),
                 "show_period_comparison": self.filter_period_comparison,
-                "show_totals": self.env.company.totals_below_sections
+                "show_totals": False
                 and not options.get("ignore_totals_below_sections"),
                 "show_unreconciled": self.filter_unreconciled,
                 "show_hide_0_lines": self.filter_hide_0_lines,
@@ -7539,9 +7539,7 @@ class AccountReport(models.Model):
 
     def _add_totals_below_sections(self, lines, options):
         """Returns a new list, corresponding to lines with the required total lines added as sublines of the sections it contains."""
-        if not self.env.company.totals_below_sections or options.get(
-            "ignore_totals_below_sections"
-        ):
+        if options.get("ignore_totals_below_sections"):
             return lines
 
         # Gather the lines needing the totals

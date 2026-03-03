@@ -12,8 +12,6 @@ class TestReportEngines(TestAccountReportsCommon):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
-        cls.company_data["company"].totals_below_sections = False
-
         cls.garbage_account = cls.env["account.account"].create(
             {
                 "code": "turlututu",

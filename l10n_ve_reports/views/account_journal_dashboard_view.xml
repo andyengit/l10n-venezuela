@@ -49,21 +49,6 @@
                 </div>
             </xpath>
 
-            <!-- Add subtitle & onboarding to account_tax_periodicity_journals -->
-            <xpath expr="//t[@name='empty_journal_helper']" position="inside">
-                <span
-                    class="text-muted"
-                    t-if="journal_type == 'general' and dashboard['is_account_tax_periodicity_journal']"
-                >Never miss a tax deadline.</span>
-            </xpath>
-
-            <xpath expr="//div[@id='dashboard_general_right']" position="after">
-                <widget
-                    t-if="!record.has_posted_entries.raw_value and dashboard['onboarding'] and dashboard['is_account_tax_periodicity_journal']"
-                    name="account_onboarding"
-                    groups="account.group_account_manager"
-                />
-            </xpath>
         </field>
     </record>
 </odoo>

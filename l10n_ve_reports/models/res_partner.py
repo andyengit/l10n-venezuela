@@ -7,10 +7,6 @@ class ResPartner(models.Model):
     _name = "res.partner"
     _inherit = "res.partner"
 
-    account_represented_company_ids = fields.One2many(
-        "res.company", "account_representative_id"
-    )
-
     def _get_followup_responsible(self):
         return self.env.user
 

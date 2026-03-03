@@ -11,7 +11,7 @@ class TestCurrencyTable(TestAccountReportsCommon):
         super().setUpClass()
 
         cls.company_data["company"].write(
-            {"name": "USD Company 1", "sequence": 1, "totals_below_sections": False}
+            {"name": "USD Company 1", "sequence": 1}
         )
         cls.company_usd_data = cls.company_data
         # Create additional companies (also adding them to env.companies)
@@ -554,8 +554,6 @@ class TestCurrencyTable(TestAccountReportsCommon):
             parent_id=self.company_eur_data["company"].id,
             sequence=self.company_eur_data["company"].sequence,
         )
-
-        usd_branch_data["company"].totals_below_sections = False
 
         # Add equity accounts to branch data
         usd_branch_data["equity_account"] = self.company_usd_data["equity_account"]

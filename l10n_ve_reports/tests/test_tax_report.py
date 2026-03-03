@@ -52,8 +52,7 @@ class TestTaxReport(TestAccountReportsCommon):
         # Setup fiscal data
         cls.company_data["company"].write(
             {
-                "state_id": cls.country_state_1.id,  # Not necessary at the moment; put there for consistency and robustness with possible future changes
-                "account_tax_periodicity": "trimester",
+                "state_id": cls.country_state_1.id,
             }
         )
         cls.change_company_country(cls.company_data["company"], cls.fiscal_country)
@@ -4104,10 +4103,6 @@ class TestTaxReport(TestAccountReportsCommon):
             {"name": "Branch 2", "parent_id": root_company.id}
         )
         branch_companies = root_company + branch_1 + branch_1_1 + branch_2
-        branch_companies.account_tax_periodicity_journal_id = (
-            root_company.account_tax_periodicity_journal_id.id
-        )
-
         # Tax unit
         unit_part_1 = self.setup_other_company(name="Unit part 1")["company"]
         unit_part_2 = self.setup_other_company(name="Unit part 2")["company"]
@@ -4242,8 +4237,6 @@ class TestTaxReport(TestAccountReportsCommon):
 
     @freeze_time("2024-09-01")
     def test_tax_report_start_date(self):
-        # Periodicity only with default start_date
-        self.env.company.account_tax_periodicity = "monthly"
         self.assert_period(
             date(2024, 1, 1),
             expected_start=date(2024, 1, 1),
@@ -4260,102 +4253,6 @@ class TestTaxReport(TestAccountReportsCommon):
             expected_end=date(2024, 10, 31),
         )
 
-        self.env.company.account_tax_periodicity = "trimester"
-        self.assert_period(
-            date(2024, 1, 1),
-            expected_start=date(2024, 1, 1),
-            expected_end=date(2024, 3, 31),
-        )
-        self.assert_period(
-            date(2024, 5, 1),
-            expected_start=date(2024, 4, 1),
-            expected_end=date(2024, 6, 30),
-        )
-        self.assert_period(
-            date(2024, 9, 30),
-            expected_start=date(2024, 7, 1),
-            expected_end=date(2024, 9, 30),
-        )
-        self.assert_period(
-            date(2024, 10, 1),
-            expected_start=date(2024, 10, 1),
-            expected_end=date(2024, 12, 31),
-        )
-
-        self.env.company.account_tax_periodicity = "year"
-        self.assert_period(
-            date(2024, 1, 1),
-            expected_start=date(2024, 1, 1),
-            expected_end=date(2024, 12, 31),
-        )
-        self.assert_period(
-            date(2023, 12, 31),
-            expected_start=date(2023, 1, 1),
-            expected_end=date(2023, 12, 31),
-        )
-
-        # Basic start dates
-        self.env.company.account_tax_periodicity = "trimester"
-        self.basic_tax_report.tax_closing_start_date = "2024-01-01"
-        self.assert_period(
-            date(2024, 1, 1),
-            expected_start=date(2024, 1, 1),
-            expected_end=date(2024, 3, 31),
-        )
-        self.assert_period(
-            date(2024, 4, 1),
-            expected_start=date(2024, 4, 1),
-            expected_end=date(2024, 6, 30),
-        )
-        self.assert_period(
-            date(2024, 5, 1),
-            expected_start=date(2024, 4, 1),
-            expected_end=date(2024, 6, 30),
-        )
-        self.assert_period(
-            date(2024, 9, 30),
-            expected_start=date(2024, 7, 1),
-            expected_end=date(2024, 9, 30),
-        )
-        self.assert_period(
-            date(2024, 10, 1),
-            expected_start=date(2024, 10, 1),
-            expected_end=date(2024, 12, 31),
-        )
-
-        self.basic_tax_report.tax_closing_start_date = "2024-02-01"
-        self.assert_period(
-            date(2024, 1, 1),
-            expected_start=date(2023, 11, 1),
-            expected_end=date(2024, 1, 31),
-        )
-        self.assert_period(
-            date(2024, 1, 31),
-            expected_start=date(2023, 11, 1),
-            expected_end=date(2024, 1, 31),
-        )
-        self.assert_period(
-            date(2024, 2, 1),
-            expected_start=date(2024, 2, 1),
-            expected_end=date(2024, 4, 30),
-        )
-        self.assert_period(
-            date(2024, 6, 1),
-            expected_start=date(2024, 5, 1),
-            expected_end=date(2024, 7, 31),
-        )
-        self.assert_period(
-            date(2024, 10, 31),
-            expected_start=date(2024, 8, 1),
-            expected_end=date(2024, 10, 31),
-        )
-        self.assert_period(
-            date(2024, 11, 1),
-            expected_start=date(2024, 11, 1),
-            expected_end=date(2025, 1, 31),
-        )
-
-        self.env.company.account_tax_periodicity = "monthly"
         self.assert_period(
             date(2024, 2, 1),
             expected_start=date(2024, 2, 1),
@@ -4386,104 +4283,13 @@ class TestTaxReport(TestAccountReportsCommon):
             expected_start=date(2024, 12, 1),
             expected_end=date(2024, 12, 31),
         )
-
-        # Complexe start dates
-        self.env.company.account_tax_periodicity = "trimester"
-
-        self.basic_tax_report.tax_closing_start_date = "2024-02-06"
-        self.assert_period(
-            date(2024, 2, 5),
-            expected_start=date(2023, 11, 6),
-            expected_end=date(2024, 2, 5),
-        )
-        self.assert_period(
-            date(2024, 2, 1),
-            expected_start=date(2023, 11, 6),
-            expected_end=date(2024, 2, 5),
-        )
-        self.assert_period(
-            date(2023, 11, 7),
-            expected_start=date(2023, 11, 6),
-            expected_end=date(2024, 2, 5),
-        )
-
-        self.assert_period(
-            date(2024, 2, 6),
-            expected_start=date(2024, 2, 6),
-            expected_end=date(2024, 5, 5),
-        )
-        self.assert_period(
-            date(2024, 5, 5),
-            expected_start=date(2024, 2, 6),
-            expected_end=date(2024, 5, 5),
-        )
-        self.assert_period(
-            date(2024, 4, 5),
-            expected_start=date(2024, 2, 6),
-            expected_end=date(2024, 5, 5),
-        )
-
-        self.assert_period(
-            date(2024, 5, 6),
-            expected_start=date(2024, 5, 6),
-            expected_end=date(2024, 8, 5),
-        )
-        self.assert_period(
-            date(2024, 11, 5),
-            expected_start=date(2024, 8, 6),
-            expected_end=date(2024, 11, 5),
-        )
-        self.assert_period(
-            date(2024, 11, 6),
-            expected_start=date(2024, 11, 6),
-            expected_end=date(2025, 2, 5),
-        )
-
-        self.basic_tax_report.tax_closing_start_date = "2024-06-06"
-        self.assert_period(
-            date(2024, 3, 5),
-            expected_start=date(2023, 12, 6),
-            expected_end=date(2024, 3, 5),
-        )
-        self.assert_period(
-            date(2024, 6, 5),
-            expected_start=date(2024, 3, 6),
-            expected_end=date(2024, 6, 5),
-        )
-        self.assert_period(
-            date(2024, 9, 5),
-            expected_start=date(2024, 6, 6),
-            expected_end=date(2024, 9, 5),
-        )
-        self.assert_period(
-            date(2024, 12, 5),
-            expected_start=date(2024, 9, 6),
-            expected_end=date(2024, 12, 5),
-        )
-
-        self.env.company.account_tax_periodicity = "monthly"
-        self.assert_period(
-            date(2024, 3, 5),
-            expected_start=date(2024, 2, 6),
-            expected_end=date(2024, 3, 5),
-        )
-        self.assert_period(
-            date(2024, 3, 6),
-            expected_start=date(2024, 3, 6),
-            expected_end=date(2024, 4, 5),
-        )
-        self.assert_period(
-            date(2024, 12, 5),
-            expected_start=date(2024, 11, 6),
-            expected_end=date(2024, 12, 5),
-        )
         self.assert_period(
             date(2024, 12, 6),
-            expected_start=date(2024, 12, 6),
-            expected_end=date(2025, 1, 5),
+            expected_start=date(2024, 12, 1),
+            expected_end=date(2024, 12, 31),
         )
         self.assert_period(
             date(2025, 1, 5),
-            expected_start=date(2024, 12, 6),
-            expected_end=date(2025, 1, 5),
+            expected_start=date(2025, 1, 1),
+            expected_end=date(2025, 1, 31),
         )

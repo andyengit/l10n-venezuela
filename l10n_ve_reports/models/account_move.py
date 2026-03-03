@@ -133,29 +133,13 @@ class AccountMove(models.Model):
         return self.currency_id.round(-sum(payable_lines.mapped("balance")))
 
     def _action_tax_to_pay_wizard(self):
-        # hook for l10n tax payment wizard
-        return self.action_open_tax_report()
+        raise UserError(_("Tax Return report has been removed from this module."))
 
     def _action_tax_to_send(self):
-        return self.action_open_tax_report()
+        raise UserError(_("Tax Return report has been removed from this module."))
 
     def action_open_tax_report(self):
-        action = self.env["ir.actions.actions"]._for_xml_id(
-            "l10n_ve_reports.action_account_report_gt"
-        )
-        if not self.tax_closing_report_id:
-            raise UserError(
-                _("You can't open a tax report from a move without a VAT closing date.")
-            )
-        options = self._get_tax_closing_report_options(
-            self.company_id,
-            self.fiscal_position_id,
-            self.tax_closing_report_id,
-            self.date,
-        )
-        # Pass options in context and set ignore_session: true to prevent using session options
-        action.update({"params": {"options": options, "ignore_session": True}})
-        return action
+        raise UserError(_("Tax Return report has been removed from this module."))
 
     def _close_tax_period(self, report, options):
         """Closes tax closing entries. The tax closing activities on them will be marked done, and the next tax closing entry

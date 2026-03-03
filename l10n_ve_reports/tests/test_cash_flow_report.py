@@ -2522,8 +2522,6 @@ class TestCashFlowReport(TestAccountReportsCommon):
     def test_cash_flow_hierarchy(self):
         """Test the 'hierarchy' option. I.e. we want to ensure that each section of the report (e.g. "Cash and cash equivalents, beginning of period" and "Cash and cash equivalents, closing balance") has its own dedicated hierarchy and they are not mixed up together."""
         options = self._generate_options(self.report, "2016-01-01", "2016-12-31")
-        self.env.company.totals_below_sections = True
-
         # Create the account groups for the bank and cash accounts
         self.env["account.group"].create(
             [

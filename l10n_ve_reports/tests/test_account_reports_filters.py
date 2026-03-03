@@ -1931,8 +1931,6 @@ class TestAccountReportsFilters(TestAccountReportsCommon, odoo.tests.HttpCase):
             },
         )
 
-        self.env.company.account_tax_periodicity = "year"
-
         self._assert_filter_date(
             generic_tax_report,
             {"date": {"period": -1, "filter": "previous_tax_period"}},

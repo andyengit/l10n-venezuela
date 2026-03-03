@@ -11,8 +11,6 @@ class TestBudgetReport(TestAccountReportsCommon):
     def setUpClass(cls):
         super().setUpClass()
 
-        cls.company_data["company"].totals_below_sections = False
-
         cls.account_1 = cls.company_data["default_account_revenue"]
         cls.account_2 = cls.copy_account(cls.account_1)
         cls.account_3 = cls.copy_account(cls.account_1)

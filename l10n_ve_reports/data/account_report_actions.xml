@@ -40,16 +40,6 @@
             />
         </record>
 
-        <record id="action_account_report_gt" model="ir.actions.client">
-            <field name="name">Tax Return</field>
-            <field name="tag">account_report</field>
-            <field name="path">tax-report</field>
-            <field
-                name="context"
-                eval="{'report_id': ref('account.generic_tax_report')}"
-            />
-        </record>
-
         <record id="action_account_report_ja" model="ir.actions.client">
             <field name="name">Journal Audit</field>
             <field name="tag">account_report</field>
@@ -108,18 +98,6 @@
             <field
                 name="context"
                 eval="{'report_id': ref('l10n_ve_reports.purchases_book_report')}"
-            />
-        </record>
-
-        <record
-            id="action_account_report_multicurrency_revaluation"
-            model="ir.actions.client"
-        >
-            <field name="name">Unrealized Currency Gains/Losses</field>
-            <field name="tag">account_report</field>
-            <field
-                name="context"
-                eval="{'report_id': ref('l10n_ve_reports.multicurrency_revaluation_report')}"
             />
         </record>
 
