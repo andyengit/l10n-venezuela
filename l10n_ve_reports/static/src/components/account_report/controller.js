@@ -908,7 +908,7 @@ export class AccountReportController {
     async openBudget(budget) {
         this.actionService.doAction({
             type: "ir.actions.act_window",
-            res_model: "account.report.budget",
+            res_model: "account.report.budget.oca",
             res_id: budget.id,
             views: [[false, "form"]],
         });

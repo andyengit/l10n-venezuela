@@ -2,8 +2,8 @@ from odoo import _, models
 
 
 class CustomerStatementCustomHandler(models.AbstractModel):
-    _name = "account.customer.statement.report.handler"
-    _inherit = "account.partner.ledger.report.handler"
+    _name = "account.customer.statement.report.handler.oca"
+    _inherit = "account.partner.ledger.report.handler.oca"
     _description = "Customer Statement Custom Handler"
 
     def _get_custom_display_config(self):

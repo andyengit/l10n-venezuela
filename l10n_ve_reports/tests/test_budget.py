@@ -106,7 +106,7 @@ class TestBudgetReport(TestAccountReportsCommon):
                     )
                 )
 
-        return cls.env["account.report.budget"].create(
+        return cls.env["account.report.budget.oca"].create(
             {
                 "name": "Budget",
                 "item_ids": items,
@@ -446,7 +446,7 @@ class TestBudgetReport(TestAccountReportsCommon):
                 date_to=options["date"]["date_to"],
             )
 
-        budget_2024 = self.env["account.report.budget"].create({"name": "Budget 2024"})
+        budget_2024 = self.env["account.report.budget.oca"].create({"name": "Budget 2024"})
         self._create_moves({self.account_1.id: 200}, "2024-01-01", "2024-12-31")
 
         options = self._generate_options(
@@ -609,8 +609,8 @@ class TestBudgetReport(TestAccountReportsCommon):
         """Ensure that when budgets and analytics groupby filters are both active, then their headers are
         displayed on the same level, and values in the report are properly computed"""
 
-        budget_a = self.env["account.report.budget"].create([{"name": "Budget A"}])
-        budget_b = self.env["account.report.budget"].create([{"name": "Budget B"}])
+        budget_a = self.env["account.report.budget.oca"].create([{"name": "Budget A"}])
+        budget_b = self.env["account.report.budget.oca"].create([{"name": "Budget B"}])
 
         budget_a._create_or_update_budget_items(
             value_to_set=2400,  # 100 each month

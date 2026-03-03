@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <odoo auto_sequence="1">
     <record id="generic_ec_sales_report" model="account.report">
-        <field name="name">Generic EC Sales List</field>
+        <field name="name">🇻🇪 Generic EC Sales List</field>
         <field name="filter_show_draft" eval="True" />
         <field name="filter_period_comparison" eval="False" />
         <field name="filter_date_range" eval="True" />
@@ -14,7 +14,7 @@
         <field name="search_bar" eval="True" />
         <field
             name="custom_handler_model_id"
-            ref="model_account_ec_sales_report_handler"
+            ref="model_account_ec_sales_report_handler_oca"
         />
         <field name="column_ids">
             <record

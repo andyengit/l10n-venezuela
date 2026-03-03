@@ -3,8 +3,8 @@ from odoo.tools import SQL
 
 
 class AccountFollowupCustomHandler(models.AbstractModel):
-    _name = "account.followup.report.handler"
-    _inherit = "account.partner.ledger.report.handler"
+    _name = "account.followup.report.handler.oca"
+    _inherit = "account.partner.ledger.report.handler.oca"
     _description = "Follow-Up Report Custom Handler"
 
     def _custom_options_initializer(self, report, options, previous_options):

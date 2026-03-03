@@ -74,7 +74,7 @@ class TestFinancialReport(TestAccountReportsCommon):
 
         # ==== Custom filters ====
 
-        cls.horizontal_group = cls.env["account.report.horizontal.group"].create(
+        cls.horizontal_group = cls.env["account.report.horizontal.group.oca"].create(
             {
                 "name": "Horizontal Group",
                 "rule_ids": [
@@ -935,7 +935,7 @@ class TestFinancialReport(TestAccountReportsCommon):
         In case we don't have comparison, just one column and one level of groupby a new column is added which is the total
         of the horizontal group
         """
-        horizontal_group = self.env["account.report.horizontal.group"].create(
+        horizontal_group = self.env["account.report.horizontal.group.oca"].create(
             {
                 "name": "Horizontal Group total",
                 "rule_ids": [

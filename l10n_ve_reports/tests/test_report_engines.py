@@ -2385,7 +2385,7 @@ class TestReportEngines(TestAccountReportsCommon):
             country_id=self.fake_country.id,
         )
 
-        horizontal_group = self.env["account.report.horizontal.group"].create(
+        horizontal_group = self.env["account.report.horizontal.group.oca"].create(
             {
                 "name": "Horizontal Group",
                 "report_ids": report.ids,

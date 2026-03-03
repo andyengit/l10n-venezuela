@@ -11,8 +11,8 @@ from odoo.addons.web.controllers.utils import clean_action
 
 
 class AccountTaxReportHandler(models.AbstractModel):
-    _name = "account.tax.report.handler"
-    _inherit = "account.report.custom.handler"
+    _name = "account.tax.report.handler.oca"
+    _inherit = "account.report.custom.handler.oca"
     _description = "Account Report Handler for Tax Reports"
 
     # This model is needed for the Closing Entry button to be available for all reports, including the generic one
@@ -764,8 +764,8 @@ class AccountTaxReportHandler(models.AbstractModel):
 
 
 class GenericTaxReportCustomHandler(models.AbstractModel):
-    _name = "account.generic.tax.report.handler"
-    _inherit = "account.tax.report.handler"
+    _name = "account.generic.tax.report.handler.oca"
+    _inherit = "account.tax.report.handler.oca"
     _description = "Generic Tax Report Custom Handler"
 
     def _get_custom_display_config(self):
@@ -1641,8 +1641,8 @@ class GenericTaxReportCustomHandler(models.AbstractModel):
 
 
 class GenericTaxReportCustomHandlerAT(models.AbstractModel):
-    _name = "account.generic.tax.report.handler.account.tax"
-    _inherit = "account.generic.tax.report.handler"
+    _name = "account.generic.tax.report.handler.account.tax.oca"
+    _inherit = "account.generic.tax.report.handler.oca"
     _description = "Generic Tax Report Custom Handler (Account -> Tax)"
 
     def _dynamic_lines_generator(
@@ -1652,8 +1652,8 @@ class GenericTaxReportCustomHandlerAT(models.AbstractModel):
 
 
 class GenericTaxReportCustomHandlerTA(models.AbstractModel):
-    _name = "account.generic.tax.report.handler.tax.account"
-    _inherit = "account.generic.tax.report.handler"
+    _name = "account.generic.tax.report.handler.tax.account.oca"
+    _inherit = "account.generic.tax.report.handler.oca"
     _description = "Generic Tax Report Custom Handler (Tax -> Account)"
 
     def _dynamic_lines_generator(

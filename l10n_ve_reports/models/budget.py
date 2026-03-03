@@ -6,7 +6,7 @@ from odoo.tools import date_utils, float_is_zero, float_round
 
 
 class AccountReportBudget(models.Model):
-    _name = "account.report.budget"
+    _name = "account.report.budget.oca"
     _description = "Accounting Report Budget"
     _order = "sequence, id"
 
@@ -14,7 +14,7 @@ class AccountReportBudget(models.Model):
     name = fields.Char(string="Name", required=True)
     item_ids = fields.One2many(
         string="Items",
-        comodel_name="account.report.budget.item",
+        comodel_name="account.report.budget.item.oca",
         inverse_name="budget_id",
     )
     company_id = fields.Many2one(
@@ -55,7 +55,7 @@ class AccountReportBudget(models.Model):
             fields.Date.to_date(date_from),
             fields.Date.to_date(date_to),
         )
-        existing_budget_items = self.env["account.report.budget.item"].search_fetch(
+        existing_budget_items = self.env["account.report.budget.item.oca"].search_fetch(
             [
                 ("budget_id", "=", self.id),
                 ("account_id", "=", account_id),
@@ -117,7 +117,7 @@ class AccountReportBudget(models.Model):
         if budget_items_commands:
             self.item_ids = budget_items_commands
             # Make sure that the model is flushed before continuing the code and fetching these new items
-            self.env["account.report.budget.item"].flush_model()
+            self.env["account.report.budget.item.oca"].flush_model()
 
     def copy_data(self, default=None):
         vals_list = super().copy_data(default=default)
@@ -143,12 +143,12 @@ class AccountReportBudget(models.Model):
 
 
 class AccountReportBudgetItem(models.Model):
-    _name = "account.report.budget.item"
+    _name = "account.report.budget.item.oca"
     _description = "Accounting Report Budget Item"
 
     budget_id = fields.Many2one(
         string="Budget",
-        comodel_name="account.report.budget",
+        comodel_name="account.report.budget.oca",
         required=True,
         ondelete="cascade",
     )

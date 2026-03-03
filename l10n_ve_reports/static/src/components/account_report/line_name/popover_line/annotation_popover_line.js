@@ -6,7 +6,7 @@ import {DateTimeInput} from "@web/core/datetime/datetime_input";
 const {DateTime} = luxon;
 
 export class AnnotationPopoverLine extends Component {
-    static template = "account_report.AnnotationPopoverLine";
+    static template = "l10n_ve_reports.AnnotationPopoverLine";
     static props = {
         annotation: {
             type: Object,

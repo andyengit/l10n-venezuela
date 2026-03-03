@@ -646,7 +646,7 @@ class TestAnalyticReport(TestAccountReportsCommon):
         out_invoice_2.action_post()
 
         horizontal_group = self.env[
-            "account.report.horizontal.group"
+            "account.report.horizontal.group.oca"
         ].create(
             {
                 "name": "Horizontal Group Journal Entries",

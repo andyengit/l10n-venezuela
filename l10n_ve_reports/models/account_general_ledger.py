@@ -9,8 +9,8 @@ from odoo.tools import SQL
 
 
 class GeneralLedgerCustomHandler(models.AbstractModel):
-    _name = "account.general.ledger.report.handler"
-    _inherit = "account.report.custom.handler"
+    _name = "account.general.ledger.report.handler.oca"
+    _inherit = "account.report.custom.handler.oca"
     _description = "General Ledger Custom Handler"
 
     def _get_custom_display_config(self):

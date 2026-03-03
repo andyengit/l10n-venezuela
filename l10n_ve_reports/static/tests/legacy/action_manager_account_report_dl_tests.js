@@ -19,7 +19,7 @@ QUnit.module("Account Reports", {}, function () {
                     },
                     output_format: "pdf",
                 },
-                type: "ir_actions_account_report_download",
+                type: "ir_actions_account_report_download_oca",
             },
         };
         serverData = {actions};
@@ -49,7 +49,7 @@ QUnit.module("Account Reports", {}, function () {
         assert.verifySteps([
             "/web/webclient/load_menus",
             "/web/action/load",
-            "/account_reports",
+            "/l10n_ve_reports",
         ]);
     });
 });

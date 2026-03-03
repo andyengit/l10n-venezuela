@@ -3,21 +3,21 @@
     <record id="account.generic_tax_report" model="account.report">
         <field
             name="custom_handler_model_id"
-            ref="model_account_generic_tax_report_handler"
+            ref="model_account_generic_tax_report_handler_oca"
         />
     </record>
 
     <record id="account.generic_tax_report_account_tax" model="account.report">
         <field
             name="custom_handler_model_id"
-            ref="model_account_generic_tax_report_handler_account_tax"
+            ref="model_account_generic_tax_report_handler_account_tax_oca"
         />
     </record>
 
     <record id="account.generic_tax_report_tax_account" model="account.report">
         <field
             name="custom_handler_model_id"
-            ref="model_account_generic_tax_report_handler_tax_account"
+            ref="model_account_generic_tax_report_handler_tax_account_oca"
         />
     </record>
 </odoo>

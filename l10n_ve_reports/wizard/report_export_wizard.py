@@ -107,10 +107,10 @@ class ReportExportWizardOption(models.TransientModel):
     def apply_export(self, report_action):
         self.ensure_one()
 
-        if report_action["type"] == "ir_actions_account_report_download":
+        if report_action["type"] == "ir_actions_account_report_download_oca":
             report_options = json.loads(report_action["data"]["options"])
 
-            # file_generator functions are always public for ir_actions_account_report_download
+            # file_generator functions are always public for ir_actions_account_report_download_oca
             file_generator = report_action["data"]["file_generator"]
             report = self.export_wizard_id.report_id
             if report.custom_handler_model_id and hasattr(

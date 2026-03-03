@@ -90,7 +90,7 @@ class TestAccountReportAnnotationsExport(TestAccountReportsCommon):
                     Command.create(
                         {
                             "line_id": cls.env[
-                                "account.report.annotation"
+                                "account.report.annotation.oca"
                             ]._remove_tax_grouping_from_line_id(line_id_bank),
                             "text": "Papa a vu le fifi de lolo",
                             "date": date,

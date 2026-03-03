@@ -124,4 +124,4 @@ export class AccountReport extends Component {
     }
 }
 
-registry.category("actions").add("account_report", AccountReport);
+registry.category("actions").add("account_report_oca", AccountReport);

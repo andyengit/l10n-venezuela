@@ -13,8 +13,8 @@ from odoo.tools import SQL
 
 
 class AgedPartnerBalanceCustomHandler(models.AbstractModel):
-    _name = "account.aged.partner.balance.report.handler"
-    _inherit = "account.report.custom.handler"
+    _name = "account.aged.partner.balance.report.handler.oca"
+    _inherit = "account.report.custom.handler.oca"
     _description = "Aged Partner Balance Custom Handler"
 
     def _get_custom_display_config(self):
@@ -591,8 +591,8 @@ class AgedPartnerBalanceCustomHandler(models.AbstractModel):
 
 
 class AgedPayableCustomHandler(models.AbstractModel):
-    _name = "account.aged.payable.report.handler"
-    _inherit = "account.aged.partner.balance.report.handler"
+    _name = "account.aged.payable.report.handler.oca"
+    _inherit = "account.aged.partner.balance.report.handler.oca"
     _description = "Aged Payable Custom Handler"
 
     def open_journal_items(self, options, params):
@@ -627,8 +627,8 @@ class AgedPayableCustomHandler(models.AbstractModel):
 
 
 class AgedReceivableCustomHandler(models.AbstractModel):
-    _name = "account.aged.receivable.report.handler"
-    _inherit = "account.aged.partner.balance.report.handler"
+    _name = "account.aged.receivable.report.handler.oca"
+    _inherit = "account.aged.partner.balance.report.handler.oca"
     _description = "Aged Receivable Custom Handler"
 
     def open_journal_items(self, options, params):

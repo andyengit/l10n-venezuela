@@ -6,8 +6,8 @@ from odoo.tools.misc import format_date
 
 
 class PurchaseBookReportCustomHandler(models.AbstractModel):
-    _name = "account.purchase.book.report.handler"
-    _inherit = "account.report.custom.handler"
+    _name = "account.purchase.book.report.handler.oca"
+    _inherit = "account.report.custom.handler.oca"
     _description = "Purchase Book Report Custom Handler"
 
     def _get_custom_display_config(self):

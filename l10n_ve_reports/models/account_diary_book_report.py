@@ -6,8 +6,8 @@ from odoo import _, models
 
 
 class DiaryBookReportCustomHandler(models.AbstractModel):
-    _name = "account.diary.book.report.handler"
-    _inherit = "account.report.custom.handler"
+    _name = "account.diary.book.report.handler.oca"
+    _inherit = "account.report.custom.handler.oca"
     _description = "Diary Book Report Custom Handler"
 
     def _get_custom_display_config(self):

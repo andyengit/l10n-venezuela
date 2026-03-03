@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <odoo auto_sequence="1">
     <record id="diary_book_report" model="account.report">
-        <field name="name">Libro Diario</field>
+        <field name="name">🇻🇪 Libro Diario</field>
         <field name="filter_journals" eval="True" />
         <field name="filter_show_draft" eval="False" />
         <field name="filter_unfold_all" eval="True" />
@@ -12,7 +12,7 @@
         <field name="default_opening_date_filter">this_month</field>
         <field
             name="custom_handler_model_id"
-            ref="model_account_diary_book_report_handler"
+            ref="model_account_diary_book_report_handler_oca"
         />
         <field name="column_ids">
             <record id="diary_book_report_date" model="account.report.column">

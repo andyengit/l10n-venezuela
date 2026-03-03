@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <odoo auto_sequence="1">
     <record id="partner_ledger_report" model="account.report">
-        <field name="name">Partner Ledger</field>
+        <field name="name">🇻🇪 Partner Ledger</field>
         <field name="filter_show_draft" eval="True" />
         <field name="filter_account_type">both</field>
         <field name="filter_partner" eval="True" />
@@ -15,7 +15,7 @@
         <field name="load_more_limit" eval="80" />
         <field
             name="custom_handler_model_id"
-            ref="model_account_partner_ledger_report_handler"
+            ref="model_account_partner_ledger_report_handler_oca"
         />
         <field name="column_ids">
             <record

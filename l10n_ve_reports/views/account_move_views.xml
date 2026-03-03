@@ -27,7 +27,7 @@
             <list name="move_line_tree" position="attributes">
                 <attribute
                     name="js_class"
-                >account_move_line_journal_report_list</attribute>
+                >account_move_line_journal_report_list_oca</attribute>
             </list>
             <button name="edit" position="replace">
                 <button

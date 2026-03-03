@@ -1,11 +1,11 @@
 <odoo auto_sequence="1">
     <record id="customer_statement_report" model="account.report">
-        <field name="name">Customer Statement</field>
+        <field name="name">🇻🇪 Customer Statement</field>
         <field name="filter_journals" eval="True" />
         <field name="root_report_id" ref="l10n_ve_reports.partner_ledger_report" />
         <field
             name="custom_handler_model_id"
-            ref="model_account_customer_statement_report_handler"
+            ref="model_account_customer_statement_report_handler_oca"
         />
         <field name="column_ids">
             <record

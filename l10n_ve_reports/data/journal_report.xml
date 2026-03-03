@@ -2,7 +2,7 @@
 <odoo>
     <data auto_sequence="1">
         <record id="journal_report" model="account.report">
-            <field name="name">Journal Report</field>
+            <field name="name">🇻🇪 Journal Report</field>
             <field name="filter_journals" eval="True" />
             <field name="filter_show_draft" eval="True" />
             <field name="filter_unfold_all" eval="True" />
@@ -13,7 +13,7 @@
             <field name="default_opening_date_filter">this_year</field>
             <field
                 name="custom_handler_model_id"
-                ref="model_account_journal_report_handler"
+                ref="model_account_journal_report_handler_oca"
             />
             <field name="column_ids">
                 <record id="journal_report_code" model="account.report.column">

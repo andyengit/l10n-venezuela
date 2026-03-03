@@ -6,8 +6,8 @@ TRIAL_BALANCE_END_COLUMN_GROUP_KEY = "_trial_balance_end_column_group"
 
 
 class TrialBalanceCustomHandler(models.AbstractModel):
-    _name = "account.trial.balance.report.handler"
-    _inherit = "account.report.custom.handler"
+    _name = "account.trial.balance.report.handler.oca"
+    _inherit = "account.report.custom.handler.oca"
     _description = "Trial Balance Custom Handler"
 
     def _dynamic_lines_generator(

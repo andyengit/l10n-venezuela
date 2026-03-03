@@ -388,7 +388,7 @@ export class AccountReportsLinesListX2ManyField extends X2ManyField {
     }
 }
 
-registry.category("fields").add("account_report_lines_list_x2many", {
+registry.category("fields").add("account_report_lines_list_x2many_oca", {
     ...x2ManyField,
     component: AccountReportsLinesListX2ManyField,
 });

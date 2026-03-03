@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <odoo auto_sequence="1">
     <record id="executive_summary" model="account.report">
-        <field name="name">Executive Summary</field>
+        <field name="name">🇻🇪 Executive Summary</field>
         <field name="filter_multi_company">selector</field>
         <field name="default_opening_date_filter">this_year</field>
         <field name="column_ids">

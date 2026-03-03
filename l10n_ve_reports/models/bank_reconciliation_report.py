@@ -6,8 +6,8 @@ from odoo.tools import SQL
 
 
 class BankReconciliationReportCustomHandler(models.AbstractModel):
-    _name = "account.bank.reconciliation.report.handler"
-    _inherit = "account.report.custom.handler"
+    _name = "account.bank.reconciliation.report.handler.oca"
+    _inherit = "account.report.custom.handler.oca"
     _description = "Bank Reconciliation Report Custom Handler"
 
     ######################

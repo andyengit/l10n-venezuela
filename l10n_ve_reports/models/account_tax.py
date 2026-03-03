@@ -41,7 +41,7 @@ class AccountTaxUnit(models.Model):
     def create(self, vals_list):
         res = super().create(vals_list)
 
-        horizontal_groups = self.env["account.report.horizontal.group"].create(
+        horizontal_groups = self.env["account.report.horizontal.group.oca"].create(
             [
                 {
                     "name": tax_unit.name,

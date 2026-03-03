@@ -127,4 +127,4 @@ export const AccountMoveLineListView = {
     Controller: AccountMoveLineListController,
 };
 
-registry.category("views").add("account_move_line_list", AccountMoveLineListView);
+registry.category("views").add("account_move_line_list_oca", AccountMoveLineListView);

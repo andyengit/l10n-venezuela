@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <odoo auto_sequence="1">
     <record id="trial_balance_report" model="account.report">
-        <field name="name">Trial Balance</field>
+        <field name="name">🇻🇪 Trial Balance</field>
         <field name="filter_journals" eval="True" />
         <field name="filter_analytic" eval="True" />
         <field name="filter_growth_comparison" eval="False" />
@@ -13,7 +13,7 @@
         <field name="search_bar" eval="True" />
         <field
             name="custom_handler_model_id"
-            ref="model_account_trial_balance_report_handler"
+            ref="model_account_trial_balance_report_handler_oca"
         />
         <field name="column_ids">
             <record id="trial_balance_report_debit" model="account.report.column">

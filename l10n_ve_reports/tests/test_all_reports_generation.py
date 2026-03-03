@@ -188,7 +188,7 @@ class TestAllReportsGeneration(AccountTestInvoicingCommon):
 
                                 if (
                                     action_dict["type"]
-                                    == "ir_actions_account_report_download"
+                                    == "ir_actions_account_report_download_oca"
                                 ):
                                     file_gen_res = report.dispatch_report_action(
                                         options,

@@ -2,8 +2,8 @@ from odoo import models
 
 
 class BalanceSheetCustomHandler(models.AbstractModel):
-    _name = "account.balance.sheet.report.handler"
-    _inherit = "account.report.custom.handler"
+    _name = "account.balance.sheet.report.handler.oca"
+    _inherit = "account.report.custom.handler.oca"
     _description = "Balance Sheet Custom Handler"
 
     def _customize_warnings(

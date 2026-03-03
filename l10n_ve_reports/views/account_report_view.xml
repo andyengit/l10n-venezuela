@@ -159,7 +159,7 @@
                                     class="w-100"
                                     name="line_ids"
                                     no_label="1"
-                                    widget="account_report_lines_list_x2many"
+                                    widget="account_report_lines_list_x2many_oca"
                                 >
                                     <list limit="2000">
                                         <field name="id" column_invisible="1" />
@@ -386,7 +386,7 @@
 
         <record id="account_report_horizontal_group_form" model="ir.ui.view">
             <field name="name">account.report.horizontal.group.form</field>
-            <field name="model">account.report.horizontal.group</field>
+            <field name="model">account.report.horizontal.group.oca</field>
             <field name="arch" type="xml">
                 <form>
                     <sheet>
@@ -425,7 +425,7 @@
 
         <record id="account_report_horizontal_group_tree" model="ir.ui.view">
             <field name="name">account.report.horizontal.group.list</field>
-            <field name="model">account.report.horizontal.group</field>
+            <field name="model">account.report.horizontal.group.oca</field>
             <field name="arch" type="xml">
                 <list>
                     <field name="name" />
@@ -459,7 +459,7 @@
 
         <record id="account_report_budget_tree" model="ir.ui.view">
             <field name="name">account.report.budget.list</field>
-            <field name="model">account.report.budget</field>
+            <field name="model">account.report.budget.oca</field>
             <field name="arch" type="xml">
                 <list>
                     <field name="sequence" widget="handle" />
@@ -471,7 +471,7 @@
 
         <record id="account_report_budget_form" model="ir.ui.view">
             <field name="name">account.report.budget.form</field>
-            <field name="model">account.report.budget</field>
+            <field name="model">account.report.budget.oca</field>
             <field name="arch" type="xml">
                 <form>
                     <sheet>

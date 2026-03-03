@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <odoo auto_sequence="1">
     <record id="general_ledger_report" model="account.report">
-        <field name="name">General Ledger</field>
+        <field name="name">🇻🇪 General Ledger</field>
         <field name="filter_journals" eval="True" />
         <field name="filter_analytic" eval="True" />
         <field name="filter_period_comparison" eval="False" />
@@ -13,7 +13,7 @@
         <field name="load_more_limit" eval="80" />
         <field
             name="custom_handler_model_id"
-            ref="model_account_general_ledger_report_handler"
+            ref="model_account_general_ledger_report_handler_oca"
         />
         <field name="column_ids">
             <record id="general_ledger_report_date" model="account.report.column">

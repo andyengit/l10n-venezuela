@@ -512,8 +512,8 @@ msgstr ""
 #: model:account.report.line,name:l10n_ve_reports.aged_payable_line
 #: model:ir.actions.client,name:l10n_ve_reports.action_account_report_ap
 #: model:ir.ui.menu,name:l10n_ve_reports.menu_action_account_report_aged_payable
-msgid "Aged Payable"
-msgstr "Cuentas por Pagar Vencidas"
+msgid "🇻🇪 Aged Payable"
+msgstr "🇻🇪 Cuentas por Pagar Vencidas"
 
 #. module: l10n_ve_reports
 #: model:ir.model,name:l10n_ve_reports.model_account_aged_payable_report_handler
@@ -523,15 +523,15 @@ msgstr ""
 #. module: l10n_ve_reports
 #: model_terms:ir.ui.view,arch_db:l10n_ve_reports.account_reports_journal_dashboard_kanban_view
 msgid "Aged Payables"
-msgstr "Cuentas por Pagar Vencidas"
+msgstr "🇻🇪 Cuentas por Pagar Vencidas"
 
 #. module: l10n_ve_reports
 #: model:account.report,name:l10n_ve_reports.aged_receivable_report
 #: model:account.report.line,name:l10n_ve_reports.aged_receivable_line
 #: model:ir.actions.client,name:l10n_ve_reports.action_account_report_ar
 #: model:ir.ui.menu,name:l10n_ve_reports.menu_action_account_report_aged_receivable
-msgid "Aged Receivable"
-msgstr "Cuentas por Cobrar Vencidas"
+msgid "🇻🇪 Aged Receivable"
+msgstr "🇻🇪 Cuentas por Cobrar Vencidas"
 
 #. module: l10n_ve_reports
 #: model:ir.model,name:l10n_ve_reports.model_account_aged_receivable_report_handler
@@ -541,7 +541,7 @@ msgstr ""
 #. module: l10n_ve_reports
 #: model_terms:ir.ui.view,arch_db:l10n_ve_reports.account_reports_journal_dashboard_kanban_view
 msgid "Aged Receivables"
-msgstr "Cuentas por Cobrar Vencidas"
+msgstr "🇻🇪 Cuentas por Cobrar Vencidas"
 
 #. module: l10n_ve_reports
 #: model:account.report.column,name:l10n_ve_reports.purchases_book_report_general_aliquot
@@ -788,8 +788,8 @@ msgstr "Saldo"
 #: model:account.report.line,name:l10n_ve_reports.account_financial_report_executivesummary_balancesheet0
 #: model:ir.actions.client,name:l10n_ve_reports.action_account_report_bs
 #: model:ir.ui.menu,name:l10n_ve_reports.menu_action_account_report_balance_sheet
-msgid "Balance Sheet"
-msgstr "Balance General"
+msgid "🇻🇪 Balance Sheet"
+msgstr "🇻🇪 Balance General"
 
 #. module: l10n_ve_reports
 #: model:ir.model,name:l10n_ve_reports.model_account_balance_sheet_report_handler
@@ -846,13 +846,13 @@ msgstr "Saldo cuenta corriente de impuesto (por cobrar)"
 
 #. module: l10n_ve_reports
 #: model:ir.actions.client,name:l10n_ve_reports.action_account_report_bank_reconciliation
-msgid "Bank Reconciliation"
-msgstr "Conciliación Bancaria"
+msgid "🇻🇪 Bank Reconciliation"
+msgstr "🇻🇪 Conciliación Bancaria"
 
 #. module: l10n_ve_reports
 #: model:account.report,name:l10n_ve_reports.bank_reconciliation_report
-msgid "Bank Reconciliation Report"
-msgstr "Reporte de Conciliación Bancaria"
+msgid "🇻🇪 Bank Reconciliation Report"
+msgstr "🇻🇪 Reporte de Conciliación Bancaria"
 
 #. module: l10n_ve_reports
 #: model:ir.model,name:l10n_ve_reports.model_account_bank_reconciliation_report_handler
@@ -1011,8 +1011,8 @@ msgstr ""
 #: model:account.report,name:l10n_ve_reports.cash_flow_report
 #: model:ir.actions.client,name:l10n_ve_reports.action_account_report_cs
 #: model:ir.ui.menu,name:l10n_ve_reports.menu_action_account_report_cash_flow
-msgid "Cash Flow Statement"
-msgstr "Estado de Flujo de Efectivo"
+msgid "🇻🇪 Cash Flow Statement"
+msgstr "🇻🇪 Estado de Flujo de Efectivo"
 
 #. module: l10n_ve_reports
 #. odoo-python
@@ -1463,8 +1463,8 @@ msgstr ""
 #: model:account.report,name:l10n_ve_reports.customer_statement_report
 #: model:ir.actions.client,name:l10n_ve_reports.action_account_report_customer_statement
 #: model:mail.template,name:l10n_ve_reports.email_template_customer_statement
-msgid "Customer Statement"
-msgstr "Estado de Cuenta del Cliente"
+msgid "🇻🇪 Customer Statement"
+msgstr "🇻🇪 Estado de Cuenta del Cliente"
 
 #. module: l10n_ve_reports
 #: model:ir.model,name:l10n_ve_reports.model_account_customer_statement_report_handler
@@ -1832,8 +1832,8 @@ msgstr "Cuentas Excluidas"
 #: model:account.report,name:l10n_ve_reports.executive_summary
 #: model:ir.actions.client,name:l10n_ve_reports.action_account_report_exec_summary
 #: model:ir.ui.menu,name:l10n_ve_reports.menu_action_account_report_exec_summary
-msgid "Executive Summary"
-msgstr "Resumen Ejecutivo"
+msgid "🇻🇪 Executive Summary"
+msgstr "🇻🇪 Resumen Ejecutivo"
 
 #. module: l10n_ve_reports
 #. odoo-python
@@ -2122,8 +2122,8 @@ msgstr ""
 #: model:account.report,name:l10n_ve_reports.general_ledger_report
 #: model:ir.actions.client,name:l10n_ve_reports.action_account_report_general_ledger
 #: model:ir.ui.menu,name:l10n_ve_reports.menu_action_account_report_general_ledger
-msgid "General Ledger"
-msgstr "Libro Mayor"
+msgid "🇻🇪 General Ledger"
+msgstr "🇻🇪 Libro Mayor"
 
 #. module: l10n_ve_reports
 #: model:ir.model,name:l10n_ve_reports.model_account_general_ledger_report_handler
@@ -3270,8 +3270,8 @@ msgstr ""
 #: model:account.report,name:l10n_ve_reports.partner_ledger_report
 #: model:ir.actions.client,name:l10n_ve_reports.action_account_report_partner_ledger
 #: model:ir.ui.menu,name:l10n_ve_reports.menu_action_account_report_partner_ledger
-msgid "Partner Ledger"
-msgstr "Libro Mayor de Socios"
+msgid "🇻🇪 Partner Ledger"
+msgstr "🇻🇪 Libro Mayor de Socios"
 
 #. module: l10n_ve_reports
 #: model:ir.model,name:l10n_ve_reports.model_account_partner_ledger_report_handler
@@ -3585,8 +3585,8 @@ msgstr ""
 #: model:account.report,name:l10n_ve_reports.profit_and_loss
 #: model:ir.actions.client,name:l10n_ve_reports.action_account_report_pl
 #: model:ir.ui.menu,name:l10n_ve_reports.menu_action_account_report_profit_and_loss
-msgid "Profit and Loss"
-msgstr "Pérdidas y Ganancias"
+msgid "🇻🇪 Profit and Loss"
+msgstr "🇻🇪 Pérdidas y Ganancias"
 
 #. module: l10n_ve_reports
 #: model:account.report.line,name:l10n_ve_reports.account_financial_report_executivesummary_profitability0
@@ -3661,8 +3661,8 @@ msgstr "Destinatarios"
 
 #. module: l10n_ve_reports
 #: model_terms:ir.ui.view,arch_db:l10n_ve_reports.account_reports_journal_dashboard_kanban_view
-msgid "Reconciliation Report"
-msgstr ""
+msgid "🇻🇪 Reconciliation Report"
+msgstr "🇻🇪 Reporte de Conciliación"
 
 #. module: l10n_ve_reports
 #. odoo-python
@@ -4614,8 +4614,8 @@ msgstr ""
 #: model:account.report,name:l10n_ve_reports.trial_balance_report
 #: model:ir.actions.client,name:l10n_ve_reports.action_account_report_coa
 #: model:ir.ui.menu,name:l10n_ve_reports.menu_action_account_report_coa
-msgid "Trial Balance"
-msgstr "Balance de Comprobación"
+msgid "🇻🇪 Trial Balance"
+msgstr "🇻🇪 Balance de Comprobación"
 
 #. module: l10n_ve_reports
 #: model:ir.model,name:l10n_ve_reports.model_account_trial_balance_report_handler

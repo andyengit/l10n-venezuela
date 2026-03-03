@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <odoo auto_sequence="1">
     <record id="followup_report" model="account.report">
-        <field name="name">Follow-Up Report</field>
+        <field name="name">🇻🇪 Follow-Up Report</field>
         <field name="filter_journals" eval="True" />
         <field name="default_opening_date_filter">today</field>
         <field name="filter_date_range" eval="False" />
@@ -9,7 +9,7 @@
         <field name="root_report_id" ref="l10n_ve_reports.partner_ledger_report" />
         <field
             name="custom_handler_model_id"
-            ref="model_account_followup_report_handler"
+            ref="model_account_followup_report_handler_oca"
         />
         <field name="filter_account_type">receivable</field>
         <field name="column_ids">

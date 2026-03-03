@@ -91,7 +91,7 @@ export class AccountReportAnnotationsPopover extends Component {
     async saveNewAnnotation(newAnnotation) {
         if (newAnnotation.text) {
             this.currentPromise = this.env.services.orm.call(
-                "account.report.annotation",
+                "account.report.annotation.oca",
                 "create",
                 [
                     {
@@ -125,7 +125,7 @@ export class AccountReportAnnotationsPopover extends Component {
 
     async deleteAnnotation(annotationId) {
         this.currentPromise = this.env.services.orm.call(
-            "account.report.annotation",
+            "account.report.annotation.oca",
             "unlink",
             [annotationId],
             {context: this.props.controller.context}
@@ -136,7 +136,7 @@ export class AccountReportAnnotationsPopover extends Component {
 
     async editAnnotation(editedAnnotation, existingAnnotation) {
         this.currentPromise = this.env.services.orm.call(
-            "account.report.annotation",
+            "account.report.annotation.oca",
             "write",
             [
                 [existingAnnotation.id],

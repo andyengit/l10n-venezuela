@@ -814,7 +814,7 @@ export class AccountReportFilters extends Component {
             });
             return;
         }
-        const createdId = await this.orm.call("account.report.budget", "create", [
+        const createdId = await this.orm.call("account.report.budget.oca", "create", [
             {name: budgetName},
         ]);
         this.budgetName.value = "";

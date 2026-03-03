@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <odoo auto_sequence="1">
     <record id="aged_receivable_report" model="account.report">
-        <field name="name">Aged Receivable</field>
+        <field name="name">🇻🇪 Aged Receivable</field>
         <field name="filter_date_range" eval="False" />
         <field name="filter_unfold_all" eval="True" />
         <field name="filter_partner" eval="True" />
@@ -13,7 +13,7 @@
         <field name="default_opening_date_filter">today</field>
         <field
             name="custom_handler_model_id"
-            ref="model_account_aged_receivable_report_handler"
+            ref="model_account_aged_receivable_report_handler_oca"
         />
         <field name="column_ids">
             <record
@@ -235,7 +235,7 @@
     </record>
 
     <record id="aged_payable_report" model="account.report">
-        <field name="name">Aged Payable</field>
+        <field name="name">🇻🇪 Aged Payable</field>
         <field name="filter_date_range" eval="False" />
         <field name="filter_unfold_all" eval="True" />
         <field name="filter_partner" eval="True" />
@@ -247,7 +247,7 @@
         <field name="default_opening_date_filter">today</field>
         <field
             name="custom_handler_model_id"
-            ref="model_account_aged_payable_report_handler"
+            ref="model_account_aged_payable_report_handler_oca"
         />
         <field name="column_ids">
             <record id="aged_payable_report_invoice_date" model="account.report.column">

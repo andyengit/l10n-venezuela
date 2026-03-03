@@ -13,7 +13,7 @@ QUnit.module("Account Reports Builder", ({beforeEach}) => {
     beforeEach(async () => {
         arch = `
             <form>
-                <field class="w-100" name="line_ids" widget="account_report_lines_list_x2many">
+                <field class="w-100" name="line_ids" widget="account_report_lines_list_x2many_oca">
                     <list>
                         <field name="id" column_invisible="1"/>
                         <field name="sequence" column_invisible="1"/>
@@ -150,23 +150,23 @@ QUnit.module("Account Reports Builder", ({beforeEach}) => {
         });
 
         assert.containsOnce(
-            target.querySelector(".account_report_lines_list_x2many"),
+            target.querySelector(".account_report_lines_list_x2many_oca"),
             "li[data-descendants_count='0'] span:contains('Root without children')"
         );
         assert.containsOnce(
-            target.querySelector(".account_report_lines_list_x2many"),
+            target.querySelector(".account_report_lines_list_x2many_oca"),
             "li[data-descendants_count='3'] span:contains('Root with children')"
         );
         assert.containsOnce(
-            target.querySelector(".account_report_lines_list_x2many"),
+            target.querySelector(".account_report_lines_list_x2many_oca"),
             "li[data-descendants_count='1'] span:contains('Child #1')"
         );
         assert.containsOnce(
-            target.querySelector(".account_report_lines_list_x2many"),
+            target.querySelector(".account_report_lines_list_x2many_oca"),
             "li[data-descendants_count='0'] span:contains('Grandchild')"
         );
         assert.containsOnce(
-            target.querySelector(".account_report_lines_list_x2many"),
+            target.querySelector(".account_report_lines_list_x2many_oca"),
             "li[data-descendants_count='0'] span:contains('Child #2')"
         );
     });
@@ -184,7 +184,7 @@ QUnit.module("Account Reports Builder", ({beforeEach}) => {
         });
 
         await click(
-            target.querySelector(".account_report_lines_list_x2many"),
+            target.querySelector(".account_report_lines_list_x2many_oca"),
             "li:last-of-type a"
         );
 
@@ -198,7 +198,7 @@ QUnit.module("Account Reports Builder", ({beforeEach}) => {
         await click(target.querySelector(".o_dialog"), ".o_form_button_save");
 
         assert.containsOnce(
-            target.querySelector(".account_report_lines_list_x2many"),
+            target.querySelector(".account_report_lines_list_x2many_oca"),
             "li span:contains('Created line')"
         );
     });
@@ -216,7 +216,7 @@ QUnit.module("Account Reports Builder", ({beforeEach}) => {
         });
 
         await click(
-            target.querySelector(".account_report_lines_list_x2many"),
+            target.querySelector(".account_report_lines_list_x2many_oca"),
             "li[data-record_id='1'] .column"
         );
 
@@ -230,7 +230,7 @@ QUnit.module("Account Reports Builder", ({beforeEach}) => {
         await click(target.querySelector(".o_dialog"), ".o_form_button_save");
 
         assert.containsOnce(
-            target.querySelector(".account_report_lines_list_x2many"),
+            target.querySelector(".account_report_lines_list_x2many_oca"),
             "li span:contains('Line without children (edited)')"
         );
     });
@@ -248,28 +248,28 @@ QUnit.module("Account Reports Builder", ({beforeEach}) => {
         });
 
         await click(
-            target.querySelector(".account_report_lines_list_x2many"),
+            target.querySelector(".account_report_lines_list_x2many_oca"),
             "li[data-record_id='1'] > div > .trash"
         );
 
         assert.containsNone(
-            target.querySelector(".account_report_lines_list_x2many"),
+            target.querySelector(".account_report_lines_list_x2many_oca"),
             "li span:contains('Root without children')"
         );
         assert.containsOnce(
-            target.querySelector(".account_report_lines_list_x2many"),
+            target.querySelector(".account_report_lines_list_x2many_oca"),
             "li span:contains('Root with children')"
         );
         assert.containsOnce(
-            target.querySelector(".account_report_lines_list_x2many"),
+            target.querySelector(".account_report_lines_list_x2many_oca"),
             "li span:contains('Child #1')"
         );
         assert.containsOnce(
-            target.querySelector(".account_report_lines_list_x2many"),
+            target.querySelector(".account_report_lines_list_x2many_oca"),
             "li span:contains('Grandchild')"
         );
         assert.containsOnce(
-            target.querySelector(".account_report_lines_list_x2many"),
+            target.querySelector(".account_report_lines_list_x2many_oca"),
             "li span:contains('Child #2')"
         );
     });
@@ -284,7 +284,7 @@ QUnit.module("Account Reports Builder", ({beforeEach}) => {
         });
 
         await click(
-            target.querySelector(".account_report_lines_list_x2many"),
+            target.querySelector(".account_report_lines_list_x2many_oca"),
             "li[data-record_id='2'] > div > .trash"
         );
 
@@ -294,23 +294,23 @@ QUnit.module("Account Reports Builder", ({beforeEach}) => {
         await click(target.querySelector(".o_dialog"), ".btn-primary");
 
         assert.containsOnce(
-            target.querySelector(".account_report_lines_list_x2many"),
+            target.querySelector(".account_report_lines_list_x2many_oca"),
             "li span:contains('Root without children')"
         );
         assert.containsNone(
-            target.querySelector(".account_report_lines_list_x2many"),
+            target.querySelector(".account_report_lines_list_x2many_oca"),
             "li span:contains('Root with children')"
         );
         assert.containsNone(
-            target.querySelector(".account_report_lines_list_x2many"),
+            target.querySelector(".account_report_lines_list_x2many_oca"),
             "li span:contains('Child #1')"
         );
         assert.containsNone(
-            target.querySelector(".account_report_lines_list_x2many"),
+            target.querySelector(".account_report_lines_list_x2many_oca"),
             "li span:contains('Grandchild')"
         );
         assert.containsNone(
-            target.querySelector(".account_report_lines_list_x2many"),
+            target.querySelector(".account_report_lines_list_x2many_oca"),
             "li span:contains('Child #2')"
         );
     });
@@ -325,28 +325,28 @@ QUnit.module("Account Reports Builder", ({beforeEach}) => {
         });
 
         await click(
-            target.querySelector(".account_report_lines_list_x2many"),
+            target.querySelector(".account_report_lines_list_x2many_oca"),
             "li[data-record_id='4'] > div > .trash"
         );
 
         assert.containsOnce(
-            target.querySelector(".account_report_lines_list_x2many"),
+            target.querySelector(".account_report_lines_list_x2many_oca"),
             "li span:contains('Root without children')"
         );
         assert.containsOnce(
-            target.querySelector(".account_report_lines_list_x2many"),
+            target.querySelector(".account_report_lines_list_x2many_oca"),
             "li[data-descendants_count='2'] span:contains('Root with children')"
         );
         assert.containsOnce(
-            target.querySelector(".account_report_lines_list_x2many"),
+            target.querySelector(".account_report_lines_list_x2many_oca"),
             "li[data-descendants_count='0'] span:contains('Child #1')"
         );
         assert.containsNone(
-            target.querySelector(".account_report_lines_list_x2many"),
+            target.querySelector(".account_report_lines_list_x2many_oca"),
             "li span:contains('Grandchild')"
         );
         assert.containsOnce(
-            target.querySelector(".account_report_lines_list_x2many"),
+            target.querySelector(".account_report_lines_list_x2many_oca"),
             "li span:contains('Child #2')"
         );
     });
@@ -684,7 +684,7 @@ QUnit.module("Account Reports Builder", ({beforeEach}) => {
         });
 
         await click(
-            target.querySelector(".account_report_lines_list_x2many"),
+            target.querySelector(".account_report_lines_list_x2many_oca"),
             "li:last-of-type a"
         );
         await editInput(
@@ -731,14 +731,14 @@ QUnit.module("Account Reports Builder", ({beforeEach}) => {
         });
 
         await click(
-            target.querySelector(".account_report_lines_list_x2many"),
+            target.querySelector(".account_report_lines_list_x2many_oca"),
             "li:last-of-type a"
         );
         await editInput(target.querySelector("div[name='name'] input"), null, "parent");
         await click(target.querySelector(".o_dialog"), ".o_form_button_save");
 
         await click(
-            target.querySelector(".account_report_lines_list_x2many"),
+            target.querySelector(".account_report_lines_list_x2many_oca"),
             "li:last-of-type a"
         );
         await editInput(
@@ -769,7 +769,7 @@ QUnit.module("Account Reports Builder", ({beforeEach}) => {
             });
             // Ensure `code` column is hidden by default
             assert.containsNone(
-                target.querySelector(".account_report_lines_list_x2many"),
+                target.querySelector(".account_report_lines_list_x2many_oca"),
                 "span.fw-bold.fixed:contains('Code')",
                 "The 'Code' column should be hidden initially"
             );
@@ -780,7 +780,7 @@ QUnit.module("Account Reports Builder", ({beforeEach}) => {
 
             // Check that the column is now visible
             assert.containsOnce(
-                target.querySelector(".account_report_lines_list_x2many"),
+                target.querySelector(".account_report_lines_list_x2many_oca"),
                 "span.fw-bold.fixed:contains('Code')",
                 "The 'Code' column should now be visible after toggling"
             );
@@ -788,7 +788,7 @@ QUnit.module("Account Reports Builder", ({beforeEach}) => {
             // Toggle it back to hide and verify
             await click(target.querySelector("input[name='code']"));
             assert.containsNone(
-                target.querySelector(".account_report_lines_list_x2many"),
+                target.querySelector(".account_report_lines_list_x2many_oca"),
                 "span.fw-bold.fixed:contains('Code')",
                 "The 'Code' column should be hidden after toggling back"
             );

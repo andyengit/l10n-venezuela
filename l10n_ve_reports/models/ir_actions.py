@@ -9,7 +9,7 @@ class IrActionsAccountReportDownload(models.AbstractModel):
     # extended outside of the base module, the risk being completely destroying the client's db.
     # If you plan on modifying this model, think of reading odoo/enterprise#13820 and/or contact
     # the metastorm team.
-    _name = "ir_actions_account_report_download"
+    _name = "ir_actions_account_report_download_oca"
     _description = "Technical model for accounting report downloads"
 
     def _get_readable_fields(self):

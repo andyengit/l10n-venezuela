@@ -3,8 +3,8 @@ from odoo.tools import SQL, Query
 
 
 class CashFlowReportCustomHandler(models.AbstractModel):
-    _name = "account.cash.flow.report.handler"
-    _inherit = "account.report.custom.handler"
+    _name = "account.cash.flow.report.handler.oca"
+    _inherit = "account.report.custom.handler.oca"
     _description = "Cash Flow Report Custom Handler"
 
     def _dynamic_lines_generator(

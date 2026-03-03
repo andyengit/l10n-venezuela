@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <templates>
-    <t t-name="account_report.AnnotationPopoverLine">
+    <t t-name="l10n_ve_reports.AnnotationPopoverLine">
         <tr class="annotation_popover_line">
             <td class="w-25">
                 <DateTimeInput

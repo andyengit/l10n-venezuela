@@ -245,7 +245,7 @@ class AccountReportSend(models.TransientModel):
         """Download the PDF attachment, or a zip of attachments if there are more than one."""
         return {
             "type": "ir.actions.act_url",
-            "url": f'/account_reports/download_attachments/{",".join(map(str, attachments.ids))}',
+            "url": f'/l10n_ve_reports/download_attachments/{",".join(map(str, attachments.ids))}',
             "close": True,
         }
 

@@ -6,7 +6,7 @@ import {download} from "@web/core/network/download";
 async function executeAccountReportDownload({env, action}) {
     env.services.ui.block();
 
-    const url = "/account_reports";
+    const url = "/l10n_ve_reports";
     const data = action.data;
 
     try {
@@ -31,4 +31,4 @@ async function executeAccountReportDownload({env, action}) {
 
 registry
     .category("action_handlers")
-    .add("ir_actions_account_report_download", executeAccountReportDownload);
+    .add("ir_actions_account_report_download_oca", executeAccountReportDownload);

@@ -17,8 +17,8 @@ XLSX_FONT_SIZE_HEADING = 11
 
 
 class JournalReportCustomHandler(models.AbstractModel):
-    _name = "account.journal.report.handler"
-    _inherit = "account.report.custom.handler"
+    _name = "account.journal.report.handler.oca"
+    _inherit = "account.report.custom.handler.oca"
     _description = "Journal Report Custom Handler"
 
     def _custom_options_initializer(self, report, options, previous_options):

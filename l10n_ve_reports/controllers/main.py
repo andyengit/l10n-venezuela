@@ -15,7 +15,7 @@ from odoo.addons.l10n_ve_reports.models.account_report import (
 
 class AccountReportController(http.Controller):
     @http.route(
-        "/account_reports", type="http", auth="user", methods=["POST"], csrf=False
+        "/l10n_ve_reports", type="http", auth="user", methods=["POST"], csrf=False
     )
     def get_report(self, options, file_generator, **kwargs):
         uid = request.uid
@@ -93,7 +93,7 @@ class AccountReportController(http.Controller):
         return headers
 
     @http.route(
-        '/account_reports/download_attachments/<models("ir.attachment"):attachments>',
+        '/l10n_ve_reports/download_attachments/<models("ir.attachment"):attachments>',
         type="http",
         auth="user",
     )

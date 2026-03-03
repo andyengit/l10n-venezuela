@@ -59,8 +59,9 @@ CURRENCIES_USING_LAKH = {"AFN", "BDT", "INR", "MMK", "NPR", "PKR", "LKR"}
 
 
 class AccountReportAnnotation(models.Model):
-    _name = "account.report.annotation"
+    _name = "account.report.annotation.oca"
     _description = "Account Report Annotation"
+
 
     report_id = fields.Many2one(
         "account.report", help="The id of the annotated report."
@@ -116,11 +117,11 @@ class AccountReport(models.Model):
     _inherit = "account.report"
 
     horizontal_group_ids = fields.Many2many(
-        string="Horizontal Groups", comodel_name="account.report.horizontal.group"
+        string="Horizontal Groups", comodel_name="account.report.horizontal.group.oca"
     )
     annotations_ids = fields.One2many(
         string="Annotations",
-        comodel_name="account.report.annotation",
+        comodel_name="account.report.annotation.oca",
         inverse_name="report_id",
     )
 
@@ -161,7 +162,7 @@ class AccountReport(models.Model):
         for report in self:
             if report.custom_handler_model_id:
                 custom_handler_model = self.env.registry[
-                    "account.report.custom.handler"
+                    "account.report.custom.handler.oca"
                 ]
                 current_model = self.env[report.custom_handler_model_name]
                 if not isinstance(current_model, custom_handler_model):
@@ -242,7 +243,7 @@ class AccountReport(models.Model):
         self.ensure_one()
         action = (
             self.env["ir.actions.client"]
-            .search([("name", "=", self.name), ("tag", "=", "account_report")])
+            .search([("name", "=", self.name), ("tag", "=", "account_report_oca")])
             .filtered(
                 lambda act: ast.literal_eval(act.context).get("report_id") == self.id
             )
@@ -267,7 +268,7 @@ class AccountReport(models.Model):
             action = self.env["ir.actions.client"].create(
                 {
                     "name": self.name,
-                    "tag": "account_report",
+                    "tag": "account_report_oca",
                     "context": {"report_id": self.id},
                 }
             )
@@ -2091,7 +2092,7 @@ class AccountReport(models.Model):
         # Handle horizontal groups
         selected_horizontal_group_id = options.get("selected_horizontal_group_id")
         if selected_horizontal_group_id:
-            horizontal_group = self.env["account.report.horizontal.group"].browse(
+            horizontal_group = self.env["account.report.horizontal.group.oca"].browse(
                 selected_horizontal_group_id
             )
 
@@ -2542,7 +2543,7 @@ class AccountReport(models.Model):
                     "selected": budget.id in previous_selection,
                     "company_id": budget.company_id.id,
                 }
-                for budget in self.env["account.report.budget"].search(
+                for budget in self.env["account.report.budget.oca"].search(
                     [("company_id", "=", self.env.company.id)]
                 )
             ]
@@ -6169,7 +6170,7 @@ class AccountReport(models.Model):
 
         if action_type == "ir.actions.client":
             # Check if we are opening another report. If so, generate options for it from the current options.
-            if action.tag == "account_report":
+            if action.tag == "account_report_oca":
                 target_report = self.env["account.report"].browse(
                     ast.literal_eval(action_read["context"])["report_id"]
                 )
@@ -6917,7 +6918,7 @@ class AccountReport(models.Model):
                     value_to_set *= multiplicator
                     break
 
-        self.env["account.report.budget"].browse(
+        self.env["account.report.budget.oca"].browse(
             target_column_group_options["compute_budget"]
         )._create_or_update_budget_items(
             value_to_set,
@@ -7206,12 +7207,12 @@ class AccountReport(models.Model):
         """
         self.ensure_one()
         annotations_by_line = defaultdict(list)
-        annotations = self.env["account.report.annotation"].search_read(
+        annotations = self.env["account.report.annotation.oca"].search_read(
             self._build_annotations_domain(options)
         )
         for annotation in annotations:
             line_id_without_tax_grouping = self.env[
-                "account.report.annotation"
+                "account.report.annotation.oca"
             ]._remove_tax_grouping_from_line_id(annotation["line_id"])
             annotation["create_date"] = annotation["create_date"].date()
             annotations_by_line[line_id_without_tax_grouping].append(annotation)
@@ -8048,7 +8049,7 @@ class AccountReport(models.Model):
         export_options = {**options, "export_mode": "file"}
 
         return {
-            "type": "ir_actions_account_report_download",
+            "type": "ir_actions_account_report_download_oca",
             "data": {
                 "options": json.dumps(export_options),
                 "file_generator": file_generator,
@@ -10248,13 +10249,13 @@ class AccountReportExpression(models.Model):
 
 
 class AccountReportHorizontalGroup(models.Model):
-    _name = "account.report.horizontal.group"
+    _name = "account.report.horizontal.group.oca"
     _description = "Horizontal group for reports"
 
     name = fields.Char(string="Name", required=True, translate=True)
     rule_ids = fields.One2many(
         string="Rules",
-        comodel_name="account.report.horizontal.group.rule",
+        comodel_name="account.report.horizontal.group.rule.oca",
         inverse_name="horizontal_group_id",
         required=True,
     )
@@ -10275,7 +10276,7 @@ class AccountReportHorizontalGroup(models.Model):
 
 
 class AccountReportHorizontalGroupRule(models.Model):
-    _name = "account.report.horizontal.group.rule"
+    _name = "account.report.horizontal.group.rule.oca"
     _description = "Horizontal group rule for reports"
 
     def _field_name_selection_values(self):
@@ -10287,7 +10288,7 @@ class AccountReportHorizontalGroupRule(models.Model):
 
     horizontal_group_id = fields.Many2one(
         string="Horizontal Group",
-        comodel_name="account.report.horizontal.group",
+        comodel_name="account.report.horizontal.group.oca",
         required=True,
     )
     domain = fields.Char(string="Domain", required=True, default="[]")
@@ -10316,7 +10317,7 @@ class AccountReportHorizontalGroupRule(models.Model):
 
 
 class AccountReportCustomHandler(models.AbstractModel):
-    _name = "account.report.custom.handler"
+    _name = "account.report.custom.handler.oca"
     _description = "Account Report Custom Handler"
 
     # This abstract model allows case-by-case localized changes of behaviors of reports.

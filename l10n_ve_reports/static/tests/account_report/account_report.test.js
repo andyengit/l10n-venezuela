@@ -198,7 +198,7 @@ test("Test unfold loaded line", async () => {
     await mountWithCleanup(WebClient);
     await getService("action").doAction({
         type: "ir.actions.client",
-        tag: "account_report",
+        tag: "account_report_oca",
         params: {},
     });
 

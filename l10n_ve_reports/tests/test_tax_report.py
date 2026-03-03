@@ -2805,7 +2805,7 @@ class TestTaxReport(TestAccountReportsCommon):
         )
 
         # Check if the two last horizontal_group are the one created from the tax unit
-        horizontal_groups = self.env["account.report.horizontal.group"].search([])[-2:]
+        horizontal_groups = self.env["account.report.horizontal.group.oca"].search([])[-2:]
         self.assertEqual(
             ["First Tax Unit", "Second Tax Unit"], horizontal_groups.mapped("name")
         )

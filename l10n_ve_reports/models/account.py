@@ -12,5 +12,5 @@ class AccountAccount(models.Model):
         help="Whether or not we have to make provisions for the selected foreign currencies.",
     )
     budget_item_ids = fields.One2many(
-        comodel_name="account.report.budget.item", inverse_name="account_id"
-    )  # To use it in the domain when adding accounts from the report
+        comodel_name="account.report.budget.item.oca", inverse_name="account_id"
+    )

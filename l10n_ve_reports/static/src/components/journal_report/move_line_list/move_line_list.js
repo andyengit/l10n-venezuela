@@ -25,6 +25,6 @@ export const JournalReportAccountMoveLineReconcileLineListView = {
 registry
     .category("views")
     .add(
-        "account_move_line_journal_report_list",
+        "account_move_line_journal_report_list_oca",
         JournalReportAccountMoveLineReconcileLineListView
     );

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <odoo auto_sequence="1">
     <record id="bank_reconciliation_report" model="account.report">
-        <field name="name">Bank Reconciliation Report</field>
+        <field name="name">🇻🇪 Bank Reconciliation Report</field>
         <field name="filter_show_draft" eval="True" />
         <field name="filter_date_range" eval="False" />
         <field name="filter_period_comparison" eval="False" />
@@ -10,7 +10,7 @@
         <field name="default_opening_date_filter">today</field>
         <field
             name="custom_handler_model_id"
-            ref="model_account_bank_reconciliation_report_handler"
+            ref="model_account_bank_reconciliation_report_handler_oca"
         />
         <field name="column_ids">
             <record id="bank_reconciliation_report_date" model="account.report.column">
