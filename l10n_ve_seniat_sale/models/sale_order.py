@@ -1,6 +1,8 @@
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 
-from odoo import api, fields, models
+from odoo import Command, _, api, fields, models
+from odoo.exceptions import UserError
+from odoo.tools import float_is_zero
 
 
 class SaleOrder(models.Model):
@@ -39,6 +41,60 @@ class SaleOrder(models.Model):
                 order.invoicing_date = date_ref
             else:
                 order.invoicing_date = False
+
+    def action_confirm(self):
+        precision = self.env["decimal.precision"].precision_get("Product Price")
+        for order in self:
+            if float_is_zero(order.amount_total, precision_digits=order.currency_id.decimal_places):
+                raise UserError(
+                    "No se puede confirmar el pedido con un total de 0. "
+                    "Agregue productos con precio o corrija los importes."
+                )
+            invalid_lines = order.order_line.filtered(
+                lambda line: not line.display_type and float_is_zero(line.price_unit, precision_digits=precision)
+            )
+            if invalid_lines:
+                products = [
+                    line.product_id.display_name if line.product_id else line.name
+                    for line in invalid_lines
+                ]
+                raise UserError(
+                    "No se puede confirmar el pedido con líneas en precio 0. "
+                    "Corrija los precios de los siguientes productos: %s"
+                    % ", ".join(products)
+                )
+            if order.country_code == "VE":
+                default_tax = order.company_id.account_sale_tax_id
+                for line in order.order_line.filtered(lambda line: not line.display_type):
+                    if len(line.tax_id) == 0:
+                        if default_tax:
+                            line.tax_id = [Command.link(default_tax.id)]
+                            order.message_post(
+                                body=_("Se agregó el impuesto por defecto a la línea: %s.")
+                                % (line.name or _("Sin nombre"))
+                            )
+                        else:
+                            raise UserError(
+                                _(
+                                    "La línea '%s' no tiene impuesto asignado. "
+                                    "Asigne un impuesto o configure el impuesto de venta por defecto en la compañía."
+                                )
+                                % (line.name or _("Sin nombre"))
+                            )
+                lines_with_multi_tax = []
+                for line in order.order_line.filtered(lambda line: not line.display_type):
+                    if len(line.tax_id) > 1:
+                        tax_mapped = ", ".join(line.tax_id.mapped("name"))
+                        lines_with_multi_tax.append(" - %s: %s" % (line.name or _("Sin nombre"), tax_mapped))
+                if lines_with_multi_tax:
+                    raise UserError(
+                        _(
+                            "No se puede asignar más de un impuesto a una sola línea de pedido. "
+                            "Cree líneas separadas para cada impuesto.\n%s"
+                        )
+                        % "\n".join(lines_with_multi_tax)
+                    )
+        return super().action_confirm()
 
     @api.model
     def _cron_create_uninvoiced_orders_announcement(self):
