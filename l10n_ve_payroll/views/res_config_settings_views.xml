@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <record id="res_config_settings_view_form_inherit_l10n_ve_payroll" model="ir.ui.view">
+        <field name="name">res.config.settings.view.form.inherit.l10n.ve.payroll</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="payroll.res_config_settings_view_form" />
+        <field name="arch" type="xml">
+            <xpath expr="//app[@name='payroll']" position="inside">
+                <block title="Venezuela" id="l10n_ve_payroll_block" groups="payroll.group_payroll_manager">
+                    <setting string="Alícuota Utilidades (%)" help="Porcentaje sobre salario base (LOTTT)">
+                        <field name="l10n_ve_payroll_alicuota_util" />
+                    </setting>
+                    <setting string="Alícuota Bono Vacacional (%)" help="Porcentaje sobre salario base (LOTTT)">
+                        <field name="l10n_ve_payroll_alicuota_bv" />
+                    </setting>
+                    <setting string="FAOV Empleador (%)" help="Aporte patronal al FAOV">
+                        <field name="l10n_ve_payroll_faov_empleador" />
+                    </setting>
+                    <setting string="FAOV Trabajador (%)" help="Aporte del trabajador al FAOV">
+                        <field name="l10n_ve_payroll_faov_trabajador" />
+                    </setting>
+                </block>
+            </xpath>
+        </field>
+    </record>
+</odoo>

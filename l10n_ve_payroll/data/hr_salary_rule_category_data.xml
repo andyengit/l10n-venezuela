@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo noupdate="1">
+    <record id="category_basic" model="hr.salary.rule.category">
+        <field name="name">Salario Base</field>
+        <field name="code">BASIC</field>
+    </record>
+    <record id="category_alw" model="hr.salary.rule.category">
+        <field name="name">Bonificaciones</field>
+        <field name="code">ALW</field>
+    </record>
+    <record id="category_gross" model="hr.salary.rule.category">
+        <field name="name">Sueldo Bruto</field>
+        <field name="code">GROSS</field>
+    </record>
+    <record id="category_ded" model="hr.salary.rule.category">
+        <field name="name">Deducciones</field>
+        <field name="code">DED</field>
+    </record>
+    <record id="category_net" model="hr.salary.rule.category">
+        <field name="name">Sueldo Neto</field>
+        <field name="code">NET</field>
+    </record>
+    <record id="category_comp" model="hr.salary.rule.category">
+        <field name="name">Aportes Patronales</field>
+        <field name="code">COMP</field>
+    </record>
+    <record id="category_prest" model="hr.salary.rule.category">
+        <field name="name">Prestaciones Sociales</field>
+        <field name="code">PREST</field>
+    </record>
+    <record id="category_sal_integral" model="hr.salary.rule.category">
+        <field name="name">Salario Integral</field>
+        <field name="code">SAL_INTEGRAL</field>
+    </record>
+</odoo>

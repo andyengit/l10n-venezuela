@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <menuitem
+        id="menu_l10n_ve_payroll_configuration"
+        name="Configuración Venezuela"
+        parent="payroll.payroll_menu_configuration"
+        sequence="50"
+        groups="payroll.group_payroll_manager"
+    />
+    <menuitem
+        id="menu_l10n_ve_payroll_settings"
+        name="Parámetros Nómina Venezuela"
+        parent="l10n_ve_payroll.menu_l10n_ve_payroll_configuration"
+        action="payroll.payroll_configuration_action"
+        sequence="10"
+        groups="payroll.group_payroll_manager"
+    />
+    <menuitem
+        id="menu_l10n_ve_payroll_reports"
+        name="Reportes Venezuela"
+        parent="payroll.payroll_menu_root"
+        sequence="60"
+        groups="payroll.group_payroll_manager"
+    />
+</odoo>

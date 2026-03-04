@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo noupdate="1">
+    <record id="contrib_register_faov" model="hr.contribution.register">
+        <field name="name">FAOV - Fondo de Ahorro Obligatorio para la Vivienda</field>
+        <field name="partner_id" eval="False" />
+    </record>
+    <record id="contrib_register_prestaciones" model="hr.contribution.register">
+        <field name="name">Prestaciones Sociales</field>
+        <field name="partner_id" eval="False" />
+    </record>
+</odoo>

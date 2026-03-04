@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo noupdate="1">
+    <record id="structure_ve" model="hr.payroll.structure">
+        <field name="code">VE</field>
+        <field name="name">Nómina Venezuela</field>
+        <field name="rule_ids" eval="[(6, 0, [
+            ref('l10n_ve_payroll.rule_basic'),
+            ref('l10n_ve_payroll.rule_alicuota_util'),
+            ref('l10n_ve_payroll.rule_alicuota_bv'),
+            ref('l10n_ve_payroll.rule_sal_integral'),
+            ref('l10n_ve_payroll.rule_gross'),
+            ref('l10n_ve_payroll.rule_faov_emp'),
+            ref('l10n_ve_payroll.rule_faov_trab'),
+            ref('l10n_ve_payroll.rule_net')
+        ])]" />
+        <field name="company_id" ref="base.main_company" />
+    </record>
+</odoo>
