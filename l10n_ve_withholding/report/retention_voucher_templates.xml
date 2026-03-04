@@ -269,7 +269,7 @@
                         <!--Nro
                         de Control Factura -->
                         <div class="" style="width:6%;">
-                        <span t-esc="line.move_id.name or '--'" />
+                        <span t-esc="line.move_id.l10n_ve_control_number or '--'" />
                     </div>
                         <!--Nota
                         de Débito -->
@@ -316,7 +316,7 @@
                         <t
                             t-if="line.move_id.move_type in ('in_refund', 'out_refund') and line.move_id.reversed_entry_id"
                         >
-                            <span t-esc="line.move_id.reversed_entry_id.name" />
+                            <span t-esc="line.move_id.reversed_entry_id.l10n_ve_control_number" />
                         </t>
                         <t t-else="">
                             <span>--</span>
@@ -740,7 +740,7 @@
                         </div>
                         <!-- Nro de Control -->
                         <div style="width:7%">
-                            <span t-esc="line.move_id.name or '--'" />
+                            <span t-esc="line.move_id.l10n_ve_control_number or '--'" />
                         </div>
                         <!-- Fecha -->
                         <div style="width:5%">
