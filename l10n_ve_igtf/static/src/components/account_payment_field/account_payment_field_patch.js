@@ -1,9 +1,23 @@
 /** @odoo-module **/
 
+import {_t} from "@web/core/l10n/translation";
 import {patch} from "@web/core/utils/patch";
 import {AccountPaymentField} from "@account/components/account_payment_field/account_payment_field";
 
 patch(AccountPaymentField.prototype, {
+    onInfoClick(ev, line) {
+        this.popover.open(ev.currentTarget, {
+            title: _t("Journal Entry Info"),
+            ...line,
+            l10n_ve_igtf_amount_formatted: line.l10n_ve_igtf_amount_formatted,
+            l10n_ve_igtf_amount_company_currency_formatted:
+                line.l10n_ve_igtf_amount_company_currency_formatted,
+            l10n_ve_net_amount_formatted: line.l10n_ve_net_amount_formatted,
+            _onRemoveMoveReconcile: this.removeMoveReconcile.bind(this),
+            _onOpenMove: this.openMove.bind(this),
+        });
+    },
+
     async removeMoveReconcile(moveId, partialId) {
         const action = await this.orm.call(
             this.props.record.resModel,

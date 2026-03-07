@@ -300,18 +300,19 @@ class AccountPayment(models.Model):
             )
         )
 
-        if counterpart_line.get("credit", 0.0) <= 0.0:
+        counterpart_balance = counterpart_line.get("balance", 0.0)
+        if counterpart_balance >= 0.0:
             return line_vals_list
 
-        if counterpart_line["credit"] < igtf_balance_abs:
+        if abs(counterpart_balance) < igtf_balance_abs:
             raise UserError(
                 _(
                     "Computed IGTF exceeds the payment amount. Please review the IGTF percentage."
                 )
             )
 
-        counterpart_line["credit"] = company.currency_id.round(
-            counterpart_line["credit"] - igtf_balance_abs
+        counterpart_line["balance"] = company.currency_id.round(
+            counterpart_balance + igtf_balance_abs
         )
         counterpart_line["amount_currency"] = self.currency_id.round(
             counterpart_line["amount_currency"] - igtf_amount_currency
@@ -322,8 +323,7 @@ class AccountPayment(models.Model):
             "date_maturity": self.date,
             "amount_currency": igtf_amount_currency,
             "currency_id": self.currency_id.id,
-            "debit": 0.0,
-            "credit": igtf_balance_abs,
+            "balance": -igtf_balance_abs,
             "partner_id": False,
             "account_id": igtf_account.id,
         }

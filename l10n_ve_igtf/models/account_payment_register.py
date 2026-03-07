@@ -36,6 +36,131 @@ class AccountPaymentRegister(models.TransientModel):
         readonly=True,
         help="Computed IGTF amount expressed in the payment currency.",
     )
+    l10n_ve_igtf_limit_reached = fields.Boolean(
+        string="IGTF limit reached",
+        compute="_compute_l10n_ve_igtf_limit_reached",
+        store=False,
+    )
+    l10n_ve_igtf_limit_explanation = fields.Html(
+        string="IGTF limit explanation",
+        compute="_compute_l10n_ve_igtf_limit_reached",
+        store=False,
+    )
+
+    def _l10n_ve_get_igtf_limit_status(self, lines=None):
+        if lines is None and self:
+            self.ensure_one()
+            lines = (
+                self.batches[0]["lines"]
+                if self.batches
+                else self.env["account.move.line"]
+            )
+        if not lines:
+            return False, ""
+        company = lines[0].company_id
+        if company.account_fiscal_country_id.code != "VE":
+            return False, ""
+        percent = company.l10n_ve_igtf_percent or 0.0
+        if percent <= 0.0:
+            return False, ""
+        moves = lines.move_id.filtered(
+            lambda m: m.move_type in ("out_invoice", "out_refund")
+        )
+        if not moves:
+            return False, ""
+        p = percent / 100.0
+        max_igtf = 0.0
+        igtf_already = 0.0
+        for move in moves:
+            inv_total = abs(
+                move.currency_id._convert(
+                    move.amount_total,
+                    company.currency_id,
+                    company,
+                    move.date,
+                )
+            )
+            max_igtf += company.currency_id.round(inv_total * p)
+            _amt_cur, already = move._l10n_ve_igtf_get_collected_amounts()
+            igtf_already += already
+        igtf_already = company.currency_id.round(igtf_already)
+        if igtf_already >= max_igtf:
+            return True, _(
+                "No se puede aplicar IGTF porque el monto máximo de IGTF permitido "
+                "(%(max)s %(currency)s, equivalente al %(pct)s%% del total de la factura en moneda del sistema) "
+                "ya fue cobrado en pagos anteriores (%(already)s %(currency)s)."
+            ) % {
+                "max": max_igtf,
+                "already": igtf_already,
+                "pct": percent,
+                "currency": company.currency_id.symbol or company.currency_id.name,
+            }
+        return False, ""
+
+    @api.depends("batches", "company_id", "company_id.l10n_ve_igtf_percent")
+    def _compute_l10n_ve_igtf_limit_reached(self):
+        for wiz in self:
+            limit_reached, explanation = wiz._l10n_ve_get_igtf_limit_status()
+            wiz.l10n_ve_igtf_limit_reached = limit_reached
+            wiz.l10n_ve_igtf_limit_explanation = explanation
+
+    @api.onchange(
+        "batches",
+        "company_id",
+        "company_id.l10n_ve_igtf_percent",
+        "l10n_ve_igtf_limit_reached",
+    )
+    def _onchange_l10n_ve_igtf_limit_reached(self):
+        if self.l10n_ve_igtf_limit_reached and self.l10n_ve_apply_igtf:
+            self.l10n_ve_apply_igtf = False
+
+    @api.model
+    def default_get(self, fields_list):
+        res = super().default_get(fields_list)
+        if "l10n_ve_apply_igtf" in fields_list and "line_ids" in res:
+            line_ids = res.get("line_ids")
+            if line_ids and line_ids[0][0] == 6:
+                lines = self.env["account.move.line"].browse(line_ids[0][2])
+                if lines:
+                    moves = lines.move_id
+                    if moves and moves[0].company_id.account_fiscal_country_id.code == "VE":
+                        currency = moves[0].currency_id
+                        allowed = moves[0].company_id.l10n_ve_igtf_currency_ids
+                        if not allowed:
+                            allowed = (
+                                self.env.ref("base.USD", raise_if_not_found=False)
+                                or self.env["res.currency"]
+                            )
+                        if currency and currency in allowed:
+                            company = moves[0].company_id
+                            p = (company.l10n_ve_igtf_percent or 0.0) / 100.0
+                            max_igtf = 0.0
+                            igtf_already = 0.0
+                            for move in moves.filtered(
+                                lambda m: m.move_type
+                                in ("out_invoice", "out_refund")
+                            ):
+                                inv_total = abs(
+                                    move.currency_id._convert(
+                                        move.amount_total,
+                                        company.currency_id,
+                                        company,
+                                        move.date,
+                                    )
+                                )
+                                max_igtf += company.currency_id.round(
+                                    inv_total * p
+                                )
+                                _ac, already = (
+                                    move._l10n_ve_igtf_get_collected_amounts()
+                                )
+                                igtf_already += already
+                            igtf_already = company.currency_id.round(
+                                igtf_already
+                            )
+                            limit_reached = igtf_already >= max_igtf
+                            res["l10n_ve_apply_igtf"] = not limit_reached
+        return res
 
     def _get_igtf_currency_ids(self):
         """
@@ -57,6 +182,69 @@ class AccountPaymentRegister(models.TransientModel):
             or self.env.ref("base.USD", raise_if_not_found=False)
             or self.env["res.currency"]
         )
+
+    def _l10n_ve_validate_igtf_limit(self, batch_result, amount, l10n_ve_apply_igtf, l10n_ve_igtf_included):
+        self.ensure_one()
+        if self.company_id.account_fiscal_country_id.code != "VE":
+            return
+        if not l10n_ve_apply_igtf:
+            return
+        percent = self.company_id.l10n_ve_igtf_percent or 0.0
+        if percent <= 0.0:
+            return
+        lines = batch_result.get("lines", self.env["account.move.line"])
+        if not lines:
+            return
+        moves = lines.move_id.filtered(
+            lambda m: m.move_type in ("out_invoice", "out_refund")
+        )
+        if not moves:
+            return
+        company = self.company_id
+        p = percent / 100.0
+        max_igtf_company = 0.0
+        igtf_already_company = 0.0
+        for move in moves:
+            inv_total_company = abs(
+                move.currency_id._convert(
+                    move.amount_total,
+                    company.currency_id,
+                    company,
+                    move.date,
+                )
+            )
+            max_igtf_company += company.currency_id.round(inv_total_company * p)
+            _amt_cur, already = move._l10n_ve_igtf_get_collected_amounts()
+            igtf_already_company += already
+        igtf_already_company = company.currency_id.round(igtf_already_company)
+        if l10n_ve_igtf_included:
+            igtf_this_currency = amount * p / (1.0 + p)
+        else:
+            igtf_this_currency = amount * p
+        payment_values = batch_result.get("payment_values", {})
+        currency_id = payment_values.get("source_currency_id") or self.currency_id.id
+        currency = self.env["res.currency"].browse(currency_id)
+        igtf_this_company = currency._convert(
+            igtf_this_currency,
+            company.currency_id,
+            company,
+            self.payment_date,
+        )
+        igtf_this_company = company.currency_id.round(igtf_this_company)
+        total_igtf = igtf_already_company + igtf_this_company
+        if total_igtf > max_igtf_company:
+            raise UserError(
+                _(
+                    "El IGTF a aplicar (%(this)s) más el IGTF ya cobrado (%(already)s) "
+                    "supera el límite permitido (%(max)s) que es el %(pct)s%% del total de la factura en moneda del sistema."
+                )
+                % {
+                    "this": igtf_this_company,
+                    "already": igtf_already_company,
+                    "max": max_igtf_company,
+                    "pct": percent,
+                }
+            )
 
     @api.depends(
         "currency_id", "company_id", "company_id.l10n_ve_igtf_currency_ids", "batches"
@@ -371,7 +559,47 @@ class AccountPaymentRegister(models.TransientModel):
             Created `account.payment` recordset.
         """
         self.ensure_one()
+        if (
+            self.l10n_ve_show_apply_igtf
+            and not self.l10n_ve_apply_igtf
+            and not self.l10n_ve_igtf_limit_reached
+        ):
+            raise UserError(
+                _(
+                    "El IGTF es obligatorio cuando el pago es en las monedas configuradas (ej. USD). "
+                    "Debe aplicar IGTF para continuar."
+                )
+            )
         self._l10n_ve_validate_amount_max_with_igtf()
+        batches = [
+            b
+            for b in self.batches
+            if not (self.require_partner_bank_account and (
+                not self._get_batch_account(b) or not self._get_batch_account(b).allow_out_payment
+            ))
+        ]
+        if batches:
+            first_batch = batches[0]
+            edit_mode = self.can_edit_wizard and (
+                len(first_batch["lines"]) == 1 or self.group_payment
+            )
+            if edit_mode:
+                self._l10n_ve_validate_igtf_limit(
+                    first_batch,
+                    self.amount,
+                    self.l10n_ve_apply_igtf,
+                    self.l10n_ve_igtf_included,
+                )
+            else:
+                for batch_result in batches:
+                    total_vals = self._get_total_amounts_to_pay([batch_result])
+                    amount = total_vals.get("amount_by_default", 0.0)
+                    self._l10n_ve_validate_igtf_limit(
+                        batch_result,
+                        amount,
+                        self.l10n_ve_apply_igtf,
+                        self.l10n_ve_igtf_included,
+                    )
         return super(
             AccountPaymentRegister,
             self.with_context(l10n_ve_igtf_from_register_payment=True),

@@ -6,14 +6,14 @@ class AccountMove(models.Model):
     _inherit = "account.move"
 
     l10n_ve_igtf_collected_amount_currency = fields.Monetary(
-        string="IGTF Collected",
+        string="IGTF %",
         currency_field="currency_id",
         compute="_compute_l10n_ve_igtf_collected_amounts",
         store=False,
         readonly=True,
     )
     l10n_ve_igtf_collected_amount_company_currency = fields.Monetary(
-        string="IGTF Collected (Company Currency)",
+        string="IGTF % (Company Currency)",
         currency_field="company_currency_id",
         compute="_compute_l10n_ve_igtf_collected_amounts",
         store=False,
@@ -278,23 +278,56 @@ class AccountMove(models.Model):
             if not move.tax_totals or not move.is_invoice(include_receipts=True):
                 continue
             igtf_amount_currency = move.l10n_ve_igtf_collected_amount_currency
-            if not move.currency_id or move.currency_id.is_zero(igtf_amount_currency):
+            if not move.currency_id:
                 continue
             totals = dict(move.tax_totals)
             igtf_amount_company_currency = (
                 move.l10n_ve_igtf_collected_amount_company_currency
             )
             subtotals = list(totals.get("subtotals") or [])
-            subtotals.append(
-                {
-                    "name": _("IGTF Collected"),
-                    "base_amount_currency": igtf_amount_currency,
-                    "base_amount": igtf_amount_company_currency,
-                    "tax_amount_currency": 0.0,
-                    "tax_amount": 0.0,
-                    "tax_groups": [],
-                }
-            )
+            percent = move.company_id.l10n_ve_igtf_percent or 0
+            percent_str = int(percent) if percent == int(percent) else percent
+            p = percent / 100.0 if percent else 0.0
+            if p > 0:
+                base_currency = move.currency_id.round(
+                    igtf_amount_currency / p
+                )
+                base_company = move.company_currency_id.round(
+                    move.currency_id._convert(
+                        base_currency,
+                        move.company_currency_id,
+                        move.company_id,
+                        move.date,
+                    )
+                )
+            else:
+                base_currency = 0.0
+                base_company = 0.0
+            igtf_tax_group = {
+                "group_name": _("IGTF %(percent)s %%") % {"percent": percent_str},
+                "base_amount_currency": base_currency,
+                "display_base_amount_currency": base_currency,
+                "tax_amount_currency": igtf_amount_currency,
+                "base_amount": base_company,
+                "display_base_amount": base_company,
+                "tax_amount": igtf_amount_company_currency,
+            }
+            if subtotals:
+                last_subtotal = subtotals[-1]
+                last_subtotal["tax_groups"] = list(
+                    last_subtotal.get("tax_groups") or []
+                ) + [igtf_tax_group]
+            else:
+                subtotals.append(
+                    {
+                        "name": _("Untaxed Amount"),
+                        "base_amount_currency": base_currency,
+                        "base_amount": base_company,
+                        "tax_amount_currency": 0.0,
+                        "tax_amount": 0.0,
+                        "tax_groups": [igtf_tax_group],
+                    }
+                )
             totals["subtotals"] = subtotals
             totals["l10n_ve_igtf_collected_amount_currency"] = igtf_amount_currency
             totals["l10n_ve_igtf_collected_amount"] = igtf_amount_company_currency
@@ -338,7 +371,10 @@ class AccountMove(models.Model):
             if not widget or not isinstance(widget, dict) or not widget.get("content"):
                 continue
 
-            for line in widget["content"]:
+            content = widget["content"]
+            lines = list(content.values()) if isinstance(content, dict) else (content or [])
+
+            for line in lines:
                 if line.get("is_exchange"):
                     continue
 
@@ -513,3 +549,4 @@ class AccountMove(models.Model):
                         ),
                     }
                 )
+
