@@ -50,7 +50,6 @@ Accounting Reports
         "views/account_account_views.xml",
         "views/account_tax_views.xml",
     ],
-    "auto_install": True,
     "installable": True,
     "license": "OEEL-1",
     "assets": {
