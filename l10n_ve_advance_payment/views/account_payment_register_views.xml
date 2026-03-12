@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="view_account_payment_register_form_l10n_ve_advance" model="ir.ui.view">
+            <field name="name">account.payment.register.form.l10n.ve.advance</field>
+            <field name="model">account.payment.register</field>
+            <field name="inherit_id" ref="account.view_account_payment_register_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//group" position="before">
+                    <div role="alert" class="alert alert-info" invisible="not l10n_ve_show_selected_advance">
+                        <span class="fw-bold">Anticipo aplicado:</span>
+                        <field name="l10n_ve_selected_advance_id" readonly="1" class="oe_inline"/>
+                        <span class="ms-2">Disponible:</span>
+                        <field name="l10n_ve_selected_advance_available_amount" readonly="1" class="oe_inline"/>
+                        <field name="currency_id" invisible="1"/>
+                    </div>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>
