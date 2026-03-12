@@ -37,6 +37,11 @@ class AccountPayment(models.Model):
         readonly=True,
         help="Computed IGTF amount expressed in the payment currency.",
     )
+    l10n_ve_igtf_cap_amount_company_currency = fields.Monetary(
+        string="IGTF Cap (Company currency)",
+        currency_field="company_currency_id",
+        help="Maximum IGTF allowed for this payment from invoice residual IGTF.",
+    )
 
     def _l10n_ve_igtf_block_manual_activation(self, vals):
         """
@@ -163,30 +168,48 @@ class AccountPayment(models.Model):
         None
         """
         for payment in self:
-            if payment.country_code != "VE":
-                payment.l10n_ve_igtf_amount_currency = 0.0
-                continue
-            percent = payment.company_id.l10n_ve_igtf_percent or 0.0
-            if (
-                not payment.l10n_ve_apply_igtf
-                or percent <= 0.0
-                or not payment.currency_id
-            ):
-                payment.l10n_ve_igtf_amount_currency = 0.0
-                continue
+            payment.l10n_ve_igtf_amount_currency = payment._l10n_ve_get_igtf_amounts()[0]
 
-            if payment.currency_id not in payment._get_igtf_currency_ids():
-                payment.l10n_ve_igtf_amount_currency = 0.0
-                continue
-
-            p = percent / 100.0
-            if payment.l10n_ve_igtf_included:
-                igtf_amount = payment.amount * p / (1.0 + p)
-            else:
-                igtf_amount = payment.amount * p
-            payment.l10n_ve_igtf_amount_currency = payment.currency_id.round(
-                igtf_amount
+    def _l10n_ve_get_igtf_amounts(self):
+        self.ensure_one()
+        if self.country_code != "VE":
+            return 0.0, 0.0
+        percent = self.company_id.l10n_ve_igtf_percent or 0.0
+        if not self.l10n_ve_apply_igtf or percent <= 0.0 or not self.currency_id:
+            return 0.0, 0.0
+        if self.currency_id not in self._get_igtf_currency_ids():
+            return 0.0, 0.0
+        p = percent / 100.0
+        if self.l10n_ve_igtf_included:
+            base_amount_currency = self.amount / (1.0 + p)
+        else:
+            base_amount_currency = self.amount
+        base_amount_company = self.company_currency_id.round(
+            self.currency_id._convert(
+                base_amount_currency,
+                self.company_currency_id,
+                self.company_id,
+                self.date,
             )
+        )
+        raw_igtf_company = self.company_currency_id.round(base_amount_company * p)
+        igtf_company = raw_igtf_company
+        if self.l10n_ve_igtf_cap_amount_company_currency:
+            igtf_company = min(
+                raw_igtf_company,
+                self.company_currency_id.round(self.l10n_ve_igtf_cap_amount_company_currency),
+            )
+        if self.company_currency_id.is_zero(igtf_company):
+            return 0.0, 0.0
+        igtf_currency = self.currency_id.round(
+            self.company_currency_id._convert(
+                igtf_company,
+                self.currency_id,
+                self.company_id,
+                self.date,
+            )
+        )
+        return igtf_currency, igtf_company
 
     def _compute_l10n_ve_igtf_amount_company_currency(self):
         """
@@ -201,26 +224,7 @@ class AccountPayment(models.Model):
         None
         """
         for payment in self:
-            if payment.country_code != "VE":
-                payment.l10n_ve_igtf_amount_company_currency = 0.0
-                continue
-            igtf_amount_currency = payment.l10n_ve_igtf_amount_currency
-            if not payment.currency_id or payment.currency_id.is_zero(
-                igtf_amount_currency
-            ):
-                payment.l10n_ve_igtf_amount_company_currency = 0.0
-                continue
-
-            payment.l10n_ve_igtf_amount_company_currency = (
-                payment.company_currency_id.round(
-                    payment.currency_id._convert(
-                        igtf_amount_currency,
-                        payment.company_currency_id,
-                        payment.company_id,
-                        payment.date,
-                    )
-                )
-            )
+            payment.l10n_ve_igtf_amount_company_currency = payment._l10n_ve_get_igtf_amounts()[1]
 
     def _prepare_move_line_default_vals(
         self, write_off_line_vals=None, force_balance=None
@@ -282,23 +286,39 @@ class AccountPayment(models.Model):
 
         p = igtf_percent / 100.0
         if self.l10n_ve_igtf_included:
-            igtf_amount_currency_abs = self.currency_id.round(
-                self.amount * p / (1.0 + p)
-            )
+            base_amount_currency = self.amount / (1.0 + p)
         else:
-            igtf_amount_currency_abs = self.currency_id.round(self.amount * p)
-        if self.currency_id.is_zero(igtf_amount_currency_abs):
-            return line_vals_list
+            base_amount_currency = self.amount
 
-        igtf_amount_currency = -igtf_amount_currency_abs
-        igtf_balance_abs = company.currency_id.round(
+        base_amount_company_abs = company.currency_id.round(
             self.currency_id._convert(
-                igtf_amount_currency_abs,
+                base_amount_currency,
                 company.currency_id,
                 company,
                 self.date,
             )
         )
+        raw_igtf_balance_abs = company.currency_id.round(base_amount_company_abs * p)
+        if company.currency_id.is_zero(raw_igtf_balance_abs):
+            return line_vals_list
+        igtf_balance_abs = raw_igtf_balance_abs
+        if self.l10n_ve_igtf_cap_amount_company_currency:
+            igtf_balance_abs = min(
+                igtf_balance_abs,
+                company.currency_id.round(self.l10n_ve_igtf_cap_amount_company_currency),
+            )
+        if company.currency_id.is_zero(igtf_balance_abs):
+            return line_vals_list
+
+        igtf_amount_currency_abs = self.currency_id.round(
+            company.currency_id._convert(
+                igtf_balance_abs,
+                self.currency_id,
+                company,
+                self.date,
+            )
+        )
+        igtf_amount_currency = -igtf_amount_currency_abs
 
         counterpart_balance = counterpart_line.get("balance", 0.0)
         if counterpart_balance >= 0.0:

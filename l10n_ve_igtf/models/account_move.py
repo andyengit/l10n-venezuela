@@ -19,6 +19,13 @@ class AccountMove(models.Model):
         store=False,
         readonly=True,
     )
+    l10n_ve_igtf_residual_amount_company_currency = fields.Monetary(
+        string="IGTF Residual (Company Currency)",
+        currency_field="company_currency_id",
+        compute="_compute_l10n_ve_igtf_collected_amounts",
+        store=False,
+        readonly=True,
+    )
 
     def _l10n_ve_igtf_get_collected_amounts(self):
         """
@@ -160,16 +167,42 @@ class AccountMove(models.Model):
 
         base_total = min(invoice_currency.round(base_total), invoice_total)
         igtf_invoice_currency = invoice_currency.round(sign * (base_total * p))
-        if invoice_currency.is_zero(igtf_invoice_currency):
-            return 0.0, 0.0
-
-        igtf_company_currency = company.currency_id.round(
+        base_total_company = company.currency_id.round(
             invoice_currency._convert(
-                abs(igtf_invoice_currency), company.currency_id, company, self.date
+                base_total,
+                company.currency_id,
+                company,
+                self.date,
             )
         )
-        igtf_company_currency *= 1.0 if igtf_invoice_currency >= 0 else -1.0
+        igtf_company_currency = company.currency_id.round(sign * (base_total_company * p))
+        if invoice_currency.is_zero(igtf_invoice_currency) and company.currency_id.is_zero(
+            igtf_company_currency
+        ):
+            return 0.0, 0.0
         return igtf_invoice_currency, igtf_company_currency
+
+    def _l10n_ve_igtf_get_residual_company_amount(self):
+        self.ensure_one()
+        if self.country_code != "VE" or not self.is_sale_document(include_receipts=True):
+            return 0.0
+        percent = self.company_id.l10n_ve_igtf_percent or 0.0
+        if percent <= 0.0:
+            return 0.0
+        invoice_total_company = self.company_currency_id.round(
+            self.currency_id._convert(
+                abs(self.amount_total),
+                self.company_currency_id,
+                self.company_id,
+                self.date,
+            )
+        )
+        max_igtf = self.company_currency_id.round(
+            invoice_total_company * (percent / 100.0)
+        )
+        _amt_cur, collected_company = self._l10n_ve_igtf_get_collected_amounts()
+        residual = max_igtf - abs(collected_company)
+        return self.company_currency_id.round(max(residual, 0.0))
 
     @api.depends(
         "move_type", "line_ids.amount_residual", "line_ids.amount_residual_currency"
@@ -190,10 +223,14 @@ class AccountMove(models.Model):
             if move.country_code != "VE":
                 move.l10n_ve_igtf_collected_amount_currency = 0.0
                 move.l10n_ve_igtf_collected_amount_company_currency = 0.0
+                move.l10n_ve_igtf_residual_amount_company_currency = 0.0
                 continue
             amt_cur, amt_comp = move._l10n_ve_igtf_get_collected_amounts()
             move.l10n_ve_igtf_collected_amount_currency = amt_cur
             move.l10n_ve_igtf_collected_amount_company_currency = amt_comp
+            move.l10n_ve_igtf_residual_amount_company_currency = (
+                move._l10n_ve_igtf_get_residual_company_amount()
+            )
 
     def l10n_ve_igtf_get_unreconcile_action(self, partial_id):
         """
@@ -398,8 +435,7 @@ class AccountMove(models.Model):
 
                 widget_currency = self.env["res.currency"].browse(currency_id)
 
-                # Total IGTF on the payment move, expressed in widget_currency.
-                total_igtf_widget_currency = 0.0
+                total_igtf_company_currency = 0.0
                 igtf_amls = payment.move_id.line_ids.filtered(
                     lambda line: line.account_id == igtf_account
                 )
@@ -407,26 +443,12 @@ class AccountMove(models.Model):
                     continue
 
                 for aml in igtf_amls:
-                    if aml.currency_id:
-                        amt = abs(aml.amount_currency)
-                        total_igtf_widget_currency += (
-                            amt
-                            if aml.currency_id == widget_currency
-                            else aml.currency_id._convert(
-                                amt, widget_currency, payment.company_id, aml.date
-                            )
-                        )
-                    else:
-                        amt = abs(aml.balance)
-                        total_igtf_widget_currency += (
-                            amt
-                            if payment.company_currency_id == widget_currency
-                            else payment.company_currency_id._convert(
-                                amt, widget_currency, payment.company_id, aml.date
-                            )
-                        )
+                    total_igtf_company_currency += abs(aml.balance)
 
-                if widget_currency.is_zero(total_igtf_widget_currency):
+                total_igtf_company_currency = payment.company_currency_id.round(
+                    total_igtf_company_currency
+                )
+                if payment.company_currency_id.is_zero(total_igtf_company_currency):
                     continue
 
                 pay_line = False
@@ -486,6 +508,18 @@ class AccountMove(models.Model):
                 gross_allocated_widget = payment_amount_widget * (
                     net_amount / total_net_paymentline_widget
                 )
+                allocation_ratio = net_amount / total_net_paymentline_widget
+                igtf_company_currency = payment.company_currency_id.round(
+                    total_igtf_company_currency * allocation_ratio
+                )
+                igtf_amount_widget = widget_currency.round(
+                    payment.company_currency_id._convert(
+                        igtf_company_currency,
+                        widget_currency,
+                        payment.company_id,
+                        partial.max_date,
+                    )
+                )
 
                 invoice_total_widget = (
                     move.amount_total
@@ -499,24 +533,11 @@ class AccountMove(models.Model):
                     if invoice_total_widget
                     else gross_allocated_widget
                 )
-
-                igtf_amount_widget = base_widget * p
-                if widget_currency.is_zero(igtf_amount_widget):
-                    continue
-
                 gross_amount = base_widget
 
                 gross_company_currency = abs(
                     widget_currency._convert(
                         gross_amount,
-                        payment.company_currency_id,
-                        payment.company_id,
-                        partial.max_date,
-                    )
-                )
-                igtf_company_currency = abs(
-                    widget_currency._convert(
-                        igtf_amount_widget,
                         payment.company_currency_id,
                         payment.company_id,
                         partial.max_date,

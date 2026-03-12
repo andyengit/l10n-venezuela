@@ -4,24 +4,42 @@
         <field name="model">account.payment.register</field>
         <field name="inherit_id" ref="account.view_account_payment_register_form" />
         <field name="arch" type="xml">
-            <xpath expr="//div[@name='amount_div']" position="after">
+            <xpath expr="//field[@name='payment_date']" position="after">
                 <field name="company_id" invisible="1" />
                 <field name="l10n_ve_show_apply_igtf" invisible="1" />
                 <field name="l10n_ve_igtf_limit_reached" invisible="1" />
                 <field name="l10n_ve_igtf_limit_explanation" invisible="1" />
+                <field name="l10n_ve_igtf_exceeds_max" invisible="1" />
+                <field name="l10n_ve_igtf_exceeds_max_explanation" invisible="1" />
                 <div
                     class="alert alert-info mb-0"
                     invisible="not l10n_ve_igtf_limit_reached or not l10n_ve_show_apply_igtf"
                 >
                     <field name="l10n_ve_igtf_limit_explanation" nolabel="1" />
                 </div>
+                <div
+                    class="alert alert-warning mb-0"
+                    invisible="not l10n_ve_igtf_exceeds_max or not l10n_ve_show_apply_igtf or not l10n_ve_apply_igtf"
+                >
+                    <field name="l10n_ve_igtf_exceeds_max_explanation" nolabel="1" />
+                </div>
                 <field
                     name="l10n_ve_apply_igtf"
                     invisible="not l10n_ve_show_apply_igtf or l10n_ve_igtf_limit_reached"
-                    readonly="l10n_ve_show_apply_igtf"
                 />
                 <field
                     name="l10n_ve_igtf_included"
+                    invisible="not l10n_ve_apply_igtf or not l10n_ve_show_apply_igtf"
+                />
+                <field
+                    name="l10n_ve_igtf_exchange_rate_inverse"
+                    readonly="1"
+                    invisible="not l10n_ve_apply_igtf or not l10n_ve_show_apply_igtf"
+                />
+                <field
+                    name="l10n_ve_base_amount_company_currency"
+                    widget="monetary"
+                    readonly="1"
                     invisible="not l10n_ve_apply_igtf or not l10n_ve_show_apply_igtf"
                 />
                 <field
