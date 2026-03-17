@@ -185,12 +185,6 @@ class AccountMove(models.Model):
                             "No se pueden cancelar las facturas de clientes. Por favor, cree una nota de crédito en su lugar."
                         )
                     )
-                elif move.move_type == "out_refund":
-                    raise ValidationError(
-                        _(
-                            "No se pueden cancelar las notas de crédito. Por favor, cree una nueva nota de crédito o factura en su lugar."
-                        )
-                    )
         self = self.with_context(force_draft=True)
         return super().button_cancel()
 
@@ -202,7 +196,7 @@ class AccountMove(models.Model):
             return super().button_draft()
 
         _logger.info("Button draft called on move %s", self.move_type)
-        if self.move_type == "entry":
+        if self.move_type != "out_invoice":
             return super().button_draft()
 
         raise ValidationError(
