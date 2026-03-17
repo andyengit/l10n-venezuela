@@ -432,6 +432,12 @@ class PurchaseBookReportCustomHandler(models.AbstractModel):
         else:
             domain.append(("company_id", "=", self.env.company.id))
 
+        selected_journal_ids = [
+            journal["id"] for journal in report._get_options_journals(options)
+        ]
+        if selected_journal_ids:
+            domain.append(("journal_id", "in", selected_journal_ids))
+
         if hasattr(self.env["account.move"], "l10n_ve_control_number"):
             domain.append(("l10n_ve_control_number", "not in", ["/", False, None]))
         elif hasattr(self.env["account.move"], "correlative"):

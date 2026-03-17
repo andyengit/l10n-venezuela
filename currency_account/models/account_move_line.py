@@ -142,6 +142,9 @@ class AccountMoveLine(models.Model):
         if view_type == 'list':
             self._inject_currency_fields_to_view(arch, 'credit')
             self._inject_currency_fields_to_view(
+                arch, 'credit', 'x_subtotal_currency_%'
+            )
+            self._inject_currency_fields_to_view(
                 arch, 'price_unit', 'x_price_unit_currency_%'
             )
         return arch, view
@@ -195,4 +198,12 @@ class AccountMoveLine(models.Model):
         to_currency = self.env["res.currency"].browse(currency_id)
         return self.currency_id._convert(
             self.price_unit, to_currency, self.move_id.company_id, date
+        )
+
+    @api.model
+    def _compute_subtotal_currency_field(self, currency_id):
+        date = self.move_id.date or fields.Date.today()
+        to_currency = self.env["res.currency"].browse(currency_id)
+        return self.currency_id._convert(
+            self.price_subtotal, to_currency, self.move_id.company_id, date
         )

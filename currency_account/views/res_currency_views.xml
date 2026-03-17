@@ -9,7 +9,8 @@
         <field name="arch" type="xml">
             <xpath expr="//sheet" position="before">
                 <header>
-                    <button name="action_create_fields" type="object" string="Crear columnas" class="oe_highlight"/>
+                    <button name="action_create_fields" type="object" string="Crear columnas" class="oe_highlight" groups="base.group_no_one"/>
+                    <button name="action_delete_fields" type="object" string="Eliminar columnas" confirm="Se eliminaran todas las columnas dinamicas asociadas a esta moneda. Deseas continuar?" groups="base.group_no_one"/>
                 </header>
             </xpath>
         </field>

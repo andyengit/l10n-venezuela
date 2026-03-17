@@ -616,6 +616,13 @@ export class AccountReportFilters extends Component {
             // Toggle the selected status after the action is set
             journal.selected = !wasSelected;
         } else {
+            for (const option of this.controller.options.journals) {
+                if (option.model === "account.journal.group") {
+                    option.selected = false;
+                }
+            }
+            this.controller.options.selected_journal_groups = {};
+            delete this.controller.options.__journal_group_action;
             journal.selected = !journal.selected;
         }
         this.applyFilters("journals");

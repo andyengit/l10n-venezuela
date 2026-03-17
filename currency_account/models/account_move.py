@@ -118,6 +118,11 @@ class AccountMove(models.Model):
                 arch,
                 ['amount_total_signed', 'amount_total_in_currency_signed'],
             )
+            self._inject_currency_fields_to_view(
+                arch,
+                ['amount_total_signed', 'amount_total_in_currency_signed'],
+                'x_subtotal_currency_%',
+            )
         if view_type == 'form':
             self._inject_line_currency_fields_to_form(arch)
         return arch, view
@@ -125,6 +130,9 @@ class AccountMove(models.Model):
     def _inject_line_currency_fields_to_form(self, arch):
         self._inject_line_fields_by_pattern(
             arch, 'price_subtotal', 'x_amount_currency_%'
+        )
+        self._inject_line_fields_by_pattern(
+            arch, 'price_subtotal', 'x_subtotal_currency_%'
         )
         self._inject_line_fields_by_pattern(
             arch, 'price_unit', 'x_price_unit_currency_%'
@@ -165,10 +173,12 @@ class AccountMove(models.Model):
             parent.insert(idx + 1 + offset, field_el)
             offset += 1
 
-    def _inject_currency_fields_to_view(self, arch, after_fields):
+    def _inject_currency_fields_to_view(
+        self, arch, after_fields, field_pattern='x_amount_currency_%'
+    ):
         amount_fields = self.env['ir.model.fields'].sudo().search([
             ('model', '=', self._name),
-            ('name', 'like', 'x_amount_currency_%'),
+            ('name', 'like', field_pattern),
         ])
         if not amount_fields:
             return
@@ -206,3 +216,12 @@ class AccountMove(models.Model):
             self.amount_total, to_currency, self.company_id, date
         )
         return total_in_currency
+
+    @api.model
+    def _compute_subtotal_currency_field(self, currency_id):
+        date = self.date or fields.Date.today()
+        to_currency = self.env["res.currency"].browse(currency_id)
+        subtotal_in_currency = self.currency_id._convert(
+            self.amount_untaxed, to_currency, self.company_id, date
+        )
+        return subtotal_in_currency
