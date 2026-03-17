@@ -1,8 +1,17 @@
-from odoo import api, fields, models
+from odoo import api, models
 
 
 class ResCurrency(models.Model):
     _inherit = "res.currency"
+
+    def _dynamic_currency_field_names(self):
+        self.ensure_one()
+        return [
+            f"x_currency_id_{self.id}",
+            f"x_amount_currency_{self.id}",
+            f"x_subtotal_currency_{self.id}",
+            f"x_price_unit_currency_{self.id}",
+        ]
 
     def _available_models(self):
         return ["account.model_account_move_line", "account.model_account_move"]
@@ -23,7 +32,7 @@ class ResCurrency(models.Model):
 
     @api.model
     def _available_fields_depends_on_account_move(self):
-        return ["total_currencies","amount_total"]
+        return ["total_currencies", "amount_total", "amount_untaxed"]
 
     @api.model
     def _available_fields_depends_on(self, model):
@@ -46,6 +55,22 @@ class ResCurrency(models.Model):
             ),
             "compute": f"""for record in self:
     record['{field_name}'] = record._compute_currency_field({self.id})
+            """,
+        }
+
+    def _prepare_currency_subtotal_field(self, model, field_name):
+        model_record = self.env.ref(model)
+        return {
+            "name": field_name,
+            "field_description": f"Subtotal en {self.name}",
+            "model_id": model_record.id,
+            "ttype": "monetary",
+            "store": True,
+            "depends": ", ".join(
+                self._available_fields_depends_on(model_record.model)
+            ),
+            "compute": f"""for record in self:
+    record['{field_name}'] = record._compute_subtotal_currency_field({self.id})
             """,
         }
 
@@ -91,13 +116,23 @@ class ResCurrency(models.Model):
             "readonly": True,
         }
 
+    def _prepare_report_subtotal_field(self, model, field_name):
+        return {
+            "name": field_name,
+            "field_description": f"Subtotal en {self.name}",
+            "model_id": self.env.ref(model).id,
+            "ttype": "monetary",
+            "store": True,
+            "readonly": True,
+        }
+
     def action_create_fields(self):
         self.ensure_one()
         field_model = self.env["ir.model.fields"]
         currency_field_name = f"x_currency_id_{self.id}"
         currency_amount_field_name = f"x_amount_currency_{self.id}"
-
-        fields_to_delete = [currency_field_name, currency_amount_field_name]
+        currency_subtotal_field_name = f"x_subtotal_currency_{self.id}"
+        fields_to_delete = self._dynamic_currency_field_names()
         for model in self._available_models():
             field_model.sudo().search(
                 [
@@ -112,10 +147,15 @@ class ResCurrency(models.Model):
             currency_amount_field_vals = self._prepare_currency_amount_field(
                 model, currency_amount_field_name
             )
+            currency_subtotal_field_vals = self._prepare_currency_subtotal_field(
+                model, currency_subtotal_field_name
+            )
             currency_amount_field_vals["currency_field"] = currency_field_vals["name"]
+            currency_subtotal_field_vals["currency_field"] = currency_field_vals["name"]
 
             self.env["ir.model.fields"].create(currency_field_vals)
             self.env["ir.model.fields"].create(currency_amount_field_vals)
+            self.env["ir.model.fields"].create(currency_subtotal_field_vals)
 
         price_unit_field_name = f"x_price_unit_currency_{self.id}"
         for model in self._available_line_models():
@@ -146,7 +186,18 @@ class ResCurrency(models.Model):
             currency_amount_field_vals = self._prepare_report_amount_field(
                 model, currency_amount_field_name
             )
+            currency_subtotal_field_vals = self._prepare_report_subtotal_field(
+                model, currency_subtotal_field_name
+            )
             currency_amount_field_vals["currency_field"] = currency_field_vals["name"]
+            currency_subtotal_field_vals["currency_field"] = currency_field_vals["name"]
 
             self.env["ir.model.fields"].create(currency_field_vals)
             self.env["ir.model.fields"].create(currency_amount_field_vals)
+            self.env["ir.model.fields"].create(currency_subtotal_field_vals)
+
+    def action_delete_fields(self):
+        self.ensure_one()
+        self.env["ir.model.fields"].sudo().with_context(_force_unlink=True).search(
+            [("name", "in", self._dynamic_currency_field_names())]
+        ).unlink()
