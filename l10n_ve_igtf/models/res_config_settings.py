@@ -12,6 +12,11 @@ class ResConfigSettings(models.TransientModel):
         related="company_id.l10n_ve_igtf_percent",
         readonly=False,
     )
+    l10n_ve_igtf_tax_group_id = fields.Many2one(
+        "account.tax.group",
+        related="company_id.l10n_ve_igtf_tax_group_id",
+        readonly=False,
+    )
 
     l10n_ve_igtf_currency_ids = fields.Many2many(
         related="company_id.l10n_ve_igtf_currency_ids",
