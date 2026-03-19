@@ -27,6 +27,11 @@ class ResCompany(models.Model):
         default=3.0,
         help="IGTF percentage to split from the payment and post to the IGTF account.",
     )
+    l10n_ve_igtf_tax_group_id = fields.Many2one(
+        'account.tax.group', 
+        string="IGTF Tax Group",
+        help="Seleccione el grupo de impuesto de tipo IGTF (normalmente 3%) para cálculos automáticos."
+    )
 
     @api.constrains("l10n_ve_igtf_percent")
     def _check_l10n_ve_igtf_percent(self):

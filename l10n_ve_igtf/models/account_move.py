@@ -341,6 +341,7 @@ class AccountMove(models.Model):
                 base_currency = 0.0
                 base_company = 0.0
             igtf_tax_group = {
+                "id": move.company_id.l10n_ve_igtf_tax_group_id.id,
                 "group_name": _("IGTF %(percent)s %%") % {"percent": percent_str},
                 "base_amount_currency": base_currency,
                 "display_base_amount_currency": base_currency,
