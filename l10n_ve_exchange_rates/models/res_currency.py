@@ -6,6 +6,12 @@ from odoo.tools import float_round
 class ResCurrency(models.Model):
     _inherit = "res.currency"
 
+    l10n_ve_show_in_rates_list = fields.Boolean(
+        string="Mostrar en lista de tasas",
+        default=True,
+        help="Si está activo, la moneda aparecerá en la lista de tasas "
+        "del botón Tasas en la barra de navegación.",
+    )
     l10n_ve_show_in_systray = fields.Boolean(
         string="Mostrar en barra de navegación",
         default=False,
@@ -29,7 +35,11 @@ class ResCurrency(models.Model):
     def get_exchange_rates(self):
         company_currency = self.env.company.currency_id
         currencies = self.env["res.currency"].search(
-            [("active", "=", True), ("id", "!=", company_currency.id)]
+            [
+                ("active", "=", True),
+                ("id", "!=", company_currency.id),
+                ("l10n_ve_show_in_rates_list", "=", True),
+            ]
         )
 
         rates_data = []

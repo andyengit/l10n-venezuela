@@ -7,6 +7,12 @@
         <field name="arch" type="xml">
             <xpath expr="//field[@name='active']" position="after">
                 <field
+                    name="l10n_ve_show_in_rates_list"
+                    widget="boolean_toggle"
+                    invisible="is_current_company_currency"
+                    groups="base.group_no_one"
+                />
+                <field
                     name="l10n_ve_show_in_systray"
                     widget="boolean_toggle"
                     invisible="is_current_company_currency"
