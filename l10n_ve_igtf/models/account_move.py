@@ -324,7 +324,11 @@ class AccountMove(models.Model):
         for move in self:
             if move.country_code != "VE":
                 continue
-            if not move.tax_totals or not move.is_invoice(include_receipts=True):
+            if (
+                not move.tax_totals
+                or not move.is_invoice(include_receipts=True)
+                or not move.is_sale_document(include_receipts=True)
+            ):
                 continue
             igtf_amount_currency = move.l10n_ve_igtf_collected_amount_currency
             if not move.currency_id:
@@ -353,7 +357,10 @@ class AccountMove(models.Model):
                 base_currency = 0.0
                 base_company = 0.0
             igtf_tax_group = {
+                "id": -1,
+                "involved_tax_ids": [],
                 "group_name": _("IGTF %(percent)s %%") % {"percent": percent_str},
+                "group_label": False,
                 "base_amount_currency": base_currency,
                 "display_base_amount_currency": base_currency,
                 "tax_amount_currency": igtf_amount_currency,
