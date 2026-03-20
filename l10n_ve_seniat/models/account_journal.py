@@ -1,7 +1,6 @@
 import logging
 
-from odoo import _, api, fields, models
-from odoo.exceptions import UserError
+from odoo import api, fields, models
 
 _logger = logging.getLogger(__name__)
 
@@ -21,6 +20,14 @@ class AccountJournal(models.Model):
         copy=False,
         help="Secuencia para generar números de control de notas de crédito de venta",
     )
+    invoicing_in_series = fields.Boolean(
+        string="Facturacion en Serie",
+        help="If enabled, the 'Correlativo en Serie' value is used for digital invoicing instead of the SENIAT sequence prefix.",
+    )
+    series_correlative = fields.Char(
+        string="Correlativo en Serie",
+        help="Series value used by digital invoicing when 'Facturacion en Serie' is enabled.",
+    )
 
     def action_create_seniat_sequences(self):
         for journal in self:
@@ -36,6 +43,7 @@ class AccountJournal(models.Model):
         for journal in journals:
             if journal.type == "sale":
                 journal._create_seniat_sequences()
+            journal._sync_series_correlative_from_sequence()
         return journals
 
     def write(self, vals):
@@ -48,6 +56,8 @@ class AccountJournal(models.Model):
             for journal in self:
                 if journal.type == "sale":
                     journal._update_sequence_names()
+        if "l10n_ve_invoice_sequence_id" in vals or "l10n_ve_credit_note_sequence_id" in vals or "invoicing_in_series" in vals:
+            self._sync_series_correlative_from_sequence()
         return res
 
     def _create_seniat_sequences(self):
@@ -104,6 +114,7 @@ class AccountJournal(models.Model):
                     }
                 )
             self.l10n_ve_credit_note_sequence_id = credit_note_sequence.id
+        self._sync_series_correlative_from_sequence()
 
     def _update_sequence_names(self):
         self.ensure_one()
@@ -117,4 +128,21 @@ class AccountJournal(models.Model):
             self.l10n_ve_invoice_sequence_id.name = invoice_sequence_name
         if self.l10n_ve_credit_note_sequence_id:
             self.l10n_ve_credit_note_sequence_id.name = credit_note_sequence_name
+
+    @api.onchange("l10n_ve_invoice_sequence_id", "l10n_ve_credit_note_sequence_id", "invoicing_in_series")
+    def _onchange_series_correlative(self):
+        for journal in self:
+            if journal.invoicing_in_series:
+                continue
+            invoice_prefix = (journal.l10n_ve_invoice_sequence_id.prefix or "").strip()
+            credit_prefix = (journal.l10n_ve_credit_note_sequence_id.prefix or "").strip()
+            journal.series_correlative = invoice_prefix or credit_prefix or ""
+
+    def _sync_series_correlative_from_sequence(self):
+        for journal in self:
+            if journal.invoicing_in_series:
+                continue
+            invoice_prefix = (journal.l10n_ve_invoice_sequence_id.prefix or "").strip()
+            credit_prefix = (journal.l10n_ve_credit_note_sequence_id.prefix or "").strip()
+            journal.series_correlative = invoice_prefix or credit_prefix or ""
 

@@ -4,6 +4,7 @@ from collections import defaultdict
 
 from odoo import fields, models
 from odoo.osv import expression
+from odoo.tools.float_utils import float_is_zero
 
 
 class StockInventoryBookReportHandler(models.AbstractModel):
@@ -27,6 +28,9 @@ class StockInventoryBookReportHandler(models.AbstractModel):
             "base.group_multi_currency"
         )
         options["warehouse_ids"] = (previous_options or {}).get("warehouse_ids", [])
+        options["hide_zero_quantity_products"] = (previous_options or {}).get(
+            "hide_zero_quantity_products", False
+        )
 
     def _get_warehouses(self, options):
         warehouse_ids = options.get("warehouse_ids", [])
@@ -282,10 +286,29 @@ class StockInventoryBookReportHandler(models.AbstractModel):
             date_to_conv = fields.Date.from_string(date_to_conv)
 
         index = 1
+        qty_fields = (
+            "inv_initial_qty",
+            "entradas_qty",
+            "salidas_qty",
+            "retiros_qty",
+            "autoconsumos_qty",
+            "inv_final_qty",
+        )
         for product_id, data in sorted(product_data.items()):
             product = self.env["product.product"].browse(product_id)
             if not product.exists():
                 continue
+            if not product.active:
+                continue
+            if options.get("hide_zero_quantity_products"):
+                if all(
+                    float_is_zero(
+                        data[field_name],
+                        precision_rounding=product.uom_id.rounding or 0.01,
+                    )
+                    for field_name in qty_fields
+                ):
+                    continue
 
             cost_currency = self._get_product_cost_currency(product)
             conv_cost, _ = self._convert_to_display_currency(

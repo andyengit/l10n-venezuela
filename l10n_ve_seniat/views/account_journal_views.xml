@@ -15,8 +15,10 @@
                             invisible="l10n_ve_invoice_sequence_id and l10n_ve_credit_note_sequence_id"
                             />
 
-                        <field name="l10n_ve_invoice_sequence_id" options="{'no_create': False, 'no_open': True}"/>
-                        <field name="l10n_ve_credit_note_sequence_id" options="{'no_create': False, 'no_open': True}"/>
+                        <field name="l10n_ve_invoice_sequence_id" options="{'no_create': False, 'no_open': False}"/>
+                        <field name="l10n_ve_credit_note_sequence_id" options="{'no_create': False, 'no_open': False}"/>
+                        <field name="invoicing_in_series"/>
+                        <field name="series_correlative" readonly="not invoicing_in_series"/>
                     </group>
                 </page>
             </xpath>

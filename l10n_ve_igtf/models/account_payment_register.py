@@ -828,6 +828,18 @@ class AccountPaymentRegister(models.TransientModel):
         vals["l10n_ve_igtf_cap_amount_company_currency"] = (
             self._l10n_ve_get_igtf_cap_company_for_batch(batch_result)
         )
+        if vals.get("l10n_ve_apply_igtf"):
+            payment_method_line = self.env["account.payment.method.line"].browse(
+                vals.get("payment_method_line_id")
+            )
+            journal = self.env["account.journal"].browse(vals.get("journal_id"))
+            if (
+                payment_method_line
+                and journal
+                and not payment_method_line.payment_account_id
+                and journal.default_account_id
+            ):
+                vals["outstanding_account_id"] = journal.default_account_id.id
         return vals
 
     def _create_payment_vals_from_batch(self, batch_result):
@@ -837,4 +849,16 @@ class AccountPaymentRegister(models.TransientModel):
         vals["l10n_ve_igtf_cap_amount_company_currency"] = (
             self._l10n_ve_get_igtf_cap_company_for_batch(batch_result)
         )
+        if vals.get("l10n_ve_apply_igtf"):
+            payment_method_line = self.env["account.payment.method.line"].browse(
+                vals.get("payment_method_line_id")
+            )
+            journal = self.env["account.journal"].browse(vals.get("journal_id"))
+            if (
+                payment_method_line
+                and journal
+                and not payment_method_line.payment_account_id
+                and journal.default_account_id
+            ):
+                vals["outstanding_account_id"] = journal.default_account_id.id
         return vals

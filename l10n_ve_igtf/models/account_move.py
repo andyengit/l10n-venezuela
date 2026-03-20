@@ -77,7 +77,13 @@ class AccountMove(models.Model):
         )
         partials = (
             receivable_lines.matched_debit_ids | receivable_lines.matched_credit_ids
-        ).filtered(lambda pr: not pr.exchange_move_id)
+        ).filtered(
+            lambda pr: (
+                not pr.exchange_move_id
+                or pr.debit_move_id.payment_id
+                or pr.credit_move_id.payment_id
+            )
+        )
         if not partials:
             return 0.0, 0.0
 
@@ -126,7 +132,13 @@ class AccountMove(models.Model):
 
             matched_partials = (
                 pay_line.matched_debit_ids | pay_line.matched_credit_ids
-            ).filtered(lambda pr: not pr.exchange_move_id)
+            ).filtered(
+                lambda pr: (
+                    not pr.exchange_move_id
+                    or pr.debit_move_id.payment_id
+                    or pr.credit_move_id.payment_id
+                )
+            )
             total_net = 0.0
             for pr in matched_partials:
                 line_currency = (
@@ -430,7 +442,7 @@ class AccountMove(models.Model):
                     continue
 
                 partial = Partial.browse(partial_id)
-                if not partial or not partial.exists() or partial.exchange_move_id:
+                if not partial or not partial.exists():
                     continue
 
                 widget_currency = self.env["res.currency"].browse(currency_id)
@@ -439,6 +451,10 @@ class AccountMove(models.Model):
                 igtf_amls = payment.move_id.line_ids.filtered(
                     lambda line: line.account_id == igtf_account
                 )
+                if not igtf_amls:
+                    igtf_amls = payment.move_id.line_ids.filtered(
+                        lambda line: (line.name or "").upper().startswith("IGTF")
+                    )
                 if not igtf_amls:
                     continue
 
@@ -482,7 +498,13 @@ class AccountMove(models.Model):
 
                 matched_partials = (
                     pay_line.matched_debit_ids | pay_line.matched_credit_ids
-                ).filtered(lambda pr: not pr.exchange_move_id)
+                ).filtered(
+                    lambda pr: (
+                        not pr.exchange_move_id
+                        or pr.debit_move_id.payment_id
+                        or pr.credit_move_id.payment_id
+                    )
+                )
                 total_net_paymentline_widget = 0.0
                 for pr in matched_partials:
                     line_currency = (

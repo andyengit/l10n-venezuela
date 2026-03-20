@@ -27,6 +27,15 @@
                         t-props="getMultiRecordSelectorProps('stock.warehouse', 'warehouse_ids')"
                     />
                 </div>
+                <div class="dropdown-divider" />
+                <DropdownItem
+                    t-if="'hide_zero_quantity_products' in controller.options"
+                    class="{ 'selected': controller.options.hide_zero_quantity_products }"
+                    onSelected="() => this.filterClicked({ optionKey: 'hide_zero_quantity_products', reload: true})"
+                    closingMode="'none'"
+                >
+                    Ocultar productos con cantidades en 0
+                </DropdownItem>
             </t>
         </Dropdown>
     </t>
