@@ -1,7 +1,9 @@
 import logging
-from odoo.tools.safe_eval import safe_eval
+
+from dateutil.relativedelta import relativedelta
 
 from odoo import _, api, fields, models
+from odoo.tools.safe_eval import safe_eval
 from odoo.exceptions import UserError, ValidationError
 
 _logger = logging.getLogger(__name__)
@@ -88,6 +90,42 @@ class AccountMove(models.Model):
         tracking=True,
         help="Report Z number from the fiscal machine",
     )
+    l10n_ve_on_behalf_of_third_party = fields.Boolean(
+        string="Por cuenta de terceros",
+        copy=False,
+        help="Según Art. 11 PA00071: operaciones por cuenta de terceros deben emitirse en forma libre.",
+    )
+    l10n_ve_third_party_partner_id = fields.Many2one(
+        "res.partner",
+        string="Tercero (a favor de quien se actúa)",
+        copy=False,
+        ondelete="restrict",
+    )
+    l10n_ve_certified_copy_deadline = fields.Date(
+        string="Plazo entrega copia certificada",
+        compute="_compute_l10n_ve_certified_copy_deadline",
+        store=True,
+        help="Día 5 del mes siguiente a la emisión (Art. 32 PA00071).",
+    )
+    l10n_ve_certified_copy_delivered = fields.Boolean(
+        string="Copia certificada entregada",
+        copy=False,
+    )
+    l10n_ve_certified_copy_attachment_id = fields.Many2one(
+        "ir.attachment",
+        string="Copia certificada adjunta",
+        copy=False,
+        ondelete="set null",
+    )
+
+    @api.depends("invoice_date", "l10n_ve_on_behalf_of_third_party")
+    def _compute_l10n_ve_certified_copy_deadline(self):
+        for move in self:
+            if move.l10n_ve_on_behalf_of_third_party and move.invoice_date:
+                next_month = move.invoice_date + relativedelta(months=1)
+                move.l10n_ve_certified_copy_deadline = next_month.replace(day=5)
+            else:
+                move.l10n_ve_certified_copy_deadline = False
 
     def action_post(self):
         for move_id in self:
@@ -130,6 +168,57 @@ class AccountMove(models.Model):
                             "No se puede facturar con un total de 0. Por favor, verifique las líneas de la factura."
                         )
                     )
+
+                if move_id.move_type in ("out_refund", "in_refund") and not move_id.reversed_entry_id:
+                    raise ValidationError(
+                        _(
+                            "No se puede confirmar la nota de crédito '%s'. "
+                            "Debe indicar el documento origen (factura afectada).",
+                            move_id.name or _("Borrador"),
+                        )
+                    )
+
+                if (
+                    move_id.l10n_ve_on_behalf_of_third_party
+                    and move_id.move_type in ("out_invoice", "out_refund")
+                ):
+                    if not move_id.company_id.l10n_ve_on_behalf_of_third_party_enabled:
+                        raise ValidationError(
+                            _(
+                                "No se puede confirmar la factura por cuenta de terceros '%s'. "
+                                "Debe habilitar la opción 'Facturación por cuenta de terceros' en "
+                                "Configuración > Contabilidad.",
+                                move_id.name or _("Borrador"),
+                            )
+                        )
+                    if not move_id.l10n_ve_third_party_partner_id:
+                        raise ValidationError(
+                            _(
+                                "No se puede confirmar la factura por cuenta de terceros '%s'. "
+                                "Debe indicar el tercero a favor de quien se actúa.",
+                                move_id.name or _("Borrador"),
+                            )
+                        )
+                    third = move_id.l10n_ve_third_party_partner_id
+                    if not third.vat:
+                        raise ValidationError(
+                            _(
+                                "No se puede confirmar la factura por cuenta de terceros '%s'. "
+                                "El tercero '%s' no tiene el RIF configurado.",
+                                move_id.name or _("Borrador"),
+                                third.name,
+                            )
+                        )
+                    if not third.check_vat_ve(third.vat):
+                        raise ValidationError(
+                            _(
+                                "No se puede confirmar la factura por cuenta de terceros '%s'. "
+                                "El RIF '%s' del tercero '%s' no tiene un formato válido.",
+                                move_id.name or _("Borrador"),
+                                third.vat,
+                                third.name,
+                            )
+                        )
 
             lines = []
             for line in self.line_ids:
@@ -279,12 +368,11 @@ Please create a credit note instead.
         if not self.l10n_ve_control_number:
             return
 
-        # Buscar el número de control más alto existente en la misma compañía
         last_move = self.search(
             [
                 ("l10n_ve_control_number", "!=", False),
                 ("company_id", "=", self.company_id.id),
-                ("move_type", "in", ("out_invoice", "out_refund")),
+                ("move_type", "=", self.move_type),
                 ("id", "!=", self.id),
             ],
             order="l10n_ve_control_number desc",

@@ -9,5 +9,6 @@ from . import res_config_settings
 from . import account_move
 from . import account_move_line
 from . import account_journal
+from . import account_payment
 from . import ir_actions_report
 from . import ir_http

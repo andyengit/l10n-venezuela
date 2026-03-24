@@ -27,7 +27,28 @@ class SalesBookReportCustomHandler(models.AbstractModel):
             col_expr_label = column.get("expression_label", "")
             should_include = True
 
-            if col_expr_label in [
+            if col_expr_label.startswith("third_party_"):
+                if not company.l10n_ve_on_behalf_of_third_party_enabled:
+                    should_include = False
+                elif col_expr_label in [
+                    "third_party_tax_base_general_aliquot",
+                    "third_party_general_aliquot",
+                    "third_party_amount_general_aliquot",
+                ]:
+                    should_include = bool(company.general_aliquot_sale)
+                elif col_expr_label in [
+                    "third_party_tax_base_reduced_aliquot",
+                    "third_party_reduced_aliquot",
+                    "third_party_amount_reduced_aliquot",
+                ]:
+                    should_include = bool(company.reduced_aliquot_sale)
+                elif col_expr_label in [
+                    "third_party_tax_base_extend_aliquot",
+                    "third_party_extend_aliquot",
+                    "third_party_amount_extend_aliquot",
+                ]:
+                    should_include = bool(company.extend_aliquot_sale)
+            elif col_expr_label in [
                 "tax_base_general_aliquot",
                 "general_aliquot",
                 "amount_general_aliquot",
@@ -194,6 +215,28 @@ class SalesBookReportCustomHandler(models.AbstractModel):
                             options=options,
                         )
                     )
+                elif col_expr_label == "third_party_name":
+                    third_name = ""
+                    if move.l10n_ve_on_behalf_of_third_party and move.l10n_ve_third_party_partner_id:
+                        third_name = move.l10n_ve_third_party_partner_id.name or ""
+                    line_columns.append(
+                        report._build_column_dict(
+                            third_name,
+                            column,
+                            options=options,
+                        )
+                    )
+                elif col_expr_label == "third_party_vat":
+                    third_vat = ""
+                    if move.l10n_ve_on_behalf_of_third_party and move.l10n_ve_third_party_partner_id:
+                        third_vat = move.l10n_ve_third_party_partner_id.vat or ""
+                    line_columns.append(
+                        report._build_column_dict(
+                            third_vat,
+                            column,
+                            options=options,
+                        )
+                    )
                 elif col_expr_label == "move_type":
                     move_type = self._determinate_type_for_move(move)
                     line_columns.append(
@@ -243,95 +286,114 @@ class SalesBookReportCustomHandler(models.AbstractModel):
                         )
                     )
                 elif col_expr_label == "total_sales_iva":
+                    val = 0.0 if move.l10n_ve_on_behalf_of_third_party else tax_values.get("total_taxed", 0.0)
                     line_columns.append(
-                        report._build_column_dict(
-                            tax_values.get("total_taxed", 0.0),
-                            column,
-                            options=options,
-                        )
+                        report._build_column_dict(val, column, options=options)
                     )
                 elif col_expr_label == "total_sales_not_iva":
+                    val = 0.0 if move.l10n_ve_on_behalf_of_third_party else tax_values.get("total_exempt", 0.0)
                     line_columns.append(
-                        report._build_column_dict(
-                            tax_values.get("total_exempt", 0.0),
-                            column,
-                            options=options,
-                        )
+                        report._build_column_dict(val, column, options=options)
                     )
                 elif col_expr_label == "tax_base_general_aliquot":
+                    val = 0.0 if move.l10n_ve_on_behalf_of_third_party else tax_values.get("base_general", 0.0)
                     line_columns.append(
-                        report._build_column_dict(
-                            tax_values.get("base_general", 0.0),
-                            column,
-                            options=options,
-                        )
+                        report._build_column_dict(val, column, options=options)
                     )
                 elif col_expr_label == "general_aliquot":
-                    percent_val = tax_values.get("percent_general", 0.0)
+                    val = 0.0 if move.l10n_ve_on_behalf_of_third_party else tax_values.get("percent_general", 0.0)
                     line_columns.append(
-                        report._build_column_dict(
-                            percent_val,
-                            column,
-                            options=options,
-                        )
+                        report._build_column_dict(val, column, options=options)
                     )
                 elif col_expr_label == "amount_general_aliquot":
+                    val = 0.0 if move.l10n_ve_on_behalf_of_third_party else tax_values.get("amount_general", 0.0)
                     line_columns.append(
-                        report._build_column_dict(
-                            tax_values.get("amount_general", 0.0),
-                            column,
-                            options=options,
-                        )
+                        report._build_column_dict(val, column, options=options)
                     )
                 elif col_expr_label == "tax_base_reduced_aliquot":
+                    val = 0.0 if move.l10n_ve_on_behalf_of_third_party else tax_values.get("base_reduced", 0.0)
                     line_columns.append(
-                        report._build_column_dict(
-                            tax_values.get("base_reduced", 0.0),
-                            column,
-                            options=options,
-                        )
+                        report._build_column_dict(val, column, options=options)
                     )
                 elif col_expr_label == "reduced_aliquot":
-                    percent_val = tax_values.get("percent_reduced", 0.0)
+                    val = 0.0 if move.l10n_ve_on_behalf_of_third_party else tax_values.get("percent_reduced", 0.0)
                     line_columns.append(
-                        report._build_column_dict(
-                            percent_val,
-                            column,
-                            options=options,
-                        )
+                        report._build_column_dict(val, column, options=options)
                     )
                 elif col_expr_label == "amount_reduced_aliquot":
+                    val = 0.0 if move.l10n_ve_on_behalf_of_third_party else tax_values.get("amount_reduced", 0.0)
                     line_columns.append(
-                        report._build_column_dict(
-                            tax_values.get("amount_reduced", 0.0),
-                            column,
-                            options=options,
-                        )
+                        report._build_column_dict(val, column, options=options)
                     )
                 elif col_expr_label == "tax_base_extend_aliquot":
+                    val = 0.0 if move.l10n_ve_on_behalf_of_third_party else tax_values.get("base_extend", 0.0)
                     line_columns.append(
-                        report._build_column_dict(
-                            tax_values.get("base_extend", 0.0),
-                            column,
-                            options=options,
-                        )
+                        report._build_column_dict(val, column, options=options)
                     )
                 elif col_expr_label == "extend_aliquot":
-                    percent_val = tax_values.get("percent_extend", 0.0)
+                    val = 0.0 if move.l10n_ve_on_behalf_of_third_party else tax_values.get("percent_extend", 0.0)
                     line_columns.append(
-                        report._build_column_dict(
-                            percent_val,
-                            column,
-                            options=options,
-                        )
+                        report._build_column_dict(val, column, options=options)
                     )
                 elif col_expr_label == "amount_extend_aliquot":
+                    val = 0.0 if move.l10n_ve_on_behalf_of_third_party else tax_values.get("amount_extend", 0.0)
                     line_columns.append(
-                        report._build_column_dict(
-                            tax_values.get("amount_extend", 0.0),
-                            column,
-                            options=options,
-                        )
+                        report._build_column_dict(val, column, options=options)
+                    )
+                elif col_expr_label == "third_party_total_sales_iva":
+                    val = tax_values.get("total_taxed", 0.0) if move.l10n_ve_on_behalf_of_third_party else 0.0
+                    line_columns.append(
+                        report._build_column_dict(val, column, options=options)
+                    )
+                elif col_expr_label == "third_party_total_sales_not_iva":
+                    val = tax_values.get("total_exempt", 0.0) if move.l10n_ve_on_behalf_of_third_party else 0.0
+                    line_columns.append(
+                        report._build_column_dict(val, column, options=options)
+                    )
+                elif col_expr_label == "third_party_tax_base_general_aliquot":
+                    val = tax_values.get("base_general", 0.0) if move.l10n_ve_on_behalf_of_third_party else 0.0
+                    line_columns.append(
+                        report._build_column_dict(val, column, options=options)
+                    )
+                elif col_expr_label == "third_party_general_aliquot":
+                    val = tax_values.get("percent_general", 0.0) if move.l10n_ve_on_behalf_of_third_party else 0.0
+                    line_columns.append(
+                        report._build_column_dict(val, column, options=options)
+                    )
+                elif col_expr_label == "third_party_amount_general_aliquot":
+                    val = tax_values.get("amount_general", 0.0) if move.l10n_ve_on_behalf_of_third_party else 0.0
+                    line_columns.append(
+                        report._build_column_dict(val, column, options=options)
+                    )
+                elif col_expr_label == "third_party_tax_base_reduced_aliquot":
+                    val = tax_values.get("base_reduced", 0.0) if move.l10n_ve_on_behalf_of_third_party else 0.0
+                    line_columns.append(
+                        report._build_column_dict(val, column, options=options)
+                    )
+                elif col_expr_label == "third_party_reduced_aliquot":
+                    val = tax_values.get("percent_reduced", 0.0) if move.l10n_ve_on_behalf_of_third_party else 0.0
+                    line_columns.append(
+                        report._build_column_dict(val, column, options=options)
+                    )
+                elif col_expr_label == "third_party_amount_reduced_aliquot":
+                    val = tax_values.get("amount_reduced", 0.0) if move.l10n_ve_on_behalf_of_third_party else 0.0
+                    line_columns.append(
+                        report._build_column_dict(val, column, options=options)
+                    )
+                elif col_expr_label == "third_party_tax_base_extend_aliquot":
+                    val = tax_values.get("base_extend", 0.0) if move.l10n_ve_on_behalf_of_third_party else 0.0
+                    line_columns.append(
+                        report._build_column_dict(val, column, options=options)
+                    )
+                elif col_expr_label == "third_party_extend_aliquot":
+                    val = tax_values.get("percent_extend", 0.0) if move.l10n_ve_on_behalf_of_third_party else 0.0
+                    line_columns.append(
+                        report._build_column_dict(val, column, options=options)
+                    )
+                elif col_expr_label == "third_party_amount_extend_aliquot":
+                    val = tax_values.get("amount_extend", 0.0) if move.l10n_ve_on_behalf_of_third_party else 0.0
+                    line_columns.append(
+                        report._build_column_dict(val, column, options=options)
                     )
                 elif col_expr_label == "date_retention":
                     line_columns.append(
@@ -717,12 +779,18 @@ class SalesBookReportCustomHandler(models.AbstractModel):
                 "name": _("Adjustments to Tax Debits from Previous Periods"),
                 "key": "adjustments",
             },
-            {
-                "name": _("Total Sales and Tax Debits for the Period"),
-                "key": "total",
-                "is_total": True,
-            },
         ]
+        if company.l10n_ve_on_behalf_of_third_party_enabled:
+            resume_sections.append({
+                "name": _("Ventas por cuenta de terceros"),
+                "key": "third_party",
+                "third_party_section": True,
+            })
+        resume_sections.append({
+            "name": _("Total Sales and Tax Debits for the Period"),
+            "key": "total",
+            "is_total": True,
+        })
 
         for section in resume_sections:
             section_data = resume_data.get(
@@ -746,18 +814,82 @@ class SalesBookReportCustomHandler(models.AbstractModel):
                             options=options,
                         )
                     )
-                elif col_expr_label == "tax_base_general_aliquot":
+                elif col_expr_label == "tax_base_general_aliquot" and not section.get("third_party_section"):
                     line_columns.append(
                         report._build_column_dict(
-                            section_data["base_invoices"],
+                            section_data.get("base_invoices", 0.0),
                             column,
                             options=options,
                         )
                     )
-                elif col_expr_label == "amount_general_aliquot":
+                elif col_expr_label == "amount_general_aliquot" and not section.get("third_party_section"):
                     line_columns.append(
                         report._build_column_dict(
-                            section_data["amount_invoices"],
+                            section_data.get("amount_invoices", 0.0),
+                            column,
+                            options=options,
+                        )
+                    )
+                elif section.get("third_party_section") and col_expr_label == "third_party_total_sales_iva":
+                    line_columns.append(
+                        report._build_column_dict(
+                            section_data.get("total_taxed", 0.0),
+                            column,
+                            options=options,
+                        )
+                    )
+                elif section.get("third_party_section") and col_expr_label == "third_party_total_sales_not_iva":
+                    line_columns.append(
+                        report._build_column_dict(
+                            section_data.get("total_exempt", 0.0),
+                            column,
+                            options=options,
+                        )
+                    )
+                elif section.get("third_party_section") and col_expr_label == "third_party_tax_base_general_aliquot":
+                    line_columns.append(
+                        report._build_column_dict(
+                            section_data.get("base_general", 0.0),
+                            column,
+                            options=options,
+                        )
+                    )
+                elif section.get("third_party_section") and col_expr_label == "third_party_amount_general_aliquot":
+                    line_columns.append(
+                        report._build_column_dict(
+                            section_data.get("amount_general", 0.0),
+                            column,
+                            options=options,
+                        )
+                    )
+                elif section.get("third_party_section") and col_expr_label == "third_party_tax_base_reduced_aliquot":
+                    line_columns.append(
+                        report._build_column_dict(
+                            section_data.get("base_reduced", 0.0),
+                            column,
+                            options=options,
+                        )
+                    )
+                elif section.get("third_party_section") and col_expr_label == "third_party_amount_reduced_aliquot":
+                    line_columns.append(
+                        report._build_column_dict(
+                            section_data.get("amount_reduced", 0.0),
+                            column,
+                            options=options,
+                        )
+                    )
+                elif section.get("third_party_section") and col_expr_label == "third_party_tax_base_extend_aliquot":
+                    line_columns.append(
+                        report._build_column_dict(
+                            section_data.get("base_extend", 0.0),
+                            column,
+                            options=options,
+                        )
+                    )
+                elif section.get("third_party_section") and col_expr_label == "third_party_amount_extend_aliquot":
+                    line_columns.append(
+                        report._build_column_dict(
+                            section_data.get("amount_extend", 0.0),
                             column,
                             options=options,
                         )
@@ -820,6 +952,16 @@ class SalesBookReportCustomHandler(models.AbstractModel):
                 "base_credits": 0.0,
                 "amount_credits": 0.0,
             },
+            "third_party": {
+                "total_taxed": 0.0,
+                "total_exempt": 0.0,
+                "base_general": 0.0,
+                "amount_general": 0.0,
+                "base_reduced": 0.0,
+                "amount_reduced": 0.0,
+                "base_extend": 0.0,
+                "amount_extend": 0.0,
+            },
             "total": {
                 "base_invoices": 0.0,
                 "amount_invoices": 0.0,
@@ -836,6 +978,8 @@ class SalesBookReportCustomHandler(models.AbstractModel):
         ]
 
         for move in invoices:
+            if move.l10n_ve_on_behalf_of_third_party:
+                continue
             tax_values = (
                 self._get_tax_values_from_stored(move)
                 if hasattr(move, "sale_tax_data") and move.sale_tax_data
@@ -853,6 +997,8 @@ class SalesBookReportCustomHandler(models.AbstractModel):
             )
 
         for move in credit_notes:
+            if move.l10n_ve_on_behalf_of_third_party:
+                continue
             tax_values = (
                 self._get_tax_values_from_stored(move)
                 if hasattr(move, "sale_tax_data") and move.sale_tax_data
@@ -872,6 +1018,41 @@ class SalesBookReportCustomHandler(models.AbstractModel):
             result["reduced"]["amount_credits"] += abs(
                 tax_values.get("amount_reduced", 0.0)
             )
+
+        third_party_invoices = [
+            m for m in invoices if m.l10n_ve_on_behalf_of_third_party
+        ]
+        third_party_credit_notes = [
+            m for m in credit_notes if m.l10n_ve_on_behalf_of_third_party
+        ]
+        for move in third_party_invoices:
+            tax_values = (
+                self._get_tax_values_from_stored(move)
+                if hasattr(move, "sale_tax_data") and move.sale_tax_data
+                else self._calculate_tax_values(move)
+            )
+            result["third_party"]["total_taxed"] += tax_values.get("total_taxed", 0.0)
+            result["third_party"]["total_exempt"] += tax_values.get("total_exempt", 0.0)
+            result["third_party"]["base_general"] += tax_values.get("base_general", 0.0)
+            result["third_party"]["amount_general"] += tax_values.get("amount_general", 0.0)
+            result["third_party"]["base_reduced"] += tax_values.get("base_reduced", 0.0)
+            result["third_party"]["amount_reduced"] += tax_values.get("amount_reduced", 0.0)
+            result["third_party"]["base_extend"] += tax_values.get("base_extend", 0.0)
+            result["third_party"]["amount_extend"] += tax_values.get("amount_extend", 0.0)
+        for move in third_party_credit_notes:
+            tax_values = (
+                self._get_tax_values_from_stored(move)
+                if hasattr(move, "sale_tax_data") and move.sale_tax_data
+                else self._calculate_tax_values(move)
+            )
+            result["third_party"]["total_taxed"] += tax_values.get("total_taxed", 0.0)
+            result["third_party"]["total_exempt"] += tax_values.get("total_exempt", 0.0)
+            result["third_party"]["base_general"] += tax_values.get("base_general", 0.0)
+            result["third_party"]["amount_general"] += tax_values.get("amount_general", 0.0)
+            result["third_party"]["base_reduced"] += tax_values.get("base_reduced", 0.0)
+            result["third_party"]["amount_reduced"] += tax_values.get("amount_reduced", 0.0)
+            result["third_party"]["base_extend"] += tax_values.get("base_extend", 0.0)
+            result["third_party"]["amount_extend"] += tax_values.get("amount_extend", 0.0)
 
         result["total"]["base_invoices"] = (
             result["exempt"]["base_invoices"]

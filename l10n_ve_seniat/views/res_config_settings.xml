@@ -12,6 +12,7 @@
                             <separator string="Company Fiscal Info" />
                             <group>
                                 <field name="taxpayer_type" string="Taxpayer Type" />
+                                <field name="l10n_ve_on_behalf_of_third_party_enabled" />
                             </group>
                         </div>
                     </div>

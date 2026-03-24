@@ -49,7 +49,8 @@
                     <!-- So that it appears in the footer of the report instead of the company VAT if it's set -->
                     <div class="row">
                         <p class="text-center fw-bold text-danger">
-                            <span t-if="o.move_type == 'out_invoice'">FACTURA</span>
+                            <span t-if="o.l10n_ve_on_behalf_of_third_party">FACTURA POR CUENTA DE TERCEROS</span>
+                            <span t-elif="o.move_type == 'out_invoice' and not o.debit_origin_id">FACTURA</span>
                             <span t-elif="o.move_type == 'out_invoice' and o.debit_origin_id">NOTA DE DEBITO</span>
                             <span t-elif="o.move_type == 'out_refund' and o.reversed_entry_id">NOTA DE CREDITO</span>
                         </p>
@@ -58,6 +59,13 @@
                         <t t-if="o.debit_origin_id" t-set="origin_affected" t-value="o.debit_origin_id" />
                         <t t-if="o.reversed_entry_id" t-set="origin_affected" t-value="o.reversed_entry_id" />
                         <div t-attf-class="{{ 'col-6' if origin_affected else 'col-9' }}">
+                            <t t-if="o.l10n_ve_on_behalf_of_third_party and o.l10n_ve_third_party_partner_id">
+                                <span class="d-block text-uppercase fw-bold">Por cuenta de: </span>
+                                <span class="d-block"><t t-out="o.l10n_ve_third_party_partner_id.name"/> - RIF: <t t-out="o.l10n_ve_third_party_partner_id.vat"/></span>
+                                <div t-if="o.l10n_ve_certified_copy_deadline" class="text-muted small mb-2">
+                                    <span>Obligación Art. 32 PA00071: Entregar copia certificada al cliente a más tardar el <span t-field="o.l10n_ve_certified_copy_deadline"/></span>.
+                                </div>
+                            </t>
                             <span class="d-block text-uppercase"><strong>Razón Social:</strong> <t t-out="o.partner_id.name" /></span>
                             <span class="d-block text-uppercase"><strong>RIF:</strong> <t t-out="o.partner_id.vat" /></span>
                             <span class="d-block text-uppercase"><strong>Dirección:</strong> <t t-out="o.partner_id.contact_address_inline" /></span>
@@ -83,13 +91,12 @@
 
                         </div>
                     </div>
-                    <div class="position-absolute start-50 translate-middle text-bold align-items-center justify-content-center"
-                        t-if="o.company_id.account_fiscal_country_id.code == 'VE' and not o.env.context.get('l10n_ve_invoice') or o.l10n_ve_invoice_original_printed"
-                    >
-                        <span class="text-uppercase opacity-25 text-danger" style="font-size: 40px !important;" >Copia fiel su original</span>
-                    </div>
-                    
-                    <div class="clearfix invoice_main">
+                    <div class="clearfix invoice_main" style="position: relative;">
+                        <div t-if="o.company_id.account_fiscal_country_id.code == 'VE' and (not o.env.context.get('l10n_ve_invoice') or o.l10n_ve_invoice_original_printed)"
+                            class="position-absolute w-100 text-center text-bold"
+                            style="top: 25%; left: 0; right: 0; pointer-events: none;">
+                            <span class="text-uppercase opacity-25 text-danger" style="font-size: 40px !important;">Copia fiel su original</span>
+                        </div>
                         <div class="page mb-1">
                             <t t-set="has_discount" t-value="any(l.discount for l in o.invoice_line_ids)" />
                             <table class="table table-striped table-sm table-borderless mt-2 table-light" >

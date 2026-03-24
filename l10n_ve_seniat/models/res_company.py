@@ -8,6 +8,10 @@ class ResCompany(models.Model):
         related="partner_id.taxpayer_type",
         readonly=False,
     )
+    l10n_ve_on_behalf_of_third_party_enabled = fields.Boolean(
+        string="Facturación por cuenta de terceros habilitada",
+        default=False,
+    )
 
     exent_aliquot_sale = fields.Many2one(
         "account.tax", domain=[("type_tax_use", "=", "sale")]

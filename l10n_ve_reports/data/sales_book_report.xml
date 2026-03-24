@@ -172,6 +172,110 @@
                 <field name="expression_label">iva_retained</field>
                 <field name="figure_type">monetary</field>
             </record>
+            <record
+                id="sales_book_report_third_party_name"
+                model="account.report.column"
+            >
+                <field name="name">Por cuenta de (Razón Social)</field>
+                <field name="expression_label">third_party_name</field>
+                <field name="figure_type">string</field>
+            </record>
+            <record
+                id="sales_book_report_third_party_vat"
+                model="account.report.column"
+            >
+                <field name="name">RIF Tercero</field>
+                <field name="expression_label">third_party_vat</field>
+                <field name="figure_type">string</field>
+            </record>
+            <record
+                id="sales_book_report_third_party_total_sales_iva"
+                model="account.report.column"
+            >
+                <field name="name">Total ventas con IVA (terceros)</field>
+                <field name="expression_label">third_party_total_sales_iva</field>
+                <field name="figure_type">monetary</field>
+            </record>
+            <record
+                id="sales_book_report_third_party_total_sales_not_iva"
+                model="account.report.column"
+            >
+                <field name="name">Total ventas exentas (terceros)</field>
+                <field name="expression_label">third_party_total_sales_not_iva</field>
+                <field name="figure_type">monetary</field>
+            </record>
+            <record
+                id="sales_book_report_third_party_tax_base_general_aliquot"
+                model="account.report.column"
+            >
+                <field name="name">Base imponible 16% (terceros)</field>
+                <field name="expression_label">third_party_tax_base_general_aliquot</field>
+                <field name="figure_type">monetary</field>
+            </record>
+            <record
+                id="sales_book_report_third_party_general_aliquot"
+                model="account.report.column"
+            >
+                <field name="name">Alicuota 16% (terceros)</field>
+                <field name="expression_label">third_party_general_aliquot</field>
+                <field name="figure_type">percentage</field>
+            </record>
+            <record
+                id="sales_book_report_third_party_amount_general_aliquot"
+                model="account.report.column"
+            >
+                <field name="name">IVA 16% (terceros)</field>
+                <field name="expression_label">third_party_amount_general_aliquot</field>
+                <field name="figure_type">monetary</field>
+            </record>
+            <record
+                id="sales_book_report_third_party_tax_base_reduced_aliquot"
+                model="account.report.column"
+            >
+                <field name="name">Base imponible 8% (terceros)</field>
+                <field name="expression_label">third_party_tax_base_reduced_aliquot</field>
+                <field name="figure_type">monetary</field>
+            </record>
+            <record
+                id="sales_book_report_third_party_reduced_aliquot"
+                model="account.report.column"
+            >
+                <field name="name">Alicuota 8% (terceros)</field>
+                <field name="expression_label">third_party_reduced_aliquot</field>
+                <field name="figure_type">percentage</field>
+            </record>
+            <record
+                id="sales_book_report_third_party_amount_reduced_aliquot"
+                model="account.report.column"
+            >
+                <field name="name">IVA 8% (terceros)</field>
+                <field name="expression_label">third_party_amount_reduced_aliquot</field>
+                <field name="figure_type">monetary</field>
+            </record>
+            <record
+                id="sales_book_report_third_party_tax_base_extend_aliquot"
+                model="account.report.column"
+            >
+                <field name="name">Base imponible 31% (terceros)</field>
+                <field name="expression_label">third_party_tax_base_extend_aliquot</field>
+                <field name="figure_type">monetary</field>
+            </record>
+            <record
+                id="sales_book_report_third_party_extend_aliquot"
+                model="account.report.column"
+            >
+                <field name="name">Alicuota 31% (terceros)</field>
+                <field name="expression_label">third_party_extend_aliquot</field>
+                <field name="figure_type">percentage</field>
+            </record>
+            <record
+                id="sales_book_report_third_party_amount_extend_aliquot"
+                model="account.report.column"
+            >
+                <field name="name">IVA 31% (terceros)</field>
+                <field name="expression_label">third_party_amount_extend_aliquot</field>
+                <field name="figure_type">monetary</field>
+            </record>
         </field>
     </record>
 </odoo>

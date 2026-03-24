@@ -8,6 +8,10 @@ class ResConfigSettings(models.TransientModel):
         related="company_id.taxpayer_type",
         readonly=False,
     )
+    l10n_ve_on_behalf_of_third_party_enabled = fields.Boolean(
+        related="company_id.l10n_ve_on_behalf_of_third_party_enabled",
+        readonly=False,
+    )
 
     exent_aliquot_sale = fields.Many2one(
         "account.tax", related="company_id.exent_aliquot_sale", readonly=False

@@ -101,8 +101,33 @@
             </xpath>
             <xpath expr="//page[@name='other_info']" position="inside">
                 <group
+                    string="Por cuenta de terceros"
+                    invisible="country_code != 'VE' or move_type not in ('out_invoice', 'out_refund') or not company_id.l10n_ve_on_behalf_of_third_party_enabled"
+                >
+                    <field name="l10n_ve_on_behalf_of_third_party" />
+                    <field
+                        name="l10n_ve_third_party_partner_id"
+                        invisible="not l10n_ve_on_behalf_of_third_party"
+                        options="{'no_create': False}"
+                    />
+                    <field
+                        name="l10n_ve_certified_copy_deadline"
+                        invisible="not l10n_ve_on_behalf_of_third_party"
+                        readonly="1"
+                    />
+                    <field
+                        name="l10n_ve_certified_copy_delivered"
+                        invisible="not l10n_ve_on_behalf_of_third_party"
+                    />
+                    <field
+                        name="l10n_ve_certified_copy_attachment_id"
+                        invisible="not l10n_ve_on_behalf_of_third_party"
+                        options="{'no_create': False}"
+                    />
+                </group>
+                <group
                     string="Máquina Fiscal"
-                    invisible="move_type not in ('out_invoice', 'out_refund')"
+                    invisible="move_type not in ('out_invoice', 'out_refund') or l10n_ve_on_behalf_of_third_party"
                 >
                     <field name="l10n_ve_serial_number" placeholder="Serial" />
                     <field name="l10n_ve_invoice_number" placeholder="N° Factura" />
