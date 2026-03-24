@@ -1,0 +1,85 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* l10n_ve_exchange_rates
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 18.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-03-24 03:26+0000\n"
+"PO-Revision-Date: 2026-03-24 03:26+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: es_VE\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: l10n_ve_exchange_rates
+#. odoo-javascript
+#: code:addons/l10n_ve_exchange_rates/static/src/components/exchange_rate_tooltip/exchange_rate_tooltip.xml:0
+msgid "Cargando tasas..."
+msgstr ""
+
+#. module: l10n_ve_exchange_rates
+#. odoo-javascript
+#: code:addons/l10n_ve_exchange_rates/static/src/components/exchange_rate_tooltip/exchange_rate_tooltip.xml:0
+msgid "Fecha:"
+msgstr ""
+
+#. module: l10n_ve_exchange_rates
+#: model:ir.model.fields,field_description:l10n_ve_exchange_rates.field_res_currency__l10n_ve_show_in_systray
+msgid "Mostrar en barra de navegación"
+msgstr ""
+
+#. module: l10n_ve_exchange_rates
+#: model:ir.model.fields,field_description:l10n_ve_exchange_rates.field_res_currency__l10n_ve_show_in_rates_list
+msgid "Mostrar en lista de tasas"
+msgstr ""
+
+#. module: l10n_ve_exchange_rates
+#. odoo-javascript
+#: code:addons/l10n_ve_exchange_rates/static/src/components/exchange_rate_tooltip/exchange_rate_tooltip.xml:0
+msgid "No hay tasas activas configuradas."
+msgstr ""
+
+#. module: l10n_ve_exchange_rates
+#: model:ir.model.fields,help:l10n_ve_exchange_rates.field_res_currency__l10n_ve_show_in_rates_list
+msgid ""
+"Si está activo, la moneda aparecerá en la lista de tasas del botón Tasas en "
+"la barra de navegación."
+msgstr ""
+
+#. module: l10n_ve_exchange_rates
+#: model:ir.model.fields,help:l10n_ve_exchange_rates.field_res_currency__l10n_ve_show_in_systray
+msgid ""
+"Si está activo, la tasa de esta moneda se mostrará directamente en la barra "
+"de navegación junto al botón de Tasas."
+msgstr ""
+
+#. module: l10n_ve_exchange_rates
+#. odoo-python
+#: code:addons/l10n_ve_exchange_rates/models/res_currency.py:0
+msgid ""
+"Solo una moneda puede estar configurada para mostrarse en la barra de "
+"navegación."
+msgstr ""
+
+#. module: l10n_ve_exchange_rates
+#. odoo-javascript
+#: code:addons/l10n_ve_exchange_rates/static/src/components/exchange_rate_tooltip/exchange_rate_tooltip.xml:0
+msgid "Tasas"
+msgstr ""
+
+#. module: l10n_ve_exchange_rates
+#. odoo-javascript
+#: code:addons/l10n_ve_exchange_rates/static/src/components/exchange_rate_tooltip/exchange_rate_tooltip.xml:0
+msgid "Tasas de Cambio (Ref:"
+msgstr ""
+
+#. module: l10n_ve_exchange_rates
+#. odoo-javascript
+#: code:addons/l10n_ve_exchange_rates/static/src/components/exchange_rate_tooltip/exchange_rate_tooltip.xml:0
+msgid "Tasas de Cambio Activas"
+msgstr ""

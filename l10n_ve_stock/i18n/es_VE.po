@@ -1,0 +1,135 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* l10n_ve_stock
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 18.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-03-24 03:26+0000\n"
+"PO-Revision-Date: 2026-03-24 03:26+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: es_VE\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: l10n_ve_stock
+#: model_terms:ir.ui.view,arch_db:l10n_ve_stock.report_delivery_document_inherit_l10n_ve_stock
+msgid "0.00"
+msgstr "0.00"
+
+#. module: l10n_ve_stock
+#: model_terms:ir.ui.view,arch_db:l10n_ve_stock.report_delivery_document_inherit_l10n_ve_stock
+msgid "0.0000"
+msgstr "0.0000"
+
+#. module: l10n_ve_stock
+#: model_terms:ir.ui.view,arch_db:l10n_ve_stock.report_delivery_document_inherit_l10n_ve_stock
+msgid "<strong class=\"text-danger\">Sin derecho a Crédito Fiscal</strong>"
+msgstr "<strong class=\"text-danger\">Sin derecho a Crédito Fiscal</strong>"
+
+#. module: l10n_ve_stock
+#: model_terms:ir.ui.view,arch_db:l10n_ve_stock.report_delivery_document_inherit_l10n_ve_stock
+msgid "<strong>Motivo del Traslado</strong>"
+msgstr "<strong>Motivo del Traslado</strong>"
+
+#. module: l10n_ve_stock
+#: model_terms:ir.ui.view,arch_db:l10n_ve_stock.report_delivery_document_inherit_l10n_ve_stock
+msgid "<strong>Peso Total:</strong>"
+msgstr "<strong>Peso Total:</strong>"
+
+#. module: l10n_ve_stock
+#: model_terms:ir.ui.view,arch_db:l10n_ve_stock.report_delivery_document_inherit_l10n_ve_stock
+msgid "<strong>Peso</strong>"
+msgstr "<strong>Peso</strong>"
+
+#. module: l10n_ve_stock
+#: model_terms:ir.ui.view,arch_db:l10n_ve_stock.report_delivery_document_inherit_l10n_ve_stock
+msgid "<strong>RIF del Receptor</strong>"
+msgstr "<strong>RIF del Receptor</strong>"
+
+#. module: l10n_ve_stock
+#: model_terms:ir.ui.view,arch_db:l10n_ve_stock.report_delivery_document_inherit_l10n_ve_stock
+msgid "<strong>Receptor</strong>"
+msgstr "<strong>Receptor</strong>"
+
+#. module: l10n_ve_stock
+#: model_terms:ir.ui.view,arch_db:l10n_ve_stock.report_delivery_document_inherit_l10n_ve_stock
+msgid "<strong>Volumen Total:</strong>"
+msgstr "<strong>Volumen Total:</strong>"
+
+#. module: l10n_ve_stock
+#: model_terms:ir.ui.view,arch_db:l10n_ve_stock.report_delivery_document_inherit_l10n_ve_stock
+msgid "<strong>Volumen</strong>"
+msgstr "<strong>Volumen</strong>"
+
+#. module: l10n_ve_stock
+#: model_terms:ir.ui.view,arch_db:l10n_ve_stock.report_delivery_document_inherit_l10n_ve_stock
+msgid "Consignación"
+msgstr ""
+
+#. module: l10n_ve_stock
+#: model_terms:ir.ui.view,arch_db:l10n_ve_stock.report_delivery_document_inherit_l10n_ve_stock
+msgid "Guía de Despacho:"
+msgstr ""
+
+#. module: l10n_ve_stock
+#: model_terms:ir.ui.view,arch_db:l10n_ve_stock.view_picking_form_inherit_l10n_ve
+msgid ""
+"Indique el motivo del traslado de los bienes (ej: Consignación, Préstamo, "
+"Muestra, Reubicación, etc.)"
+msgstr ""
+"Indique el motivo del traslado de los bienes (ej: Consignación, Préstamo, "
+"Muestra, Reubicación, etc.)"
+
+#. module: l10n_ve_stock
+#: model_terms:ir.ui.view,arch_db:l10n_ve_stock.report_delivery_document_inherit_l10n_ve_stock
+msgid "J-12345678-9"
+msgstr "J-12345678-9"
+
+#. modules: l10n_ve_igtf, l10n_ve_stock
+#: model:ir.model.fields,field_description:l10n_ve_igtf.field_res_config_settings__l10n_ve_is_ve_country
+#: model:ir.model.fields,field_description:l10n_ve_stock.field_stock_picking__l10n_ve_is_ve_country
+msgid "L10N Ve Is Ve Country"
+msgstr "Es País Venezuela"
+
+#. module: l10n_ve_stock
+#: model:ir.model.fields,field_description:l10n_ve_stock.field_stock_picking__l10n_ve_transfer_reason
+#: model_terms:ir.ui.view,arch_db:l10n_ve_stock.view_picking_form_inherit_l10n_ve
+msgid "Motivo del traslado"
+msgstr ""
+
+#. module: l10n_ve_stock
+#: model:ir.model.fields,help:l10n_ve_stock.field_stock_picking__l10n_ve_transfer_reason
+msgid ""
+"Motivo del traslado de los bienes muebles, según lo establecido en el "
+"Artículo 10, numeral 4, de la Providencia Administrativa del SENIAT."
+msgstr ""
+
+#. module: l10n_ve_stock
+#: model_terms:ir.ui.view,arch_db:l10n_ve_stock.report_delivery_document_inherit_l10n_ve_stock
+msgid "Nombre del receptor"
+msgstr ""
+
+#. module: l10n_ve_stock
+#: model_terms:ir.ui.view,arch_db:l10n_ve_stock.report_delivery_document_inherit_l10n_ve_stock
+msgid "Orden de Entrega:"
+msgstr ""
+
+#. module: l10n_ve_stock
+#: model:ir.model,name:l10n_ve_stock.model_stock_picking
+msgid "Transfer"
+msgstr "Transferir "
+
+#. module: l10n_ve_stock
+#: model_terms:ir.ui.view,arch_db:l10n_ve_stock.report_delivery_document_inherit_l10n_ve_stock
+msgid "kg"
+msgstr "kg"
+
+#. module: l10n_ve_stock
+#: model_terms:ir.ui.view,arch_db:l10n_ve_stock.report_delivery_document_inherit_l10n_ve_stock
+msgid "m³"
+msgstr "m³"

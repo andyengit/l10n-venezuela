@@ -4,285 +4,582 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 18.0-20251008\n"
+"Project-Id-Version: Odoo Server 18.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-10-26 23:35+0000\n"
-"PO-Revision-Date: 2025-10-26 20:11-0400\n"
+"POT-Creation-Date: 2026-03-24 03:26+0000\n"
+"PO-Revision-Date: 2026-03-24 03:26+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: es_VE\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 3.6\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
 
 #. module: l10n_ve_seniat
-#: model:ir.actions.report,print_report_name:l10n_ve_seniat.account_invoices_ve
-msgid "(object._get_report_base_filename())"
-msgstr "(object._get_report_base_filename())"
+#: model_terms:ir.ui.view,arch_db:l10n_ve_seniat.report_invoice_document
+msgid "- RIF:"
+msgstr "- RIF:"
 
 #. module: l10n_ve_seniat
-#: model_terms:ir.ui.view,arch_db:l10n_ve_seniat.report_invoice_document_ve
-msgid "- Installment of"
-msgstr "- Cuota de"
+#: model_terms:ir.ui.view,arch_db:l10n_ve_seniat.view_move_form
+msgid "00-00000000-0"
+msgstr "00-00000000-0"
 
 #. module: l10n_ve_seniat
-#: model_terms:ir.ui.view,arch_db:l10n_ve_seniat.report_invoice_document_ve
-msgid "2023-09-12"
-msgstr "2023-09-12"
+#: model_terms:ir.ui.view,arch_db:l10n_ve_seniat.report_invoice_document
+msgid "<span class=\"d-block text-uppercase fw-bold\">Por cuenta de: </span>"
+msgstr "<span class=\"d-block text-uppercase fw-bold\">Por cuenta de: </span>"
 
 #. module: l10n_ve_seniat
-#: model_terms:ir.ui.view,arch_db:l10n_ve_seniat.report_invoice_document_ve
-msgid "2023-09-25"
-msgstr "2023-09-25"
+#: model_terms:ir.ui.view,arch_db:l10n_ve_seniat.report_invoice_document
+msgid ""
+"<span class=\"text-uppercase opacity-25 text-danger\" style=\"font-size: "
+"40px !important;\">Copia fiel su original</span>"
+msgstr ""
+"<span class=\"text-uppercase opacity-25 text-danger\" style=\"font-size: "
+"40px !important;\">Copia fiel su original</span>"
 
 #. module: l10n_ve_seniat
-#: model_terms:ir.ui.view,arch_db:l10n_ve_seniat.report_invoice_document_ve
-msgid "2023-10-31"
-msgstr "2023-10-31"
+#: model_terms:ir.ui.view,arch_db:l10n_ve_seniat.view_move_form
+msgid "<span>1</span>"
+msgstr "<span>1</span>"
 
 #. module: l10n_ve_seniat
-#: model_terms:ir.ui.view,arch_db:l10n_ve_seniat.report_invoice_document_ve
-msgid "2024-01-01"
-msgstr "2024-01-01"
+#: model_terms:ir.ui.view,arch_db:l10n_ve_seniat.view_move_form
+msgid "<span>=</span>"
+msgstr "<span>=</span>"
 
 #. module: l10n_ve_seniat
-#: model_terms:ir.ui.view,arch_db:l10n_ve_seniat.report_invoice_document_ve
-msgid "27.00"
-msgstr "27.00"
+#: model_terms:ir.ui.view,arch_db:l10n_ve_seniat.report_invoice_document
+msgid "<strong>Dirección:</strong>"
+msgstr "<strong>Dirección:</strong>"
 
 #. module: l10n_ve_seniat
-#: model_terms:ir.ui.view,arch_db:l10n_ve_seniat.report_invoice_document_ve
-msgid "3.00"
-msgstr "3.00"
+#: model_terms:ir.ui.view,arch_db:l10n_ve_seniat.report_invoice_document
+msgid "<strong>Factura:</strong>"
+msgstr "<strong>Factura:</strong>"
 
 #. module: l10n_ve_seniat
-#: model_terms:ir.ui.view,arch_db:l10n_ve_seniat.report_invoice_document_ve
-msgid "30.00"
-msgstr "30.00"
+#: model_terms:ir.ui.view,arch_db:l10n_ve_seniat.report_invoice_document
+msgid "<strong>Fecha:</strong>"
+msgstr "<strong>Fecha:</strong>"
 
 #. module: l10n_ve_seniat
-#: model_terms:ir.ui.view,arch_db:l10n_ve_seniat.report_invoice_document_ve
-msgid "31.05"
-msgstr "31.05"
+#: model_terms:ir.ui.view,arch_db:l10n_ve_seniat.report_invoice_document
+msgid "<strong>N° de Control:</strong>"
+msgstr "<strong>N° de Control:</strong>"
 
 #. module: l10n_ve_seniat
-#: model_terms:ir.ui.view,arch_db:l10n_ve_seniat.report_invoice_document_ve
-msgid "9.00"
-msgstr "9.00"
+#: model_terms:ir.ui.view,arch_db:l10n_ve_seniat.report_invoice_document
+msgid "<strong>RIF:</strong>"
+msgstr "<strong>RIF:</strong>"
 
 #. module: l10n_ve_seniat
-#: model_terms:ir.ui.view,arch_db:l10n_ve_seniat.report_invoice_document_ve
-msgid "<br/> on this account:"
-msgstr "<br/> en esta cuenta:"
+#: model_terms:ir.ui.view,arch_db:l10n_ve_seniat.report_invoice_document
+msgid "<strong>Razón Social:</strong>"
+msgstr "<strong>Razón Social:</strong>"
 
 #. module: l10n_ve_seniat
-#: model_terms:ir.ui.view,arch_db:l10n_ve_seniat.report_invoice_document_ve
-msgid "<span> due on </span>"
-msgstr "<span> vence el </span>"
+#: model_terms:ir.ui.view,arch_db:l10n_ve_seniat.report_invoice_document
+msgid "<strong>Referencia:</strong>"
+msgstr "<strong>Referencia:</strong>"
 
 #. module: l10n_ve_seniat
-#: model_terms:ir.ui.view,arch_db:l10n_ve_seniat.report_invoice_document_ve
-msgid "<span>Amount Currency</span>"
-msgstr "<span>Monto moneda</span>"
+#: model_terms:ir.ui.view,arch_db:l10n_ve_seniat.report_invoice_document
+msgid "<strong>Términos de pago:</strong>"
+msgstr "<strong>Términos de pago:</strong>"
 
 #. module: l10n_ve_seniat
-#: model_terms:ir.ui.view,arch_db:l10n_ve_seniat.report_invoice_document_ve
-msgid "<span>Amount</span>"
-msgstr "<span>Monto</span>"
+#: model_terms:ir.ui.view,arch_db:l10n_ve_seniat.report_invoice_document
+msgid "<strong>Vencimiento:</strong>"
+msgstr "<strong>Vencimiento:</strong>"
 
 #. module: l10n_ve_seniat
-#: model_terms:ir.ui.view,arch_db:l10n_ve_seniat.report_invoice_document_ve
-msgid "<span>Description</span>"
-msgstr "<span>Descripción</span>"
-
-#. module: l10n_ve_seniat
-#: model_terms:ir.ui.view,arch_db:l10n_ve_seniat.report_invoice_document_ve
-msgid "<span>Disc.%</span>"
-msgstr "<span>Desc.%</span>"
-
-#. module: l10n_ve_seniat
-#: model_terms:ir.ui.view,arch_db:l10n_ve_seniat.report_invoice_document_ve
-msgid "<span>Quantity</span>"
-msgstr "<span>Cantidad</span>"
-
-#. module: l10n_ve_seniat
-#: model_terms:ir.ui.view,arch_db:l10n_ve_seniat.report_invoice_document_ve
-msgid "<span>Taxes</span>"
-msgstr "<span>Impuestos</span>"
-
-#. module: l10n_ve_seniat
-#: model_terms:ir.ui.view,arch_db:l10n_ve_seniat.report_invoice_document_ve
-msgid "<span>Unit Price</span>"
-msgstr "<span>Precio unitario</span>"
-
-#. module: l10n_ve_seniat
-#: model_terms:ir.ui.view,arch_db:l10n_ve_seniat.report_invoice_document_ve
-msgid "<strong class=\"mr16\">Subtotal</strong>"
-msgstr "<strong class=\"mr16\">Subtotal</strong>"
-
-#. module: l10n_ve_seniat
-#: model_terms:ir.ui.view,arch_db:l10n_ve_seniat.report_invoice_document_ve
-msgid "<strong>Credit Note Date</strong>"
-msgstr "<strong>Fecha de la nota de crédito</strong>"
-
-#. module: l10n_ve_seniat
-#: model_terms:ir.ui.view,arch_db:l10n_ve_seniat.report_invoice_document_ve
-msgid "<strong>Customer Code</strong>"
-msgstr "<strong>Código de cliente</strong>"
-
-#. module: l10n_ve_seniat
-#: model_terms:ir.ui.view,arch_db:l10n_ve_seniat.report_invoice_document_ve
-msgid "<strong>Date</strong>"
-msgstr "<strong>Fecha</strong>"
-
-#. module: l10n_ve_seniat
-#: model_terms:ir.ui.view,arch_db:l10n_ve_seniat.report_invoice_document_ve
-msgid "<strong>Delivery Date</strong>"
-msgstr "<strong>Fecha de entrega</strong>"
-
-#. module: l10n_ve_seniat
-#: model_terms:ir.ui.view,arch_db:l10n_ve_seniat.report_invoice_document_ve
-msgid "<strong>Due Date</strong>"
-msgstr "<strong>Fecha de vencimiento</strong>"
-
-#. module: l10n_ve_seniat
-#: model_terms:ir.ui.view,arch_db:l10n_ve_seniat.report_invoice_document_ve
-msgid "<strong>Incoterm</strong>"
-msgstr "<strong>Incoterm</strong>"
-
-#. module: l10n_ve_seniat
-#: model_terms:ir.ui.view,arch_db:l10n_ve_seniat.report_invoice_document_ve
-msgid "<strong>Invoice Date</strong>"
-msgstr "<strong>Fecha de la factura</strong>"
-
-#. module: l10n_ve_seniat
-#: model_terms:ir.ui.view,arch_db:l10n_ve_seniat.report_invoice_document_ve
-msgid "<strong>Receipt Date</strong>"
-msgstr "<strong>Fecha de recepción</strong>"
-
-#. module: l10n_ve_seniat
-#: model_terms:ir.ui.view,arch_db:l10n_ve_seniat.report_invoice_document_ve
-msgid "<strong>Reference</strong>"
-msgstr "<strong>Referencia</strong>"
-
-#. module: l10n_ve_seniat
-#: model_terms:ir.ui.view,arch_db:l10n_ve_seniat.report_invoice_document_ve
-msgid "<strong>Source</strong>"
-msgstr "<strong>Origen</strong>"
-
-#. module: l10n_ve_seniat
-#: model_terms:ir.ui.view,arch_db:l10n_ve_seniat.report_invoice_document_ve
+#: model_terms:ir.ui.view,arch_db:l10n_ve_seniat.report_invoice_document
 msgid "A note, whose content usually applies to the section or product above."
-msgstr "Una nota, cuyo contenido normalmente aplica a la sección o producto superior."
+msgstr ""
+"Una nota, cuyo contenido generalmente aplica a la sección o producto "
+"anterior."
 
 #. module: l10n_ve_seniat
-#: model_terms:ir.ui.view,arch_db:l10n_ve_seniat.report_invoice_document_ve
+#: model_terms:ir.ui.view,arch_db:l10n_ve_seniat.report_invoice_document
 msgid "A section title"
 msgstr "Un título de sección"
 
 #. module: l10n_ve_seniat
-#: model:ir.model,name:l10n_ve_seniat.model_account_chart_template
-msgid "Account Chart Template"
-msgstr "Plantilla de plan de cuentas"
+#: model:res.groups,comment:l10n_ve_seniat.group_seniat
+msgid "Acceso al menú principal SENIAT"
+msgstr "Acceso al menú principal SENIAT"
 
-#. module: l10n_ve_seniat
+#. modules: l10n_ve_seniat, l10n_ve_withholding
 #: model:ir.model.fields,field_description:l10n_ve_seniat.field_res_country_municipality__active
+#: model:ir.model.fields,field_description:l10n_ve_withholding.field_account_withholding_type__state
+#: model:ir.model.fields,field_description:l10n_ve_withholding.field_signature_config__active
+#: model:ir.model.fields,field_description:l10n_ve_withholding.field_tax_unit__status
+#: model:ir.model.fields.selection,name:l10n_ve_withholding.selection__economic_branch__status__active
+#: model_terms:ir.ui.view,arch_db:l10n_ve_withholding.view_economic_branch_search_l10n_ve_withholding
+#: model_terms:ir.ui.view,arch_db:l10n_ve_withholding.view_payment_concept_search_l10n_ve_withholding
+#: model_terms:ir.ui.view,arch_db:l10n_ve_withholding.view_search_tax_unit_l10n_ve_withholding
+#: model_terms:ir.ui.view,arch_db:l10n_ve_withholding.view_signature_config_search_l10n_ve_withholding
+#: model_terms:ir.ui.view,arch_db:l10n_ve_withholding.view_type_person_search
+#: model_terms:ir.ui.view,arch_db:l10n_ve_withholding.view_type_withholding_search_l10n_ve_withholding
 msgid "Active"
 msgstr "Activo"
 
 #. module: l10n_ve_seniat
-#: model_terms:ir.ui.view,arch_db:l10n_ve_seniat.report_invoice_document_ve
-msgid "Bacon Burger"
-msgstr "Hamburguesa con tocineta"
+#. odoo-python
+#: code:addons/l10n_ve_seniat/models/account_move_line.py:0
+msgid "Added default sales tax to line: %s."
+msgstr "Se agregó impuesto de venta por defecto a la línea: %s."
 
 #. module: l10n_ve_seniat
+#: model_terms:ir.ui.view,arch_db:l10n_ve_seniat.report_invoice_document
+msgid "Base"
+msgstr ""
+
+#. module: l10n_ve_seniat
+#. odoo-python
+#: code:addons/l10n_ve_seniat/models/account_move.py:0
+msgid "Borrador"
+msgstr ""
+
+#. modules: l10n_ve_igtf, l10n_ve_reports, l10n_ve_seniat, l10n_ve_withholding
+#. odoo-javascript
+#: code:addons/l10n_ve_reports/static/src/components/redirectAction/redirectAction.xml:0
+#: model_terms:ir.ui.view,arch_db:l10n_ve_igtf.view_l10n_ve_igtf_unreconcile_payment_wizard
+#: model_terms:ir.ui.view,arch_db:l10n_ve_reports.account_report_send_form
+#: model_terms:ir.ui.view,arch_db:l10n_ve_reports.view_report_export_wizard
 #: model_terms:ir.ui.view,arch_db:l10n_ve_seniat.view_move_form
+#: model_terms:ir.ui.view,arch_db:l10n_ve_withholding.arcv_report_form_view
+#: model_terms:ir.ui.view,arch_db:l10n_ve_withholding.library_rent_wizard_form
+#: model_terms:ir.ui.view,arch_db:l10n_ve_withholding.view_retention_islr_form_l10n_ve_withholding
+#: model_terms:ir.ui.view,arch_db:l10n_ve_withholding.view_retention_iva_form_l10n_ve_withholding
+#: model_terms:ir.ui.view,arch_db:l10n_ve_withholding.view_retention_municipal_form_l10n_ve_withholding
 msgid "Cancel"
 msgstr "Cancelar"
 
 #. module: l10n_ve_seniat
-#: model_terms:ir.ui.view,arch_db:l10n_ve_seniat.report_invoice_document_ve
-msgid "Cancelled Credit Note"
-msgstr "Nota de crédito cancelada"
+#: model_terms:ir.ui.view,arch_db:l10n_ve_seniat.view_move_form
+msgid "Canceled"
+msgstr ""
 
 #. module: l10n_ve_seniat
-#: model_terms:ir.ui.view,arch_db:l10n_ve_seniat.report_invoice_document_ve
-msgid "Cancelled Invoice"
-msgstr "Factura cancelada"
+#: model_terms:ir.ui.view,arch_db:l10n_ve_seniat.report_invoice_document
+msgid "Cant."
+msgstr ""
 
-#. module: l10n_ve_seniat
+#. modules: l10n_ve_reports, l10n_ve_seniat, l10n_ve_withholding
+#. odoo-python
+#: code:addons/l10n_ve_reports/models/account_report.py:0
+#: model:account.report.column,name:l10n_ve_reports.journal_report_code
 #: model:ir.model.fields,field_description:l10n_ve_seniat.field_res_country_municipality__code
 #: model:ir.model.fields,field_description:l10n_ve_seniat.field_res_country_parish__code
+#: model:ir.model.fields,field_description:l10n_ve_withholding.field_account_retention__code
+#: model:ir.model.fields,field_description:l10n_ve_withholding.field_economic_activity__name
 msgid "Code"
 msgstr "Código"
 
 #. module: l10n_ve_seniat
-#: model:ir.model,name:l10n_ve_seniat.model_res_partner
-msgid "Contact"
-msgstr "Contacto"
+#: model_terms:ir.ui.view,arch_db:l10n_ve_seniat.report_invoice_document
+msgid "Codigo"
+msgstr ""
 
 #. module: l10n_ve_seniat
+#: model_terms:ir.ui.view,arch_db:l10n_ve_seniat.res_config_settings_l10n_ve_seniat
+msgid "Company Fiscal Info"
+msgstr ""
+
+#. module: l10n_ve_seniat
+#: model:res.groups,name:l10n_ve_seniat.group_fiscal_config_support
+msgid "Configuraciones fiscales soporte"
+msgstr ""
+
+#. module: l10n_ve_seniat
+#: model:res.groups,name:l10n_ve_seniat.group_fiscal_config_user
+msgid "Configuraciones fiscales usuario"
+msgstr ""
+
+#. module: l10n_ve_seniat
+#: model_terms:ir.actions.act_window,help:l10n_ve_seniat.action_l10n_ve_control_number_sequence
+msgid "Configure la secuencia para el N° de Control en los Diarios"
+msgstr ""
+
+#. module: l10n_ve_seniat
+#: model_terms:ir.ui.view,arch_db:l10n_ve_seniat.report_invoice_document
+msgid "Contribuyente Formal"
+msgstr ""
+
+#. module: l10n_ve_seniat
+#: model:ir.model.fields,field_description:l10n_ve_seniat.field_account_bank_statement_line__l10n_ve_control_number
+#: model:ir.model.fields,field_description:l10n_ve_seniat.field_account_move__l10n_ve_control_number
+msgid "Control Number"
+msgstr ""
+
+#. module: l10n_ve_seniat
+#: model:ir.model.fields,field_description:l10n_ve_seniat.field_account_bank_statement_line__l10n_ve_certified_copy_attachment_id
+#: model:ir.model.fields,field_description:l10n_ve_seniat.field_account_move__l10n_ve_certified_copy_attachment_id
+msgid "Copia certificada adjunta"
+msgstr ""
+
+#. module: l10n_ve_seniat
+#: model:ir.model.fields,field_description:l10n_ve_seniat.field_account_bank_statement_line__l10n_ve_certified_copy_delivered
+#: model:ir.model.fields,field_description:l10n_ve_seniat.field_account_move__l10n_ve_certified_copy_delivered
+msgid "Copia certificada entregada"
+msgstr ""
+
+#. module: l10n_ve_seniat
+#: model:ir.model.fields,field_description:l10n_ve_seniat.field_account_journal__series_correlative
+msgid "Correlativo en Serie"
+msgstr ""
+
+#. modules: l10n_ve_reports, l10n_ve_seniat
+#. odoo-javascript
+#. odoo-python
+#: code:addons/l10n_ve_reports/models/account_journal_report.py:0
+#: code:addons/l10n_ve_reports/static/src/components/journal_report/line/line.xml:0
+#: model:ir.model.fields,field_description:l10n_ve_reports.field_account_tax_unit__country_id
 #: model:ir.model.fields,field_description:l10n_ve_seniat.field_res_country_municipality__country_id
 #: model:ir.model.fields,field_description:l10n_ve_seniat.field_res_partner__country_id
 #: model:ir.model.fields,field_description:l10n_ve_seniat.field_res_users__country_id
+#: model_terms:ir.ui.view,arch_db:l10n_ve_reports.pdf_journal_report_taxes_summary
+#: model_terms:ir.ui.view,arch_db:l10n_ve_reports.view_account_report_search
 msgid "Country"
 msgstr "País"
 
 #. module: l10n_ve_seniat
+#: model_terms:ir.ui.view,arch_db:l10n_ve_seniat.view_account_journal_form_inherit
+msgid "Create SENIAT Sequences"
+msgstr ""
+
+#. modules: l10n_ve_audit, l10n_ve_igtf, l10n_ve_reports, l10n_ve_seniat,
+#. l10n_ve_withholding
+#: model:ir.model.fields,field_description:l10n_ve_audit.field_auditlog_login_attempt__create_uid
+#: model:ir.model.fields,field_description:l10n_ve_igtf.field_l10n_ve_igtf_unreconcile_payment_wizard__create_uid
+#: model:ir.model.fields,field_description:l10n_ve_reports.field_account_report_annotation_oca__create_uid
+#: model:ir.model.fields,field_description:l10n_ve_reports.field_account_report_budget_item_oca__create_uid
+#: model:ir.model.fields,field_description:l10n_ve_reports.field_account_report_budget_oca__create_uid
+#: model:ir.model.fields,field_description:l10n_ve_reports.field_account_report_file_download_error_wizard__create_uid
+#: model:ir.model.fields,field_description:l10n_ve_reports.field_account_report_horizontal_group_oca__create_uid
+#: model:ir.model.fields,field_description:l10n_ve_reports.field_account_report_horizontal_group_rule_oca__create_uid
+#: model:ir.model.fields,field_description:l10n_ve_reports.field_account_report_send__create_uid
+#: model:ir.model.fields,field_description:l10n_ve_reports.field_account_reports_export_wizard__create_uid
+#: model:ir.model.fields,field_description:l10n_ve_reports.field_account_reports_export_wizard_format__create_uid
+#: model:ir.model.fields,field_description:l10n_ve_reports.field_account_tax_unit__create_uid
 #: model:ir.model.fields,field_description:l10n_ve_seniat.field_res_country_municipality__create_uid
 #: model:ir.model.fields,field_description:l10n_ve_seniat.field_res_country_parish__create_uid
+#: model:ir.model.fields,field_description:l10n_ve_withholding.field_account_retention__create_uid
+#: model:ir.model.fields,field_description:l10n_ve_withholding.field_account_retention_line__create_uid
+#: model:ir.model.fields,field_description:l10n_ve_withholding.field_account_withholding_type__create_uid
+#: model:ir.model.fields,field_description:l10n_ve_withholding.field_accumulated_fees__create_uid
+#: model:ir.model.fields,field_description:l10n_ve_withholding.field_arcv_report__create_uid
+#: model:ir.model.fields,field_description:l10n_ve_withholding.field_economic_activity__create_uid
+#: model:ir.model.fields,field_description:l10n_ve_withholding.field_economic_branch__create_uid
+#: model:ir.model.fields,field_description:l10n_ve_withholding.field_fees_retention__create_uid
+#: model:ir.model.fields,field_description:l10n_ve_withholding.field_municipal_retention_patent_report__create_uid
+#: model:ir.model.fields,field_description:l10n_ve_withholding.field_municipal_retention_xlsx_report__create_uid
+#: model:ir.model.fields,field_description:l10n_ve_withholding.field_payment_concept__create_uid
+#: model:ir.model.fields,field_description:l10n_ve_withholding.field_payment_concept_line__create_uid
+#: model:ir.model.fields,field_description:l10n_ve_withholding.field_signature_config__create_uid
+#: model:ir.model.fields,field_description:l10n_ve_withholding.field_tax_unit__create_uid
+#: model:ir.model.fields,field_description:l10n_ve_withholding.field_type_person__create_uid
+#: model:ir.model.fields,field_description:l10n_ve_withholding.field_wizard_retention_islr__create_uid
+#: model:ir.model.fields,field_description:l10n_ve_withholding.field_wizard_retention_iva__create_uid
 msgid "Created by"
 msgstr "Creado por"
 
-#. module: l10n_ve_seniat
+#. modules: l10n_ve_audit, l10n_ve_igtf, l10n_ve_reports, l10n_ve_seniat,
+#. l10n_ve_withholding
+#: model:ir.model.fields,field_description:l10n_ve_audit.field_auditlog_login_attempt__create_date
+#: model:ir.model.fields,field_description:l10n_ve_igtf.field_l10n_ve_igtf_unreconcile_payment_wizard__create_date
+#: model:ir.model.fields,field_description:l10n_ve_reports.field_account_report_annotation_oca__create_date
+#: model:ir.model.fields,field_description:l10n_ve_reports.field_account_report_budget_item_oca__create_date
+#: model:ir.model.fields,field_description:l10n_ve_reports.field_account_report_budget_oca__create_date
+#: model:ir.model.fields,field_description:l10n_ve_reports.field_account_report_file_download_error_wizard__create_date
+#: model:ir.model.fields,field_description:l10n_ve_reports.field_account_report_horizontal_group_oca__create_date
+#: model:ir.model.fields,field_description:l10n_ve_reports.field_account_report_horizontal_group_rule_oca__create_date
+#: model:ir.model.fields,field_description:l10n_ve_reports.field_account_report_send__create_date
+#: model:ir.model.fields,field_description:l10n_ve_reports.field_account_reports_export_wizard__create_date
+#: model:ir.model.fields,field_description:l10n_ve_reports.field_account_reports_export_wizard_format__create_date
+#: model:ir.model.fields,field_description:l10n_ve_reports.field_account_tax_unit__create_date
 #: model:ir.model.fields,field_description:l10n_ve_seniat.field_res_country_municipality__create_date
 #: model:ir.model.fields,field_description:l10n_ve_seniat.field_res_country_parish__create_date
+#: model:ir.model.fields,field_description:l10n_ve_withholding.field_account_retention__create_date
+#: model:ir.model.fields,field_description:l10n_ve_withholding.field_account_retention_line__create_date
+#: model:ir.model.fields,field_description:l10n_ve_withholding.field_account_withholding_type__create_date
+#: model:ir.model.fields,field_description:l10n_ve_withholding.field_accumulated_fees__create_date
+#: model:ir.model.fields,field_description:l10n_ve_withholding.field_arcv_report__create_date
+#: model:ir.model.fields,field_description:l10n_ve_withholding.field_economic_activity__create_date
+#: model:ir.model.fields,field_description:l10n_ve_withholding.field_economic_branch__create_date
+#: model:ir.model.fields,field_description:l10n_ve_withholding.field_fees_retention__create_date
+#: model:ir.model.fields,field_description:l10n_ve_withholding.field_municipal_retention_patent_report__create_date
+#: model:ir.model.fields,field_description:l10n_ve_withholding.field_municipal_retention_xlsx_report__create_date
+#: model:ir.model.fields,field_description:l10n_ve_withholding.field_payment_concept__create_date
+#: model:ir.model.fields,field_description:l10n_ve_withholding.field_payment_concept_line__create_date
+#: model:ir.model.fields,field_description:l10n_ve_withholding.field_signature_config__create_date
+#: model:ir.model.fields,field_description:l10n_ve_withholding.field_tax_unit__create_date
+#: model:ir.model.fields,field_description:l10n_ve_withholding.field_type_person__create_date
+#: model:ir.model.fields,field_description:l10n_ve_withholding.field_wizard_retention_islr__create_date
+#: model:ir.model.fields,field_description:l10n_ve_withholding.field_wizard_retention_iva__create_date
 msgid "Created on"
 msgstr "Creado el"
 
 #. module: l10n_ve_seniat
-#: model_terms:ir.ui.view,arch_db:l10n_ve_seniat.report_invoice_document_ve
-msgid "Credit Note"
-msgstr "Nota de crédito"
+#: model:ir.model.fields,field_description:l10n_ve_seniat.field_account_bank_statement_line__purchase_tax_data
+#: model:ir.model.fields,field_description:l10n_ve_seniat.field_account_move__purchase_tax_data
+msgid "Datos de Impuestos para Libro de Compras"
+msgstr ""
 
 #. module: l10n_ve_seniat
+#: model:ir.model.fields,field_description:l10n_ve_seniat.field_account_bank_statement_line__sale_tax_data
+#: model:ir.model.fields,field_description:l10n_ve_seniat.field_account_move__sale_tax_data
+msgid "Datos de Impuestos para Libro de Ventas"
+msgstr ""
+
+#. module: l10n_ve_seniat
+#: model_terms:ir.ui.view,arch_db:l10n_ve_seniat.report_invoice_document
+msgid "Desc."
+msgstr ""
+
+#. module: l10n_ve_seniat
+#: model_terms:ir.ui.view,arch_db:l10n_ve_seniat.report_invoice_document
+msgid "Descripcion"
+msgstr ""
+
+#. modules: l10n_ve_audit, l10n_ve_igtf, l10n_ve_reports, l10n_ve_seniat,
+#. l10n_ve_withholding
+#: model:ir.model.fields,field_description:l10n_ve_audit.field_auditlog_login_attempt__display_name
+#: model:ir.model.fields,field_description:l10n_ve_igtf.field_l10n_ve_igtf_unreconcile_payment_wizard__display_name
+#: model:ir.model.fields,field_description:l10n_ve_reports.field_account_report_annotation_oca__display_name
+#: model:ir.model.fields,field_description:l10n_ve_reports.field_account_report_budget_item_oca__display_name
+#: model:ir.model.fields,field_description:l10n_ve_reports.field_account_report_budget_oca__display_name
+#: model:ir.model.fields,field_description:l10n_ve_reports.field_account_report_file_download_error_wizard__display_name
+#: model:ir.model.fields,field_description:l10n_ve_reports.field_account_report_horizontal_group_oca__display_name
+#: model:ir.model.fields,field_description:l10n_ve_reports.field_account_report_horizontal_group_rule_oca__display_name
+#: model:ir.model.fields,field_description:l10n_ve_reports.field_account_report_send__display_name
+#: model:ir.model.fields,field_description:l10n_ve_reports.field_account_reports_export_wizard__display_name
+#: model:ir.model.fields,field_description:l10n_ve_reports.field_account_reports_export_wizard_format__display_name
+#: model:ir.model.fields,field_description:l10n_ve_reports.field_account_tax_unit__display_name
 #: model:ir.model.fields,field_description:l10n_ve_seniat.field_res_country_municipality__display_name
 #: model:ir.model.fields,field_description:l10n_ve_seniat.field_res_country_parish__display_name
+#: model:ir.model.fields,field_description:l10n_ve_withholding.field_account_retention__display_name
+#: model:ir.model.fields,field_description:l10n_ve_withholding.field_account_retention_line__display_name
+#: model:ir.model.fields,field_description:l10n_ve_withholding.field_account_withholding_type__display_name
+#: model:ir.model.fields,field_description:l10n_ve_withholding.field_accumulated_fees__display_name
+#: model:ir.model.fields,field_description:l10n_ve_withholding.field_arcv_report__display_name
+#: model:ir.model.fields,field_description:l10n_ve_withholding.field_economic_activity__display_name
+#: model:ir.model.fields,field_description:l10n_ve_withholding.field_economic_branch__display_name
+#: model:ir.model.fields,field_description:l10n_ve_withholding.field_fees_retention__display_name
+#: model:ir.model.fields,field_description:l10n_ve_withholding.field_municipal_retention_patent_report__display_name
+#: model:ir.model.fields,field_description:l10n_ve_withholding.field_municipal_retention_xlsx_report__display_name
+#: model:ir.model.fields,field_description:l10n_ve_withholding.field_payment_concept__display_name
+#: model:ir.model.fields,field_description:l10n_ve_withholding.field_payment_concept_line__display_name
+#: model:ir.model.fields,field_description:l10n_ve_withholding.field_signature_config__display_name
+#: model:ir.model.fields,field_description:l10n_ve_withholding.field_tax_unit__display_name
+#: model:ir.model.fields,field_description:l10n_ve_withholding.field_type_person__display_name
+#: model:ir.model.fields,field_description:l10n_ve_withholding.field_wizard_retention_islr__display_name
+#: model:ir.model.fields,field_description:l10n_ve_withholding.field_wizard_retention_iva__display_name
 msgid "Display Name"
-msgstr "Nombre para mostrar"
+msgstr "Nombre a Mostrar"
 
 #. module: l10n_ve_seniat
-#: model_terms:ir.ui.view,arch_db:l10n_ve_seniat.report_invoice_document_ve
-msgid "Draft Credit Note"
-msgstr "Borrador de nota de crédito"
+#: model_terms:ir.ui.view,arch_db:l10n_ve_seniat.report_invoice_document
+msgid "Documento afectado"
+msgstr ""
 
 #. module: l10n_ve_seniat
-#: model_terms:ir.ui.view,arch_db:l10n_ve_seniat.report_invoice_document_ve
-msgid "Draft Invoice"
-msgstr "Borrador de factura"
+#: model:ir.model.fields,help:l10n_ve_seniat.field_account_bank_statement_line__l10n_ve_certified_copy_deadline
+#: model:ir.model.fields,help:l10n_ve_seniat.field_account_move__l10n_ve_certified_copy_deadline
+msgid "Día 5 del mes siguiente a la emisión (Art. 32 PA00071)."
+msgstr ""
+
+#. module: l10n_ve_seniat
+#. odoo-python
+#: code:addons/l10n_ve_seniat/models/account_move.py:0
+msgid ""
+"El número de control '%s' es inferior al último número de control asignado "
+"'%s' en la compañía '%s'. No se permite asignar un número de control "
+"anterior al último utilizado."
+msgstr ""
+
+#. module: l10n_ve_seniat
+#. odoo-python
+#: code:addons/l10n_ve_seniat/models/account_move.py:0
+msgid ""
+"El número de control '%s' ya existe en la compañía '%s'. Por favor, "
+"verifique la secuencia o corrija el número manualmente."
+msgstr ""
+
+#. module: l10n_ve_seniat
+#: model:ir.actions.act_window,name:l10n_ve_seniat.action_seniat_companies
+#: model:ir.ui.menu,name:l10n_ve_seniat.menu_seniat_companies
+msgid "Empresas"
+msgstr ""
+
+#. module: l10n_ve_seniat
+#: model_terms:ir.actions.act_window,help:l10n_ve_seniat.action_l10n_ve_control_number_sequence
+msgid ""
+"Esta secuencia generará automáticamente los números de control para las facturas venezolanas.\n"
+"                El formato es un correlativo de 8 dígitos (00000001, 00000002, etc.).\n"
+"                Cada compañía puede tener su propia secuencia independiente."
+msgstr ""
+
+#. module: l10n_ve_seniat
+#: model:ir.model.fields,help:l10n_ve_seniat.field_account_bank_statement_line__purchase_tax_data
+#: model:ir.model.fields,help:l10n_ve_seniat.field_account_bank_statement_line__sale_tax_data
+#: model:ir.model.fields,help:l10n_ve_seniat.field_account_move__purchase_tax_data
+#: model:ir.model.fields,help:l10n_ve_seniat.field_account_move__sale_tax_data
+msgid ""
+"Estructura: {tax_group_id: {'base': X, 'amount': Y, 'tax_type': "
+"'exempt|reduced|general|extend'}}"
+msgstr ""
+
+#. module: l10n_ve_seniat
+#: model_terms:ir.ui.view,arch_db:l10n_ve_seniat.res_config_settings_l10n_ve_seniat
+msgid "Exempt Aliquot"
+msgstr ""
+
+#. module: l10n_ve_seniat
+#: model:ir.model.fields,field_description:l10n_ve_seniat.field_res_company__exent_aliquot_purchase
+#: model:ir.model.fields,field_description:l10n_ve_seniat.field_res_config_settings__exent_aliquot_purchase
+msgid "Exent Aliquot Purchase"
+msgstr ""
+
+#. module: l10n_ve_seniat
+#: model:ir.model.fields,field_description:l10n_ve_seniat.field_res_company__exent_aliquot_sale
+#: model:ir.model.fields,field_description:l10n_ve_seniat.field_res_config_settings__exent_aliquot_sale
+msgid "Exent Aliquot Sale"
+msgstr ""
+
+#. module: l10n_ve_seniat
+#: model:ir.model.fields,field_description:l10n_ve_seniat.field_res_company__extend_aliquot_purchase
+#: model:ir.model.fields,field_description:l10n_ve_seniat.field_res_config_settings__extend_aliquot_purchase
+msgid "Extend Aliquot Purchase"
+msgstr ""
+
+#. module: l10n_ve_seniat
+#: model:ir.model.fields,field_description:l10n_ve_seniat.field_res_company__extend_aliquot_sale
+#: model:ir.model.fields,field_description:l10n_ve_seniat.field_res_config_settings__extend_aliquot_sale
+msgid "Extend Aliquot Sale"
+msgstr ""
+
+#. module: l10n_ve_seniat
+#: model_terms:ir.ui.view,arch_db:l10n_ve_seniat.res_config_settings_l10n_ve_seniat
+msgid "Extended Aliquot"
+msgstr ""
+
+#. module: l10n_ve_seniat
+#: model_terms:ir.ui.view,arch_db:l10n_ve_seniat.report_invoice_document
+msgid "FACTURA"
+msgstr ""
+
+#. module: l10n_ve_seniat
+#: model_terms:ir.ui.view,arch_db:l10n_ve_seniat.report_invoice_document
+msgid "FACTURA POR CUENTA DE TERCEROS"
+msgstr ""
+
+#. module: l10n_ve_seniat
+#: model_terms:ir.ui.view,arch_db:l10n_ve_seniat.view_move_form
+msgid "Factura Original Impresa"
+msgstr ""
+
+#. module: l10n_ve_seniat
+#: model:ir.model.fields,field_description:l10n_ve_seniat.field_account_journal__invoicing_in_series
+msgid "Facturacion en Serie"
+msgstr ""
+
+#. module: l10n_ve_seniat
+#: model:ir.model.fields,field_description:l10n_ve_seniat.field_res_company__l10n_ve_on_behalf_of_third_party_enabled
+#: model:ir.model.fields,field_description:l10n_ve_seniat.field_res_config_settings__l10n_ve_on_behalf_of_third_party_enabled
+msgid "Facturación por cuenta de terceros habilitada"
+msgstr ""
+
+#. module: l10n_ve_seniat
+#: model:ir.model.fields,field_description:l10n_ve_seniat.field_account_bank_statement_line__l10n_ve_invoice_number
+#: model:ir.model.fields,field_description:l10n_ve_seniat.field_account_move__l10n_ve_invoice_number
+msgid "Fiscal Invoice Number"
+msgstr ""
+
+#. module: l10n_ve_seniat
+#: model:ir.model.fields,field_description:l10n_ve_seniat.field_account_bank_statement_line__l10n_ve_serial_number
+#: model:ir.model.fields,field_description:l10n_ve_seniat.field_account_move__l10n_ve_serial_number
+msgid "Fiscal Machine Serial"
+msgstr ""
 
 #. module: l10n_ve_seniat
 #: model:ir.model.fields.selection,name:l10n_ve_seniat.selection__res_partner__taxpayer_type__formal
 msgid "Formal"
-msgstr "Formal"
+msgstr ""
 
 #. module: l10n_ve_seniat
+#: model_terms:ir.ui.view,arch_db:l10n_ve_seniat.res_config_settings_l10n_ve_seniat
+msgid "General Aliquot"
+msgstr ""
+
+#. module: l10n_ve_seniat
+#: model:ir.model.fields,field_description:l10n_ve_seniat.field_res_company__general_aliquot_purchase
+#: model:ir.model.fields,field_description:l10n_ve_seniat.field_res_config_settings__general_aliquot_purchase
+msgid "General Aliquot Purchase"
+msgstr ""
+
+#. module: l10n_ve_seniat
+#: model:ir.model.fields,field_description:l10n_ve_seniat.field_res_company__general_aliquot_sale
+#: model:ir.model.fields,field_description:l10n_ve_seniat.field_res_config_settings__general_aliquot_sale
+msgid "General Aliquot Sale"
+msgstr ""
+
+#. module: l10n_ve_seniat
+#: model:ir.model,name:l10n_ve_seniat.model_ir_http
+msgid "HTTP Routing"
+msgstr "Enrutamiento HTTP"
+
+#. modules: l10n_ve_audit, l10n_ve_igtf, l10n_ve_reports, l10n_ve_seniat,
+#. l10n_ve_withholding
+#: model:ir.model.fields,field_description:l10n_ve_audit.field_auditlog_login_attempt__id
+#: model:ir.model.fields,field_description:l10n_ve_igtf.field_l10n_ve_igtf_unreconcile_payment_wizard__id
+#: model:ir.model.fields,field_description:l10n_ve_reports.field_account_report_annotation_oca__id
+#: model:ir.model.fields,field_description:l10n_ve_reports.field_account_report_budget_item_oca__id
+#: model:ir.model.fields,field_description:l10n_ve_reports.field_account_report_budget_oca__id
+#: model:ir.model.fields,field_description:l10n_ve_reports.field_account_report_file_download_error_wizard__id
+#: model:ir.model.fields,field_description:l10n_ve_reports.field_account_report_horizontal_group_oca__id
+#: model:ir.model.fields,field_description:l10n_ve_reports.field_account_report_horizontal_group_rule_oca__id
+#: model:ir.model.fields,field_description:l10n_ve_reports.field_account_report_send__id
+#: model:ir.model.fields,field_description:l10n_ve_reports.field_account_reports_export_wizard__id
+#: model:ir.model.fields,field_description:l10n_ve_reports.field_account_reports_export_wizard_format__id
+#: model:ir.model.fields,field_description:l10n_ve_reports.field_account_tax_unit__id
 #: model:ir.model.fields,field_description:l10n_ve_seniat.field_res_country_municipality__id
 #: model:ir.model.fields,field_description:l10n_ve_seniat.field_res_country_parish__id
+#: model:ir.model.fields,field_description:l10n_ve_withholding.field_account_retention__id
+#: model:ir.model.fields,field_description:l10n_ve_withholding.field_account_retention_line__id
+#: model:ir.model.fields,field_description:l10n_ve_withholding.field_account_withholding_type__id
+#: model:ir.model.fields,field_description:l10n_ve_withholding.field_accumulated_fees__id
+#: model:ir.model.fields,field_description:l10n_ve_withholding.field_arcv_report__id
+#: model:ir.model.fields,field_description:l10n_ve_withholding.field_economic_activity__id
+#: model:ir.model.fields,field_description:l10n_ve_withholding.field_economic_branch__id
+#: model:ir.model.fields,field_description:l10n_ve_withholding.field_fees_retention__id
+#: model:ir.model.fields,field_description:l10n_ve_withholding.field_municipal_retention_patent_report__id
+#: model:ir.model.fields,field_description:l10n_ve_withholding.field_municipal_retention_xlsx_report__id
+#: model:ir.model.fields,field_description:l10n_ve_withholding.field_payment_concept__id
+#: model:ir.model.fields,field_description:l10n_ve_withholding.field_payment_concept_line__id
+#: model:ir.model.fields,field_description:l10n_ve_withholding.field_signature_config__id
+#: model:ir.model.fields,field_description:l10n_ve_withholding.field_tax_unit__id
+#: model:ir.model.fields,field_description:l10n_ve_withholding.field_type_person__id
+#: model:ir.model.fields,field_description:l10n_ve_withholding.field_wizard_retention_islr__id
+#: model:ir.model.fields,field_description:l10n_ve_withholding.field_wizard_retention_iva__id
 msgid "ID"
-msgstr "ID"
+msgstr ""
 
 #. module: l10n_ve_seniat
-#: model_terms:ir.ui.view,arch_db:l10n_ve_seniat.report_invoice_document_ve
-msgid "INV/2023/00001"
-msgstr "INV/2023/00001"
+#: model:ir.model.fields,help:l10n_ve_seniat.field_account_journal__invoicing_in_series
+msgid ""
+"If enabled, the 'Correlativo en Serie' value is used for digital invoicing "
+"instead of the SENIAT sequence prefix."
+msgstr ""
 
 #. module: l10n_ve_seniat
-#: model_terms:ir.ui.view,arch_db:l10n_ve_seniat.report_invoice_document_ve
-msgid "INV/2023/0001"
-msgstr "INV/2023/0001"
+#: model_terms:ir.ui.view,arch_db:l10n_ve_seniat.report_invoice_document
+msgid "Impuesto"
+msgstr ""
 
 #. module: l10n_ve_seniat
 #: model:ir.model.fields,help:l10n_ve_seniat.field_account_bank_statement_line__reception_date
@@ -291,65 +588,268 @@ msgid "Indicates when the invoice was received by the client/company"
 msgstr "Indica cuándo el cliente/empresa recibió la factura"
 
 #. module: l10n_ve_seniat
-#: model_terms:ir.ui.view,arch_db:l10n_ve_seniat.report_invoice_document_ve
-msgid "Invoice"
-msgstr "Factura"
-
-#. module: l10n_ve_seniat
 #: model:ir.model.fields,field_description:l10n_ve_seniat.field_account_bank_statement_line__l10n_ve_invoice_date
 #: model:ir.model.fields,field_description:l10n_ve_seniat.field_account_move__l10n_ve_invoice_date
 msgid "Invoice Datetime"
 msgstr "Fecha y hora de la factura"
 
 #. module: l10n_ve_seniat
-#: model:ir.actions.report,name:l10n_ve_seniat.account_invoices_ve
-msgid "Invoice VE"
-msgstr "Factura VE"
+#: model:ir.model.fields,help:l10n_ve_seniat.field_account_bank_statement_line__l10n_ve_invoice_number
+#: model:ir.model.fields,help:l10n_ve_seniat.field_account_move__l10n_ve_invoice_number
+msgid "Invoice number from the fiscal machine"
+msgstr "Número de factura de la máquina fiscal"
 
-#. module: l10n_ve_seniat
-#: model:ir.model,name:l10n_ve_seniat.model_account_move
-msgid "Journal Entry"
-msgstr "Asiento contable"
-
-#. module: l10n_ve_seniat
-#: model:ir.model,name:l10n_ve_seniat.model_account_move_line
-msgid "Journal Item"
-msgstr "Apunte contable"
-
-#. module: l10n_ve_seniat
+#. modules: l10n_ve_audit, l10n_ve_igtf, l10n_ve_reports, l10n_ve_seniat,
+#. l10n_ve_withholding
+#: model:ir.model.fields,field_description:l10n_ve_audit.field_auditlog_login_attempt__write_uid
+#: model:ir.model.fields,field_description:l10n_ve_igtf.field_l10n_ve_igtf_unreconcile_payment_wizard__write_uid
+#: model:ir.model.fields,field_description:l10n_ve_reports.field_account_report_annotation_oca__write_uid
+#: model:ir.model.fields,field_description:l10n_ve_reports.field_account_report_budget_item_oca__write_uid
+#: model:ir.model.fields,field_description:l10n_ve_reports.field_account_report_budget_oca__write_uid
+#: model:ir.model.fields,field_description:l10n_ve_reports.field_account_report_file_download_error_wizard__write_uid
+#: model:ir.model.fields,field_description:l10n_ve_reports.field_account_report_horizontal_group_oca__write_uid
+#: model:ir.model.fields,field_description:l10n_ve_reports.field_account_report_horizontal_group_rule_oca__write_uid
+#: model:ir.model.fields,field_description:l10n_ve_reports.field_account_report_send__write_uid
+#: model:ir.model.fields,field_description:l10n_ve_reports.field_account_reports_export_wizard__write_uid
+#: model:ir.model.fields,field_description:l10n_ve_reports.field_account_reports_export_wizard_format__write_uid
+#: model:ir.model.fields,field_description:l10n_ve_reports.field_account_tax_unit__write_uid
 #: model:ir.model.fields,field_description:l10n_ve_seniat.field_res_country_municipality__write_uid
 #: model:ir.model.fields,field_description:l10n_ve_seniat.field_res_country_parish__write_uid
+#: model:ir.model.fields,field_description:l10n_ve_withholding.field_account_retention__write_uid
+#: model:ir.model.fields,field_description:l10n_ve_withholding.field_account_retention_line__write_uid
+#: model:ir.model.fields,field_description:l10n_ve_withholding.field_account_withholding_type__write_uid
+#: model:ir.model.fields,field_description:l10n_ve_withholding.field_accumulated_fees__write_uid
+#: model:ir.model.fields,field_description:l10n_ve_withholding.field_arcv_report__write_uid
+#: model:ir.model.fields,field_description:l10n_ve_withholding.field_economic_activity__write_uid
+#: model:ir.model.fields,field_description:l10n_ve_withholding.field_economic_branch__write_uid
+#: model:ir.model.fields,field_description:l10n_ve_withholding.field_fees_retention__write_uid
+#: model:ir.model.fields,field_description:l10n_ve_withholding.field_municipal_retention_patent_report__write_uid
+#: model:ir.model.fields,field_description:l10n_ve_withholding.field_municipal_retention_xlsx_report__write_uid
+#: model:ir.model.fields,field_description:l10n_ve_withholding.field_payment_concept__write_uid
+#: model:ir.model.fields,field_description:l10n_ve_withholding.field_payment_concept_line__write_uid
+#: model:ir.model.fields,field_description:l10n_ve_withholding.field_signature_config__write_uid
+#: model:ir.model.fields,field_description:l10n_ve_withholding.field_tax_unit__write_uid
+#: model:ir.model.fields,field_description:l10n_ve_withholding.field_type_person__write_uid
+#: model:ir.model.fields,field_description:l10n_ve_withholding.field_wizard_retention_islr__write_uid
+#: model:ir.model.fields,field_description:l10n_ve_withholding.field_wizard_retention_iva__write_uid
 msgid "Last Updated by"
 msgstr "Última actualización por"
 
-#. module: l10n_ve_seniat
+#. modules: l10n_ve_audit, l10n_ve_igtf, l10n_ve_reports, l10n_ve_seniat,
+#. l10n_ve_withholding
+#: model:ir.model.fields,field_description:l10n_ve_audit.field_auditlog_login_attempt__write_date
+#: model:ir.model.fields,field_description:l10n_ve_igtf.field_l10n_ve_igtf_unreconcile_payment_wizard__write_date
+#: model:ir.model.fields,field_description:l10n_ve_reports.field_account_report_annotation_oca__write_date
+#: model:ir.model.fields,field_description:l10n_ve_reports.field_account_report_budget_item_oca__write_date
+#: model:ir.model.fields,field_description:l10n_ve_reports.field_account_report_budget_oca__write_date
+#: model:ir.model.fields,field_description:l10n_ve_reports.field_account_report_file_download_error_wizard__write_date
+#: model:ir.model.fields,field_description:l10n_ve_reports.field_account_report_horizontal_group_oca__write_date
+#: model:ir.model.fields,field_description:l10n_ve_reports.field_account_report_horizontal_group_rule_oca__write_date
+#: model:ir.model.fields,field_description:l10n_ve_reports.field_account_report_send__write_date
+#: model:ir.model.fields,field_description:l10n_ve_reports.field_account_reports_export_wizard__write_date
+#: model:ir.model.fields,field_description:l10n_ve_reports.field_account_reports_export_wizard_format__write_date
+#: model:ir.model.fields,field_description:l10n_ve_reports.field_account_tax_unit__write_date
 #: model:ir.model.fields,field_description:l10n_ve_seniat.field_res_country_municipality__write_date
 #: model:ir.model.fields,field_description:l10n_ve_seniat.field_res_country_parish__write_date
+#: model:ir.model.fields,field_description:l10n_ve_withholding.field_account_retention__write_date
+#: model:ir.model.fields,field_description:l10n_ve_withholding.field_account_retention_line__write_date
+#: model:ir.model.fields,field_description:l10n_ve_withholding.field_account_withholding_type__write_date
+#: model:ir.model.fields,field_description:l10n_ve_withholding.field_accumulated_fees__write_date
+#: model:ir.model.fields,field_description:l10n_ve_withholding.field_arcv_report__write_date
+#: model:ir.model.fields,field_description:l10n_ve_withholding.field_economic_activity__write_date
+#: model:ir.model.fields,field_description:l10n_ve_withholding.field_economic_branch__write_date
+#: model:ir.model.fields,field_description:l10n_ve_withholding.field_fees_retention__write_date
+#: model:ir.model.fields,field_description:l10n_ve_withholding.field_municipal_retention_patent_report__write_date
+#: model:ir.model.fields,field_description:l10n_ve_withholding.field_municipal_retention_xlsx_report__write_date
+#: model:ir.model.fields,field_description:l10n_ve_withholding.field_payment_concept__write_date
+#: model:ir.model.fields,field_description:l10n_ve_withholding.field_payment_concept_line__write_date
+#: model:ir.model.fields,field_description:l10n_ve_withholding.field_signature_config__write_date
+#: model:ir.model.fields,field_description:l10n_ve_withholding.field_tax_unit__write_date
+#: model:ir.model.fields,field_description:l10n_ve_withholding.field_type_person__write_date
+#: model:ir.model.fields,field_description:l10n_ve_withholding.field_wizard_retention_islr__write_date
+#: model:ir.model.fields,field_description:l10n_ve_withholding.field_wizard_retention_iva__write_date
 msgid "Last Updated on"
 msgstr "Última actualización el"
 
 #. module: l10n_ve_seniat
+#: model:ir.ui.menu,name:l10n_ve_seniat.menu_seniat_localization
+msgid "Localización"
+msgstr ""
+
+#. module: l10n_ve_seniat
 #: model:ir.actions.act_window,name:l10n_ve_seniat.action_res_country_municipality
-#: model:ir.ui.menu,name:l10n_ve_seniat.menu_res_municipality
 #: model_terms:ir.ui.view,arch_db:l10n_ve_seniat.view_res_country_municipality_tree
 msgid "Municipalities"
 msgstr "Municipios"
 
-#. module: l10n_ve_seniat
+#. modules: l10n_ve_seniat, l10n_ve_withholding
 #: model:ir.model,name:l10n_ve_seniat.model_res_country_municipality
 #: model:ir.model.fields,field_description:l10n_ve_seniat.field_res_country_municipality__name
 #: model:ir.model.fields,field_description:l10n_ve_seniat.field_res_country_parish__municipality_id
 #: model:ir.model.fields,field_description:l10n_ve_seniat.field_res_partner__municipality_id
 #: model:ir.model.fields,field_description:l10n_ve_seniat.field_res_users__municipality_id
+#: model:ir.model.fields,field_description:l10n_ve_withholding.field_economic_activity__municipality_id
 #: model_terms:ir.ui.view,arch_db:l10n_ve_seniat.view_partner_form
 #: model_terms:ir.ui.view,arch_db:l10n_ve_seniat.view_res_country_municipality_form
 msgid "Municipality"
 msgstr "Municipio"
 
 #. module: l10n_ve_seniat
+#: model_terms:ir.ui.view,arch_db:l10n_ve_seniat.view_move_form
+msgid "Máquina Fiscal"
+msgstr ""
+
+#. module: l10n_ve_seniat
+#: model_terms:ir.ui.view,arch_db:l10n_ve_seniat.report_invoice_document
+msgid "NOTA DE CREDITO"
+msgstr ""
+
+#. module: l10n_ve_seniat
+#: model_terms:ir.ui.view,arch_db:l10n_ve_seniat.report_invoice_document
+msgid "NOTA DE DEBITO"
+msgstr ""
+
+#. modules: l10n_ve_reports, l10n_ve_seniat, l10n_ve_withholding
+#. odoo-javascript
+#. odoo-python
+#: code:addons/l10n_ve_reports/models/account_general_ledger.py:0
+#: code:addons/l10n_ve_reports/models/account_journal_report.py:0
+#: code:addons/l10n_ve_reports/static/src/components/journal_report/line/line.xml:0
+#: model:account.report.line,name:l10n_ve_reports.journal_report_line
+#: model:ir.model.fields,field_description:l10n_ve_reports.field_account_report_budget_oca__name
+#: model:ir.model.fields,field_description:l10n_ve_reports.field_account_report_horizontal_group_oca__name
+#: model:ir.model.fields,field_description:l10n_ve_reports.field_account_reports_export_wizard_format__name
+#: model:ir.model.fields,field_description:l10n_ve_reports.field_account_tax_unit__name
 #: model:ir.model.fields,field_description:l10n_ve_seniat.field_res_country_parish__name
+#: model:ir.model.fields,field_description:l10n_ve_withholding.field_account_withholding_type__name
+#: model:ir.model.fields,field_description:l10n_ve_withholding.field_economic_branch__name
+#: model_terms:ir.ui.view,arch_db:l10n_ve_reports.duplicated_vat_partner_tree_view
+#: model_terms:ir.ui.view,arch_db:l10n_ve_reports.pdf_journal_report_taxes_summary
 msgid "Name"
 msgstr "Nombre"
+
+#. module: l10n_ve_seniat
+#. odoo-python
+#: code:addons/l10n_ve_seniat/models/account_tax.py:0
+msgid ""
+"No está permitido modificar la alícuota de los impuestos del país Venezuela."
+msgstr ""
+
+#. module: l10n_ve_seniat
+#. odoo-python
+#: code:addons/l10n_ve_seniat/models/account_move_line.py:0
+msgid ""
+"No se permiten líneas con precio en 0. La línea '%s' tiene un precio de 0."
+msgstr ""
+
+#. module: l10n_ve_seniat
+#. odoo-python
+#: code:addons/l10n_ve_seniat/models/account_move.py:0
+msgid ""
+"No se puede confirmar la factura '%s'. El RIF '%s' del contacto '%s' no "
+"tiene un formato válido. El formato correcto es: [V/E/J/C/P/G] seguido del "
+"número de identificación (ej: V12345678, J-12.345.678-9)."
+msgstr ""
+
+#. module: l10n_ve_seniat
+#. odoo-python
+#: code:addons/l10n_ve_seniat/models/account_move.py:0
+msgid ""
+"No se puede confirmar la factura '%s'. El contacto '%s' no tiene el RIF "
+"(VAT) configurado."
+msgstr ""
+
+#. module: l10n_ve_seniat
+#. odoo-python
+#: code:addons/l10n_ve_seniat/models/account_move.py:0
+msgid ""
+"No se puede confirmar la factura por cuenta de terceros '%s'. Debe habilitar"
+" la opción 'Facturación por cuenta de terceros' en Configuración > "
+"Contabilidad."
+msgstr ""
+
+#. module: l10n_ve_seniat
+#. odoo-python
+#: code:addons/l10n_ve_seniat/models/account_move.py:0
+msgid ""
+"No se puede confirmar la factura por cuenta de terceros '%s'. Debe indicar "
+"el tercero a favor de quien se actúa."
+msgstr ""
+
+#. module: l10n_ve_seniat
+#. odoo-python
+#: code:addons/l10n_ve_seniat/models/account_move.py:0
+msgid ""
+"No se puede confirmar la factura por cuenta de terceros '%s'. El RIF '%s' "
+"del tercero '%s' no tiene un formato válido."
+msgstr ""
+
+#. module: l10n_ve_seniat
+#. odoo-python
+#: code:addons/l10n_ve_seniat/models/account_move.py:0
+msgid ""
+"No se puede confirmar la factura por cuenta de terceros '%s'. El tercero "
+"'%s' no tiene el RIF configurado."
+msgstr ""
+
+#. module: l10n_ve_seniat
+#. odoo-python
+#: code:addons/l10n_ve_seniat/models/account_move.py:0
+msgid ""
+"No se puede confirmar la nota de crédito '%s'. Debe indicar el documento "
+"origen (factura afectada)."
+msgstr ""
+
+#. module: l10n_ve_seniat
+#. odoo-python
+#: code:addons/l10n_ve_seniat/models/account_move.py:0
+msgid ""
+"No se puede facturar con un total de 0. Por favor, verifique las líneas de "
+"la factura."
+msgstr ""
+
+#. module: l10n_ve_seniat
+#. odoo-python
+#: code:addons/l10n_ve_seniat/models/account_move.py:0
+msgid ""
+"No se pueden cancelar las facturas de clientes. Por favor, cree una nota de "
+"crédito en su lugar."
+msgstr ""
+
+#. module: l10n_ve_seniat
+#. odoo-python
+#: code:addons/l10n_ve_seniat/models/account_move.py:0
+msgid ""
+"No se pueden cancelar las notas de crédito. Por favor, cree una nueva nota "
+"de crédito o factura en su lugar."
+msgstr ""
+
+#. module: l10n_ve_seniat
+#: model_terms:ir.ui.view,arch_db:l10n_ve_seniat.view_move_form
+msgid "N° Control:"
+msgstr ""
+
+#. module: l10n_ve_seniat
+#: model_terms:ir.ui.view,arch_db:l10n_ve_seniat.view_move_form
+msgid "N° Factura"
+msgstr ""
+
+#. module: l10n_ve_seniat
+#: model:ir.ui.menu,name:l10n_ve_seniat.menu_seniat_control_number
+msgid "N° de Control"
+msgstr ""
+
+#. module: l10n_ve_seniat
+#: model:ir.actions.act_window,name:l10n_ve_seniat.action_l10n_ve_control_number_sequence
+msgid "N° de Control (Venezuela)"
+msgstr ""
+
+#. module: l10n_ve_seniat
+#: model_terms:ir.ui.view,arch_db:l10n_ve_seniat.report_invoice_document
+msgid ""
+"Obligación Art. 32 PA00071: Entregar copia certificada al cliente a más "
+"tardar el"
+msgstr ""
 
 #. module: l10n_ve_seniat
 #: model:ir.model.fields.selection,name:l10n_ve_seniat.selection__res_partner__taxpayer_type__ordinary
@@ -357,16 +857,10 @@ msgid "Ordinary"
 msgstr "Ordinario"
 
 #. module: l10n_ve_seniat
-#: model_terms:ir.ui.view,arch_db:l10n_ve_seniat.report_invoice_document_ve
-msgid "PROFORMA"
-msgstr "PROFORMA"
-
-#. module: l10n_ve_seniat
 #: model:ir.actions.act_window,name:l10n_ve_seniat.action_res_country_parish
 #: model:ir.model,name:l10n_ve_seniat.model_res_country_parish
 #: model:ir.model.fields,field_description:l10n_ve_seniat.field_res_partner__parish_id
 #: model:ir.model.fields,field_description:l10n_ve_seniat.field_res_users__parish_id
-#: model:ir.ui.menu,name:l10n_ve_seniat.menu_res_country_parish
 #: model_terms:ir.ui.view,arch_db:l10n_ve_seniat.view_partner_form
 #: model_terms:ir.ui.view,arch_db:l10n_ve_seniat.view_res_country_parish_form
 msgid "Parish"
@@ -378,14 +872,22 @@ msgid "Parishes"
 msgstr "Parroquias"
 
 #. module: l10n_ve_seniat
-#: model_terms:ir.ui.view,arch_db:l10n_ve_seniat.report_invoice_document_ve
-msgid "Payment Communication:"
-msgstr "Comunicación de pago:"
+#: model:ir.model.fields,field_description:l10n_ve_seniat.field_account_bank_statement_line__l10n_ve_certified_copy_deadline
+#: model:ir.model.fields,field_description:l10n_ve_seniat.field_account_move__l10n_ve_certified_copy_deadline
+msgid "Plazo entrega copia certificada"
+msgstr ""
 
 #. module: l10n_ve_seniat
-#: model_terms:ir.ui.view,arch_db:l10n_ve_seniat.report_invoice_document_ve
-msgid "Payment within 30 calendar day"
-msgstr "Pago dentro de 30 días calendario"
+#: model:ir.model.fields,field_description:l10n_ve_seniat.field_account_bank_statement_line__l10n_ve_on_behalf_of_third_party
+#: model:ir.model.fields,field_description:l10n_ve_seniat.field_account_move__l10n_ve_on_behalf_of_third_party
+#: model_terms:ir.ui.view,arch_db:l10n_ve_seniat.view_move_form
+msgid "Por cuenta de terceros"
+msgstr ""
+
+#. module: l10n_ve_seniat
+#: model_terms:ir.ui.view,arch_db:l10n_ve_seniat.report_invoice_document
+msgid "Precio U."
+msgstr ""
 
 #. module: l10n_ve_seniat
 #: model:ir.model.fields,field_description:l10n_ve_seniat.field_res_partner__prefix_vat
@@ -394,36 +896,173 @@ msgid "Prefix vat"
 msgstr "Prefijo Identificación"
 
 #. module: l10n_ve_seniat
+#: model_terms:ir.ui.view,arch_db:l10n_ve_seniat.res_config_settings_l10n_ve_seniat
+msgid "Purchase Tax Rates"
+msgstr ""
+
+#. module: l10n_ve_seniat
+#: model_terms:ir.ui.view,arch_db:l10n_ve_seniat.view_partner_form
+msgid "Rango de cliente"
+msgstr ""
+
+#. module: l10n_ve_seniat
+#: model_terms:ir.ui.view,arch_db:l10n_ve_seniat.view_partner_form
+msgid "Rango de proveedor"
+msgstr ""
+
+#. module: l10n_ve_seniat
 #: model:ir.model.fields,field_description:l10n_ve_seniat.field_account_bank_statement_line__reception_date
 #: model:ir.model.fields,field_description:l10n_ve_seniat.field_account_move__reception_date
 msgid "Reception Date"
 msgstr "Fecha de recepción"
 
 #. module: l10n_ve_seniat
-#: model_terms:ir.ui.view,arch_db:l10n_ve_seniat.report_invoice_document_ve
-msgid "SO123"
-msgstr "SO123"
+#: model_terms:ir.ui.view,arch_db:l10n_ve_seniat.res_config_settings_l10n_ve_seniat
+msgid "Reduced Aliquot"
+msgstr ""
 
 #. module: l10n_ve_seniat
-#: model_terms:ir.ui.view,arch_db:l10n_ve_seniat.report_invoice_document_ve
-msgid "Scan this QR Code with<br/>your banking application"
-msgstr "Escanee este código QR con<br/>su aplicación bancaria"
+#: model:ir.model.fields,field_description:l10n_ve_seniat.field_res_company__reduced_aliquot_purchase
+#: model:ir.model.fields,field_description:l10n_ve_seniat.field_res_config_settings__reduced_aliquot_purchase
+msgid "Reduced Aliquot Purchase"
+msgstr ""
+
+#. module: l10n_ve_seniat
+#: model:ir.model.fields,field_description:l10n_ve_seniat.field_res_company__reduced_aliquot_sale
+#: model:ir.model.fields,field_description:l10n_ve_seniat.field_res_config_settings__reduced_aliquot_sale
+msgid "Reduced Aliquot Sale"
+msgstr ""
+
+#. module: l10n_ve_seniat
+#: model:ir.model.fields,field_description:l10n_ve_seniat.field_account_bank_statement_line__l10n_ve_report_z
+#: model:ir.model.fields,field_description:l10n_ve_seniat.field_account_move__l10n_ve_report_z
+msgid "Report Z Number"
+msgstr ""
+
+#. module: l10n_ve_seniat
+#: model:ir.model.fields,help:l10n_ve_seniat.field_account_bank_statement_line__l10n_ve_report_z
+#: model:ir.model.fields,help:l10n_ve_seniat.field_account_move__l10n_ve_report_z
+msgid "Report Z number from the fiscal machine"
+msgstr ""
+
+#. modules: l10n_ve_reports, l10n_ve_seniat
+#: model:account.report.column,name:l10n_ve_reports.sales_book_fiscal_machine_report_report_z
+#: model_terms:ir.ui.view,arch_db:l10n_ve_seniat.view_move_form
+msgid "Reporte Z"
+msgstr ""
+
+#. modules: l10n_ve_reports, l10n_ve_seniat
+#: model:ir.model.fields,field_description:l10n_ve_reports.field_account_report_horizontal_group_oca__report_ids
+#: model:ir.ui.menu,name:l10n_ve_seniat.menu_seniat_reports
+msgid "Reports"
+msgstr ""
 
 #. module: l10n_ve_seniat
 #. odoo-python
 #: code:addons/l10n_ve_seniat/models/template_ve.py:0
-msgid "Seniat"
-msgstr "Seniat"
+#: model:ir.ui.menu,name:l10n_ve_seniat.menu_seniat_root
+#: model:res.groups,name:l10n_ve_seniat.group_seniat
+msgid "SENIAT"
+msgstr ""
+
+#. module: l10n_ve_seniat
+#: model:res.groups,name:l10n_ve_seniat.group_seniat_readonly
+msgid "SENIAT - Lectura contable"
+msgstr ""
+
+#. module: l10n_ve_seniat
+#: model:ir.model.fields,field_description:l10n_ve_seniat.field_account_journal__l10n_ve_credit_note_sequence_id
+msgid "SENIAT Credit Note Sequence"
+msgstr ""
+
+#. module: l10n_ve_seniat
+#: model:ir.model.fields,field_description:l10n_ve_seniat.field_account_journal__l10n_ve_invoice_sequence_id
+msgid "SENIAT Invoice Sequence"
+msgstr ""
+
+#. module: l10n_ve_seniat
+#: model:ir.model.fields,field_description:l10n_ve_seniat.field_account_bank_statement_line__seniat_invoice_tag
+#: model:ir.model.fields,field_description:l10n_ve_seniat.field_account_move__seniat_invoice_tag
+msgid "SENIAT Invoice Tag"
+msgstr ""
+
+#. module: l10n_ve_seniat
+#: model_terms:ir.ui.view,arch_db:l10n_ve_seniat.view_account_journal_form_inherit
+msgid "SENIAT Sequences"
+msgstr ""
+
+#. module: l10n_ve_seniat
+#: model_terms:ir.ui.view,arch_db:l10n_ve_seniat.res_config_settings_l10n_ve_seniat
+msgid "Sales Tax Rates"
+msgstr ""
+
+#. module: l10n_ve_seniat
+#: model:ir.model.fields,help:l10n_ve_seniat.field_account_journal__l10n_ve_invoice_sequence_id
+msgid "Secuencia para generar números de control de facturas de venta"
+msgstr ""
+
+#. module: l10n_ve_seniat
+#: model:ir.model.fields,help:l10n_ve_seniat.field_account_journal__l10n_ve_credit_note_sequence_id
+msgid "Secuencia para generar números de control de notas de crédito de venta"
+msgstr ""
+
+#. module: l10n_ve_seniat
+#: model:ir.model.fields,help:l10n_ve_seniat.field_account_bank_statement_line__l10n_ve_on_behalf_of_third_party
+#: model:ir.model.fields,help:l10n_ve_seniat.field_account_move__l10n_ve_on_behalf_of_third_party
+msgid ""
+"Según Art. 11 PA00071: operaciones por cuenta de terceros deben emitirse en "
+"forma libre."
+msgstr ""
+
+#. module: l10n_ve_seniat
+#: model:ir.ui.menu,name:l10n_ve_seniat.menu_seniat_sequences
+msgid "Sequences"
+msgstr ""
+
+#. module: l10n_ve_seniat
+#: model_terms:ir.ui.view,arch_db:l10n_ve_seniat.view_move_form
+msgid "Serial"
+msgstr ""
+
+#. module: l10n_ve_seniat
+#: model:ir.model.fields,help:l10n_ve_seniat.field_account_bank_statement_line__l10n_ve_serial_number
+#: model:ir.model.fields,help:l10n_ve_seniat.field_account_move__l10n_ve_serial_number
+msgid "Serial number of the fiscal machine"
+msgstr ""
+
+#. module: l10n_ve_seniat
+#: model:ir.model.fields,help:l10n_ve_seniat.field_account_journal__series_correlative
+msgid ""
+"Series value used by digital invoicing when 'Facturacion en Serie' is "
+"enabled."
+msgstr ""
+
+#. modules: l10n_ve_seniat, l10n_ve_seniat_sale
+#. odoo-python
+#: code:addons/l10n_ve_seniat/models/account_move_line.py:0
+#: code:addons/l10n_ve_seniat_sale/models/sale_order.py:0
+#: code:addons/l10n_ve_seniat_sale/models/sale_order_line.py:0
+msgid "Sin nombre"
+msgstr ""
 
 #. module: l10n_ve_seniat
 #: model:ir.model.fields.selection,name:l10n_ve_seniat.selection__res_partner__taxpayer_type__special
 msgid "Special"
 msgstr "Especial"
 
-#. module: l10n_ve_seniat
+#. modules: l10n_ve_seniat, l10n_ve_withholding
 #: model:ir.model.fields,field_description:l10n_ve_seniat.field_res_country_municipality__state_id
+#: model:ir.model.fields,field_description:l10n_ve_withholding.field_account_retention__state
+#: model:ir.model.fields,field_description:l10n_ve_withholding.field_account_retention_line__state
+#: model_terms:ir.ui.view,arch_db:l10n_ve_withholding.view_retention_iva_search_l10n_ve_withholding
+#: model_terms:ir.ui.view,arch_db:l10n_ve_withholding.view_retention_municipal_search_l10n_ve_withholding
 msgid "State"
 msgstr "Estado"
+
+#. module: l10n_ve_seniat
+#: model_terms:ir.ui.view,arch_db:l10n_ve_seniat.report_invoice_document
+msgid "Subtotal"
+msgstr ""
 
 #. module: l10n_ve_seniat
 #: model:ir.model.fields,field_description:l10n_ve_seniat.field_account_move_line__subtotal_company_currency
@@ -431,22 +1070,64 @@ msgid "Subtotal Company Currency"
 msgstr "Subtotal moneda de la empresa"
 
 #. module: l10n_ve_seniat
-#: model_terms:ir.ui.view,arch_db:l10n_ve_seniat.report_invoice_document_ve
-msgid "Tax 15%"
-msgstr "Tax 15%"
+#: model_terms:ir.ui.view,arch_db:l10n_ve_seniat.report_invoice_document
+msgid "Subtotal Moneda"
+msgstr ""
 
 #. module: l10n_ve_seniat
+#: model:res.groups,name:l10n_ve_seniat.group_support_user
+msgid "Support User (Journals)"
+msgstr ""
+
+#. module: l10n_ve_seniat
+#: model:ir.model.fields,field_description:l10n_ve_seniat.field_account_bank_statement_line__l10n_ve_inverse_rate
+#: model:ir.model.fields,field_description:l10n_ve_seniat.field_account_move__l10n_ve_inverse_rate
+msgid "Tasa de Cambio Inversa"
+msgstr ""
+
+#. module: l10n_ve_seniat
+#: model:ir.model.fields,help:l10n_ve_seniat.field_account_bank_statement_line__l10n_ve_inverse_rate
+#: model:ir.model.fields,help:l10n_ve_seniat.field_account_move__l10n_ve_inverse_rate
+msgid ""
+"Tasa de cambio inversa (inverse_rate) de la moneda de la factura para la "
+"fecha de la factura"
+msgstr ""
+
+#. module: l10n_ve_seniat
+#: model:ir.model,name:l10n_ve_seniat.model_account_tax
+msgid "Tax"
+msgstr "Impuesto"
+
+#. modules: l10n_ve_reports, l10n_ve_seniat
+#: model:ir.model.fields,field_description:l10n_ve_reports.field_account_tax_unit__vat
 #: model:ir.model.fields,field_description:l10n_ve_seniat.field_res_partner__vat
 #: model:ir.model.fields,field_description:l10n_ve_seniat.field_res_users__vat
-#: model_terms:ir.ui.view,arch_db:l10n_ve_seniat.report_invoice_document_ve
 msgid "Tax ID"
-msgstr "Número de identificación fiscal"
+msgstr "NIF"
 
 #. module: l10n_ve_seniat
+#: model:ir.model.fields,field_description:l10n_ve_seniat.field_res_company__taxpayer_type
+#: model:ir.model.fields,field_description:l10n_ve_seniat.field_res_config_settings__taxpayer_type
 #: model:ir.model.fields,field_description:l10n_ve_seniat.field_res_partner__taxpayer_type
 #: model:ir.model.fields,field_description:l10n_ve_seniat.field_res_users__taxpayer_type
+#: model_terms:ir.ui.view,arch_db:l10n_ve_seniat.res_company_form_view_seniat
+#: model_terms:ir.ui.view,arch_db:l10n_ve_seniat.res_config_settings_l10n_ve_seniat
 msgid "Taxpayer Type"
 msgstr "Tipo de contribuyente"
+
+#. module: l10n_ve_seniat
+#: model:ir.model.fields,help:l10n_ve_seniat.field_account_bank_statement_line__l10n_ve_invoice_original_printed
+#: model:ir.model.fields,help:l10n_ve_seniat.field_account_move__l10n_ve_invoice_original_printed
+msgid ""
+"Technical flag used by the VE invoice report to determine if a printed copy "
+"should display a 'faithful copy' label."
+msgstr ""
+
+#. module: l10n_ve_seniat
+#: model:ir.model.fields,field_description:l10n_ve_seniat.field_account_bank_statement_line__l10n_ve_third_party_partner_id
+#: model:ir.model.fields,field_description:l10n_ve_seniat.field_account_move__l10n_ve_third_party_partner_id
+msgid "Tercero (a favor de quien se actúa)"
+msgstr ""
 
 #. module: l10n_ve_seniat
 #: model:ir.model.fields,help:l10n_ve_seniat.field_res_partner__vat
@@ -456,9 +1137,9 @@ msgid ""
 "country format. You can use '/' to indicate that the partner is not subject "
 "to tax."
 msgstr ""
-"El número de identificación fiscal. Los valores establecidos aquí se "
-"validarán según el formato del país. Puede utilizar \"/\" para indicar que "
-"el contacto no está sujeto a impuestos."
+"El número de Identificación Fiscal. Los valores aquí se validarán en función"
+" del formato de cada país. Puedes usar '/' para indicar que el partner no "
+"está sujeto a tener una identificación fiscal."
 
 #. module: l10n_ve_seniat
 #. odoo-python
@@ -477,43 +1158,66 @@ msgstr ""
 "(código de país 'VE')."
 
 #. module: l10n_ve_seniat
-#: model_terms:ir.ui.view,arch_db:l10n_ve_seniat.report_invoice_document_ve
+#: model_terms:ir.ui.view,arch_db:l10n_ve_seniat.report_invoice_document
 msgid "Thirty one dollar and Five cents"
-msgstr "Treinta y un dólares con cinco centavos"
+msgstr ""
 
 #. module: l10n_ve_seniat
 #: model_terms:ir.ui.view,arch_db:l10n_ve_seniat.view_move_form
 msgid ""
 "This action will cancel the document. Are you sure you want to proceed?"
-msgstr "Esta acción cancelará el documento. ¿Está seguro de que desea continuar?"
+msgstr ""
+"Esta acción cancelará el documento. ¿Está seguro de que desea continuar?"
+
+#. modules: l10n_ve_reports, l10n_ve_seniat
+#. odoo-python
+#: code:addons/l10n_ve_reports/models/account_diary_book_report.py:0
+#: code:addons/l10n_ve_reports/models/account_general_ledger.py:0
+#: code:addons/l10n_ve_reports/models/account_journal_report.py:0
+#: code:addons/l10n_ve_reports/models/account_partner_ledger.py:0
+#: code:addons/l10n_ve_reports/models/account_sales_report.py:0
+#: model:account.report.column,name:l10n_ve_reports.aged_payable_report_total
+#: model:account.report.column,name:l10n_ve_reports.aged_receivable_report_total
+#: model_terms:ir.ui.view,arch_db:l10n_ve_seniat.report_invoice_document
+msgid "Total"
+msgstr ""
 
 #. module: l10n_ve_seniat
-#: model_terms:ir.ui.view,arch_db:l10n_ve_seniat.report_invoice_document_ve
+#: model_terms:ir.ui.view,arch_db:l10n_ve_seniat.report_invoice_document
 msgid "Total amount in words: <br/>"
-msgstr "Monto total en letras: <br/>"
+msgstr ""
 
 #. module: l10n_ve_seniat
-#: model_terms:ir.ui.view,arch_db:l10n_ve_seniat.report_invoice_document_ve
-msgid "Vendor Bill"
-msgstr "Factura de proveedor"
+#: model_terms:ir.ui.view,arch_db:l10n_ve_seniat.view_partner_form
+msgid "VAT"
+msgstr ""
 
 #. module: l10n_ve_seniat
-#: model_terms:ir.ui.view,arch_db:l10n_ve_seniat.report_invoice_document_ve
-msgid "Vendor Credit Note"
-msgstr "Nota de crédito de proveedor"
+#: model:ir.model.fields,field_description:l10n_ve_seniat.field_account_bank_statement_line__l10n_ve_invoice_original_printed
+#: model:ir.model.fields,field_description:l10n_ve_seniat.field_account_move__l10n_ve_invoice_original_printed
+msgid "VE Invoice Original Printed"
+msgstr ""
 
 #. module: l10n_ve_seniat
-#: model:ir.ui.menu,name:l10n_ve_seniat.l10n_ve_menu_no_one
-msgid "Venezuelan Localization"
-msgstr "Localización Venezolana"
+#: model_terms:ir.ui.view,arch_db:l10n_ve_seniat.res_config_settings_l10n_ve_seniat
+msgid "Venezuela - Tax Configuration"
+msgstr ""
 
 #. module: l10n_ve_seniat
-#: model_terms:ir.ui.view,arch_db:l10n_ve_seniat.report_invoice_document_ve
-msgid "due if paid before"
-msgstr "debido si se paga antes"
+#. odoo-python
+#: code:addons/l10n_ve_seniat/models/account_move.py:0
+msgid ""
+"You cannot assign more than one tax to a single invoice line. Please create separate lines for each tax. \n"
+"%s"
+msgstr ""
 
 #. module: l10n_ve_seniat
-#: model_terms:ir.ui.view,arch_db:l10n_ve_seniat.report_invoice_document_ve
-msgid "units"
-msgstr "Unidades"
-
+#. odoo-python
+#: code:addons/l10n_ve_seniat/models/account_move.py:0
+msgid ""
+"You cannot reset to draft an invoice in the Venezuelan localization.\n"
+"Please create a credit note instead.\n"
+"        "
+msgstr ""
+"No puedes restablecer a borrador una factura en la localización venezolana.\n"
+"Por favor crea una nota de crédito en su lugar."

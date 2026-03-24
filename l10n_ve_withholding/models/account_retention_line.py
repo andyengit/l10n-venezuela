@@ -222,11 +222,12 @@ class AccountRetentionLine(models.Model):
             )
         )
         for record in islr_supplier_retention_lines:
-            record.retention_amount = (
+            calculated = (
                 record.invoice_amount
                 * (record.related_percentage_tax_base / 100)
                 * (record.related_percentage_fees / 100)
             ) - record.related_amount_subtract_fees
+            record.retention_amount = max(0.0, calculated)
 
     @api.onchange("economic_activity_id", "move_id")
     def onchange_economic_activity_id(self):

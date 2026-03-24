@@ -1,0 +1,108 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* l10n_ve_seniat_sale
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 18.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-03-24 03:26+0000\n"
+"PO-Revision-Date: 2026-03-24 03:26+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: es_VE\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: l10n_ve_seniat_sale
+#: model_terms:ir.ui.view,arch_db:l10n_ve_seniat_sale.report_saleorder_document_inherit_l10n_ve_seniat_sale
+msgid "<strong>Sin derecho a crédito fiscal.</strong>"
+msgstr "<strong>Sin derecho a crédito fiscal.</strong>"
+
+#. module: l10n_ve_seniat_sale
+#: model:ir.actions.server,name:l10n_ve_seniat_sale.ir_cron_sale_order_to_invoice_announcement_ir_actions_server
+msgid "Anuncio: Pedidos pendientes de facturar"
+msgstr ""
+
+#. module: l10n_ve_seniat_sale
+#: model:ir.model.fields,field_description:l10n_ve_seniat_sale.field_sale_order__invoicing_date
+msgid "Fecha de Facturación"
+msgstr ""
+
+#. module: l10n_ve_seniat_sale
+#: model:ir.model.fields,help:l10n_ve_seniat_sale.field_sale_order__invoicing_date
+msgid ""
+"Fecha en que se espera facturar. Se calcula según los términos de pago o "
+"puede establecerse manualmente."
+msgstr ""
+
+#. module: l10n_ve_seniat_sale
+#. odoo-python
+#: code:addons/l10n_ve_seniat_sale/models/sale_order.py:0
+msgid ""
+"La línea '%s' no tiene impuesto asignado. Asigne un impuesto o configure el "
+"impuesto de venta por defecto en la compañía."
+msgstr ""
+"La línea '%s' no tiene impuesto asignado. Asigne un impuesto o configure el "
+"impuesto de venta por defecto en la compañía."
+
+#. module: l10n_ve_seniat_sale
+#. odoo-python
+#: code:addons/l10n_ve_seniat_sale/models/sale_order_line.py:0
+msgid ""
+"No se puede asignar más de un impuesto a la línea '%s' en un pedido "
+"confirmado. Cree una línea separada para cada impuesto. Impuestos actuales: "
+"%s"
+msgstr ""
+
+#. module: l10n_ve_seniat_sale
+#. odoo-python
+#: code:addons/l10n_ve_seniat_sale/models/sale_order.py:0
+msgid ""
+"No se puede asignar más de un impuesto a una sola línea de pedido. Cree líneas separadas para cada impuesto.\n"
+"%s"
+msgstr ""
+
+#. module: l10n_ve_seniat_sale
+#. odoo-python
+#: code:addons/l10n_ve_seniat_sale/models/sale_order_line.py:0
+msgid ""
+"No se puede quitar el impuesto de la línea '%s' en un pedido confirmado. "
+"Cada línea debe tener exactamente un impuesto."
+msgstr ""
+
+#. module: l10n_ve_seniat_sale
+#: model:ir.actions.act_window,name:l10n_ve_seniat_sale.action_sale_order_to_invoice
+msgid "Pedidos pendientes de facturar"
+msgstr ""
+
+#. module: l10n_ve_seniat_sale
+#: model:ir.actions.act_window,name:l10n_ve_seniat_sale.action_sale_order_line_to_invoice
+msgid "Productos pendientes de facturar"
+msgstr ""
+
+#. module: l10n_ve_seniat_sale
+#: model:ir.model,name:l10n_ve_seniat_sale.model_sale_order
+msgid "Sales Order"
+msgstr "Orden de venta"
+
+#. module: l10n_ve_seniat_sale
+#: model:ir.model,name:l10n_ve_seniat_sale.model_sale_order_line
+msgid "Sales Order Line"
+msgstr "Línea de la orden de venta"
+
+#. module: l10n_ve_seniat_sale
+#. odoo-python
+#: code:addons/l10n_ve_seniat_sale/models/sale_order.py:0
+msgid "Se agregó el impuesto por defecto a la línea: %s."
+msgstr ""
+
+#. modules: l10n_ve_seniat, l10n_ve_seniat_sale
+#. odoo-python
+#: code:addons/l10n_ve_seniat/models/account_move_line.py:0
+#: code:addons/l10n_ve_seniat_sale/models/sale_order.py:0
+#: code:addons/l10n_ve_seniat_sale/models/sale_order_line.py:0
+msgid "Sin nombre"
+msgstr ""
