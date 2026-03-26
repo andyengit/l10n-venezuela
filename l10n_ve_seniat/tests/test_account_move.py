@@ -331,6 +331,8 @@ class TestAccountMove(L10nVeSeniatCommon):
         self.assertEqual(move._extract_control_number_numeric("ABC-123"), 123)
         self.assertEqual(move._extract_control_number_numeric(""), 0)
         self.assertEqual(move._extract_control_number_numeric(None), 0)
+        self.assertEqual(move._l10n_ve_control_number_parts("00-00000003"), ("00", 3))
+        self.assertEqual(move._l10n_ve_control_number_parts("00000007"), ("00", 7))
 
     def test_seniat_invoice_tag_same_currency(self):
         move = self.env["account.move"].create(
@@ -440,4 +442,23 @@ class TestAccountMove(L10nVeSeniatCommon):
         move2.action_post()
         with self.assertRaises(ValidationError) as cm:
             move2.write({"l10n_ve_control_number": "00000001"})
+        self.assertIn("inferior", str(cm.exception))
+
+    def test_control_number_inferior_uses_max_not_lex_order(self):
+        move_lo = self.env["account.move"].create(
+            self._create_invoice_vals(self.partner_ve)
+        )
+        move_lo.action_post()
+        move_lo.write({"l10n_ve_control_number": "00000007"})
+        move_hi = self.env["account.move"].create(
+            self._create_invoice_vals(self.partner_ve)
+        )
+        move_hi.action_post()
+        move_hi.write({"l10n_ve_control_number": "00-00000025"})
+        move_try = self.env["account.move"].create(
+            self._create_invoice_vals(self.partner_ve)
+        )
+        move_try.action_post()
+        with self.assertRaises(ValidationError) as cm:
+            move_try.write({"l10n_ve_control_number": "00-00000020"})
         self.assertIn("inferior", str(cm.exception))

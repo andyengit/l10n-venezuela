@@ -1,4 +1,5 @@
 import logging
+import re
 
 from dateutil.relativedelta import relativedelta
 
@@ -354,40 +355,46 @@ Please create a credit note instead.
         # Validar que el número de control no sea inferior al último asignado
         self._check_control_number_not_inferior()
 
-    def _extract_control_number_numeric(self, control_number):
-        """Extrae la parte numérica del número de control para comparación"""
+    def _l10n_ve_control_number_parts(self, control_number):
         if not control_number:
-            return 0
-        # Extraer solo los dígitos del número de control
-        digits = "".join(c for c in control_number if c.isdigit())
-        return int(digits) if digits else 0
+            return ("00", 0)
+        s = (control_number or "").strip()
+        m = re.match(r"^(\d{2})-(\d+)$", s)
+        if m:
+            return (m.group(1), int(m.group(2)))
+        digits = "".join(c for c in s if c.isdigit())
+        return ("00", int(digits) if digits else 0)
+
+    def _extract_control_number_numeric(self, control_number):
+        return self._l10n_ve_control_number_parts(control_number)[1]
 
     def _check_control_number_not_inferior(self):
-        """Valida que el número de control no sea inferior al último asignado por compañía"""
         self.ensure_one()
         if not self.l10n_ve_control_number:
             return
 
-        last_move = self.search(
+        current_est, current_seq = self._l10n_ve_control_number_parts(
+            self.l10n_ve_control_number
+        )
+        max_seq = None
+        reference = self.browse()
+        for other in self.search(
             [
                 ("l10n_ve_control_number", "!=", False),
                 ("company_id", "=", self.company_id.id),
                 ("move_type", "=", self.move_type),
                 ("id", "!=", self.id),
-            ],
-            order="l10n_ve_control_number desc",
-            limit=1,
-        )
-
-        if not last_move:
+            ]
+        ):
+            est, seq = self._l10n_ve_control_number_parts(other.l10n_ve_control_number)
+            if est != current_est:
+                continue
+            if max_seq is None or seq > max_seq:
+                max_seq = seq
+                reference = other
+        if not reference:
             return
-
-        current_num = self._extract_control_number_numeric(self.l10n_ve_control_number)
-        last_num = self._extract_control_number_numeric(
-            last_move.l10n_ve_control_number
-        )
-
-        if current_num < last_num:
+        if current_seq < max_seq:
             raise ValidationError(
                 _(
                     "El número de control '%s' es inferior al último número de control asignado '%s' "
@@ -395,7 +402,7 @@ Please create a credit note instead.
                 )
                 % (
                     self.l10n_ve_control_number,
-                    last_move.l10n_ve_control_number,
+                    reference.l10n_ve_control_number,
                     self.company_id.name,
                 )
             )
