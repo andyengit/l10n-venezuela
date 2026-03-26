@@ -151,9 +151,13 @@ class AccountRetentionLine(models.Model):
                 line.economic_activity_id = line.move_id.partner_id.economic_activity_id
 
     def unlink(self):
-        for record in self:
-            record.payment_id.unlink()
-        return super().unlink()
+        lines = self.exists()
+        payments_to_unlink = lines.mapped("payment_id").filtered(
+            lambda p: p.state in ("draft", "canceled")
+        )
+        if payments_to_unlink:
+            payments_to_unlink.unlink()
+        return super(AccountRetentionLine, lines).unlink()
 
     @api.onchange("payment_concept_id")
     @api.depends("payment_concept_id", "move_id")

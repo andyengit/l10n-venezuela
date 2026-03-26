@@ -1,5 +1,6 @@
 import logging
 import os
+import re
 from collections import OrderedDict
 from datetime import date, datetime
 from io import BytesIO
@@ -155,6 +156,22 @@ class RetentionIslrReport(models.TransientModel):
         return new_model_row
 
     @api.model
+    def _format_rif_for_macro(self, partner):
+        prefix_vat = (partner.prefix_vat or "").strip().upper()
+        partner_vat = (partner.vat or "").strip().upper()
+        raw_rif = partner_vat
+        if prefix_vat and not partner_vat.startswith(prefix_vat):
+            raw_rif = f"{prefix_vat}{partner_vat}"
+
+        normalized = re.sub(r"[^A-Z0-9]", "", raw_rif)
+        if not normalized:
+            return ""
+
+        first_alpha = next((char for char in normalized if char.isalpha()), "")
+        digits = "".join(char for char in normalized if char.isdigit())
+        return f"{first_alpha}{digits}" if first_alpha else digits
+
+    @api.model
     def _get_retention_islr_excel_row(self, row_idx, ret_line_id):
         new_row = self._get_retention_islr_excel_model_row()
 
@@ -162,18 +179,20 @@ class RetentionIslrReport(models.TransientModel):
 
         new_row["ID Sec"] = row_idx
 
-        new_row["RIF Retenido"] = ret_id.partner_id.prefix_vat + ret_id.partner_id.vat
+        new_row["RIF Retenido"] = self._format_rif_for_macro(ret_id.partner_id)
 
         pi = str(ret_id.date_accounting)
 
         fpi = datetime.strptime(pi, "%Y-%m-%d")
 
-        invoice_number = ret_line_id.move_id.name.replace("-", "")
+        invoice_number = (ret_line_id.move_id.name or "").replace("-", "")
         new_row["Número factura"] = (
             invoice_number[-10:] if len(invoice_number) > 10 else invoice_number
         )
 
-        control_number = ret_line_id.move_id.l10n_ve_control_number.replace("-", "")
+        control_number = (
+            ret_line_id.move_id.l10n_ve_control_number or ""
+        ).replace("-", "")
         new_row["Control Número"] = (
             control_number[-10:] if len(control_number) > 10 else control_number
         )

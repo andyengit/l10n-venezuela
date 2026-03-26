@@ -53,7 +53,7 @@ class AccountPayment(models.Model):
             if any(isinstance(id, models.NewId) for id in self.retention_line_ids.ids):
                 payment.retention_line_ids = False
             else:
-                payment.retention_line_ids = Command.clear()
+                payment.retention_line_ids = [Command.clear()]
         return super().unlink()
 
     def compute_retention_amount_from_retention_lines(self):

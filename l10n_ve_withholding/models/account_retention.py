@@ -489,18 +489,30 @@ class AccountRetention(models.Model):
             in_invoices_dict[line.move_id] += line
 
         for lines in in_refunds_dict.values():
-            payment_vals["payment_method_id"] = (
-                self.env.ref("account.account_payment_method_manual_in").id,
-            )
             payment_vals["payment_type"] = "inbound"
+            payment_vals["payment_method_line_id"] = (
+                payment_vals["journal_id"]
+                and self.env["account.journal"]
+                .browse(payment_vals["journal_id"])
+                .inbound_payment_method_line_ids.filtered(lambda l: l.code == "manual")[
+                    :1
+                ]
+                .id
+            )
             payment = Payment.create(payment_vals)
             lines.write({"payment_id": payment.id})
             payment.compute_retention_amount_from_retention_lines()
         for lines in in_invoices_dict.values():
-            payment_vals["payment_method_id"] = (
-                self.env.ref("account.account_payment_method_manual_out").id,
-            )
             payment_vals["payment_type"] = "outbound"
+            payment_vals["payment_method_line_id"] = (
+                payment_vals["journal_id"]
+                and self.env["account.journal"]
+                .browse(payment_vals["journal_id"])
+                .outbound_payment_method_line_ids.filtered(
+                    lambda l: l.code == "manual"
+                )[:1]
+                .id
+            )
             payment = Payment.create(payment_vals)
             lines.write({"payment_id": payment.id})
             payment.compute_retention_amount_from_retention_lines()
@@ -529,18 +541,30 @@ class AccountRetention(models.Model):
             out_invoices_dict[line.move_id] += line
 
         for lines in out_refunds_dict.values():
-            payment_vals["payment_method_id"] = (
-                self.env.ref("account.account_payment_method_manual_out").id,
-            )
             payment_vals["payment_type"] = "outbound"
+            payment_vals["payment_method_line_id"] = (
+                payment_vals["journal_id"]
+                and self.env["account.journal"]
+                .browse(payment_vals["journal_id"])
+                .outbound_payment_method_line_ids.filtered(
+                    lambda l: l.code == "manual"
+                )[:1]
+                .id
+            )
             payment = Payment.create(payment_vals)
             lines.write({"payment_id": payment.id})
             payment.compute_retention_amount_from_retention_lines()
         for lines in out_invoices_dict.values():
-            payment_vals["payment_method_id"] = (
-                self.env.ref("account.account_payment_method_manual_in").id,
-            )
             payment_vals["payment_type"] = "inbound"
+            payment_vals["payment_method_line_id"] = (
+                payment_vals["journal_id"]
+                and self.env["account.journal"]
+                .browse(payment_vals["journal_id"])
+                .inbound_payment_method_line_ids.filtered(lambda l: l.code == "manual")[
+                    :1
+                ]
+                .id
+            )
             payment = Payment.create(payment_vals)
             lines.write({"payment_id": payment.id})
             payment.compute_retention_amount_from_retention_lines()
@@ -548,9 +572,111 @@ class AccountRetention(models.Model):
     def action_draft(self):
         self.write({"state": "draft"})
 
+    def _validate_iva_checklist_before_post(self):
+        for retention in self.filtered(lambda r: r.type_retention == "iva"):
+            errors = []
+
+            journal = (
+                retention.company_id.iva_supplier_retention_journal_id
+                if retention.type == "in_invoice"
+                else retention.company_id.iva_customer_retention_journal_id
+            )
+            if not journal:
+                errors.append(
+                    _(
+                        "1) Diario IVA: no hay diario de retencion IVA configurado para este tipo."
+                    )
+                )
+            else:
+                if journal.type not in ("bank", "cash"):
+                    errors.append(
+                        _(
+                            "1) Diario IVA: el diario '%(journal)s' debe ser de tipo Banco o Caja.",
+                            journal=journal.display_name,
+                        )
+                    )
+                if not journal.default_account_id and not journal.suspense_account_id:
+                    errors.append(
+                        _(
+                            "1) Diario IVA: el diario '%(journal)s' no tiene cuentas configuradas (cuenta por defecto o cuenta transitoria).",
+                            journal=journal.display_name,
+                        )
+                    )
+
+            if not retention.partner_id.withholding_type_id:
+                errors.append(
+                    _(
+                        "4) Partner: el proveedor '%(partner)s' no tiene tipo de retencion (withholding_type_id).",
+                        partner=retention.partner_id.display_name,
+                    )
+                )
+
+            invoices = retention.retention_line_ids.mapped("move_id")
+            if not invoices:
+                errors.append(
+                    _("2) Facturas: la retencion no tiene lineas con facturas asociadas.")
+                )
+            else:
+                not_posted = invoices.filtered(lambda inv: inv.state != "posted")
+                if not_posted:
+                    errors.append(
+                        _(
+                            "2) Facturas: deben estar publicadas. Facturas no publicadas: %(invoices)s",
+                            invoices=", ".join(not_posted.mapped("name")),
+                        )
+                    )
+
+                without_residual = invoices.filtered(lambda inv: inv.amount_residual <= 0)
+                if without_residual:
+                    errors.append(
+                        _(
+                            "2) Facturas: deben tener saldo pendiente > 0. Facturas sin saldo pendiente: %(invoices)s",
+                            invoices=", ".join(without_residual.mapped("name")),
+                        )
+                    )
+
+                without_taxes = invoices.filtered(
+                    lambda inv: not any(
+                        line.tax_ids and line.tax_ids[0].amount > 0
+                        for line in inv.line_ids
+                    )
+                )
+                if without_taxes:
+                    errors.append(
+                        _(
+                            "2) Facturas: deben tener impuestos > 0. Facturas sin impuestos validos: %(invoices)s",
+                            invoices=", ".join(without_taxes.mapped("name")),
+                        )
+                    )
+
+                with_active_retention = invoices.filtered(
+                    lambda inv: any(
+                        inv.retention_iva_line_ids.filtered(
+                            lambda line: line.retention_id != retention
+                            and line.state in ("draft", "emitted")
+                        )
+                    )
+                )
+                if with_active_retention:
+                    errors.append(
+                        _(
+                            "3) Facturas: ya tienen una retencion IVA activa (draft/emitted). Facturas afectadas: %(invoices)s",
+                            invoices=", ".join(with_active_retention.mapped("name")),
+                        )
+                    )
+
+            if errors:
+                raise UserError(
+                    _(
+                        "No se puede confirmar la retencion IVA porque fallaron estas validaciones:\n\n%(errors)s",
+                        errors="\n".join(errors),
+                    )
+                )
+
     def action_post(self):
         today = datetime.now()
         for retention in self:
+            retention._validate_iva_checklist_before_post()
             if (
                 retention.type in ["out_invoice", "out_refund", "out_debit"]
                 and not retention.number
@@ -775,74 +901,75 @@ class AccountRetention(models.Model):
         """
         for payment in self.mapped("payment_ids"):
             payment.with_context(skip_is_manually_modified=True).action_post()
+            if not payment.move_id or not payment.move_id.line_ids:
+                raise UserError(
+                    _(
+                        "El pago de retencion '%(payment)s' no genero asiento contable al publicar.\n\n"
+                        "Revise la configuracion del diario '%(journal)s':\n"
+                        "- Cuenta por defecto o cuenta transitoria\n"
+                        "- Cuentas de pagos/cobros pendientes\n"
+                        "- Metodo de pago manual",
+                        payment=payment.display_name,
+                        journal=payment.journal_id.display_name,
+                    )
+                )
+            if payment.company_currency_id.is_zero(payment.amount):
+                continue
             if payment.partner_type == "supplier":
                 self._reconcile_supplier_payment(payment)
             if payment.partner_type == "customer":
                 self._reconcile_customer_payment(payment)
 
+    def _get_line_to_reconcile(self, payment, account_type):
+        lines = payment.move_id.line_ids.filtered(
+            lambda line: line.account_id.account_type == account_type
+            and not line.reconciled
+            and not payment.company_currency_id.is_zero(abs(line.balance))
+        )
+        if not lines:
+            move_lines_detail = "\n".join(
+                [
+                    _(
+                        "- Linea '%(name)s' | cuenta=%(account)s | tipo=%(type)s | balance=%(balance)s | reconciled=%(reconciled)s",
+                        name=line.name or "/",
+                        account=line.account_id.display_name,
+                        type=line.account_id.account_type,
+                        balance=line.balance,
+                        reconciled=line.reconciled,
+                    )
+                    for line in payment.move_id.line_ids
+                ]
+            )
+            raise ValidationError(
+                _(
+                    "No existen lineas conciliables en el asiento del pago de retencion.\n\n"
+                    "Pago: %(payment)s\n"
+                    "Asiento: %(move)s\n"
+                    "Tipo esperado de cuenta: %(account_type)s\n"
+                    "Diario: %(journal)s\n"
+                    "Monto pago: %(amount)s\n\n"
+                    "Lineas del asiento:\n%(lines)s",
+                    payment=payment.display_name,
+                    move=payment.move_id.display_name,
+                    account_type=account_type,
+                    journal=payment.journal_id.display_name,
+                    amount=payment.amount,
+                    lines=move_lines_detail or _("- Sin lineas."),
+                )
+            )
+        return lines[0]
+
     def _reconcile_supplier_payment(self, payment):
-        if payment.payment_type == "outbound":
-            lines = payment.move_id.line_ids.filtered(
-                lambda line: line.account_id.account_type == "liability_payable"
-                and line.debit > 0
-            )
-            if not lines:
-                raise ValidationError(
-                    _("No registered lines found in the move to reconcile.")
-                )
-            line_to_reconcile = lines[0]
-
-            payment.retention_line_ids.move_id.js_assign_outstanding_line(
-                line_to_reconcile.id
-            )
-
-        elif payment.payment_type == "inbound":
-            lines = payment.move_id.line_ids.filtered(
-                lambda line: line.account_id.account_type == "liability_payable"
-                and line.credit > 0
-            )
-            if not lines:
-                raise ValidationError(
-                    _("No registered lines found in the move to reconcile.")
-                )
-            line_to_reconcile = lines[0]
-
-            payment.retention_line_ids.move_id.js_assign_outstanding_line(
-                line_to_reconcile.id
-            )
+        line_to_reconcile = self._get_line_to_reconcile(payment, "liability_payable")
+        payment.retention_line_ids.move_id.js_assign_outstanding_line(
+            line_to_reconcile.id
+        )
 
     def _reconcile_customer_payment(self, payment):
-        if payment.payment_type == "outbound":
-            lines = payment.move_id.line_ids.filtered(
-                lambda line: line.account_id.account_type == "asset_receivable"
-                and line.debit > 0
-            )
-
-            if not lines:
-                raise ValidationError(
-                    _("No registered lines found in the move to reconcile.")
-                )
-            line_to_reconcile = lines[0]
-
-            payment.retention_line_ids.move_id.js_assign_outstanding_line(
-                line_to_reconcile.id
-            )
-
-        elif payment.payment_type == "inbound":
-            lines = payment.move_id.line_ids.filtered(
-                lambda line: line.account_id.account_type == "asset_receivable"
-                and line.credit > 0
-            )
-
-            if not lines:
-                raise ValidationError(
-                    _("No registered lines found in the move to reconcile.")
-                )
-            line_to_reconcile = lines[0]
-
-            payment.retention_line_ids.move_id.js_assign_outstanding_line(
-                line_to_reconcile.id
-            )
+        line_to_reconcile = self._get_line_to_reconcile(payment, "asset_receivable")
+        payment.retention_line_ids.move_id.js_assign_outstanding_line(
+            line_to_reconcile.id
+        )
 
     @api.model
     def compute_retention_lines_data(self, invoice_id, payment=None):
