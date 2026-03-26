@@ -49,7 +49,6 @@
                     <!-- So that it appears in the footer of the report instead of the company VAT if it's set -->
                     <div class="row">
                         <p class="text-center fw-bold text-danger">
-                            <span t-if="o.l10n_ve_on_behalf_of_third_party">FACTURA POR CUENTA DE TERCEROS</span>
                             <span t-elif="o.move_type == 'out_invoice' and not o.debit_origin_id">FACTURA</span>
                             <span t-elif="o.move_type == 'out_invoice' and o.debit_origin_id">NOTA DE DEBITO</span>
                             <span t-elif="o.move_type == 'out_refund' and o.reversed_entry_id">NOTA DE CREDITO</span>
@@ -60,7 +59,7 @@
                         <t t-if="o.reversed_entry_id" t-set="origin_affected" t-value="o.reversed_entry_id" />
                         <div t-attf-class="{{ 'col-6' if origin_affected else 'col-9' }}">
                             <t t-if="o.l10n_ve_on_behalf_of_third_party and o.l10n_ve_third_party_partner_id">
-                                <span class="d-block text-uppercase fw-bold">Por cuenta de: </span>
+                                <span class="d-block text-uppercase fw-bold">FACTURA POR CUENTA DE TERCEROS:</span>
                                 <span class="d-block"><t t-out="o.l10n_ve_third_party_partner_id.name"/> - RIF: <t t-out="o.l10n_ve_third_party_partner_id.vat"/></span>
                                 <div t-if="o.l10n_ve_certified_copy_deadline" class="text-muted small mb-2">
                                     <span>Obligación Art. 32 PA00071: Entregar copia certificada al cliente a más tardar el <span t-field="o.l10n_ve_certified_copy_deadline"/></span>.
