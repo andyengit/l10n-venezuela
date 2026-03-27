@@ -30,6 +30,17 @@
                 <attribute name="invisible">country_code == 'VE'</attribute>
             </xpath>
 
+            <xpath expr="//header//button[@name='action_reverse']" position="after">
+                <button
+                    name="action_debit_note"
+                    string="Nota de Debito"
+                    icon="fa-plus"
+                    type="object"
+                    class="btn-secondary"
+                    groups="account.group_account_invoice"
+                    invisible="country_code != 'VE' or move_type != 'out_invoice' or state != 'posted' or debit_origin_id"
+                />
+            </xpath>
             <xpath expr="//header" position="inside">
                 <button
                     name="button_cancel"

@@ -49,10 +49,10 @@
                                     </td>
                                     <td class="o_list_monetary">
                                         <span
-                                            class="o_tax_group_amount_value o_list_monetary"
+                                            class="o_tax_group_amount_value o_list_monetary text-nowrap"
                                         >
                                             <t
-                                                t-out="formatAmount(taxGroup.tax_amount_currency || 0, false)"
+                                                t-out="'(' + formatAmount(taxGroup.display_base_amount_currency ?? taxGroup.base_amount_currency ?? 0, false) + ') ' + formatAmount(taxGroup.tax_amount_currency || 0, false)"
                                                 style="white-space: nowrap;"
                                             />
                                         </span>
@@ -60,10 +60,10 @@
                                     <t t-if="taxTotals.display_in_company_currency">
                                         <td class="o_list_monetary ps-5">
                                             <span
-                                                class="o_tax_group_amount_value o_list_monetary"
+                                                class="o_tax_group_amount_value o_list_monetary text-nowrap"
                                             >
                                                 <t
-                                                    t-out="formatAmount(taxGroup.tax_amount || 0, true)"
+                                                    t-out="'(' + formatAmount(taxGroup.display_base_amount ?? taxGroup.base_amount ?? 0, true) + ') ' + formatAmount(taxGroup.tax_amount || 0, true)"
                                                     style="white-space: nowrap;"
                                                 />
                                             </span>

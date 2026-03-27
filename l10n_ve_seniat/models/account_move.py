@@ -128,6 +128,47 @@ class AccountMove(models.Model):
             else:
                 move.l10n_ve_certified_copy_deadline = False
 
+    def _l10n_ve_to_company_abs_amount(self):
+        self.ensure_one()
+        company_cur = self.company_currency_id
+        amount = abs(self.amount_total)
+        if self.currency_id == company_cur:
+            return company_cur.round(amount)
+        date = self.invoice_date or self.date or fields.Date.context_today(self)
+        return company_cur.round(
+            self.currency_id._convert(amount, company_cur, self.company_id, date)
+        )
+
+    def _l10n_ve_credit_note_limit_company_amount(self):
+        self.ensure_one()
+        if self.move_type != 'out_refund' or not self.reversed_entry_id:
+            return 0.0
+        company_cur = self.company_currency_id
+        origin = self.reversed_entry_id
+        limit = origin._l10n_ve_to_company_abs_amount()
+        debit_notes = origin.debit_note_ids.filtered(
+            lambda m: m.state == 'posted' and m.move_type == 'out_invoice'
+        )
+        for debit in debit_notes:
+            limit = company_cur.round(limit + debit._l10n_ve_to_company_abs_amount())
+        return limit
+
+    def _l10n_ve_credit_note_accumulated_company_amount(self, include_current=False):
+        self.ensure_one()
+        if self.move_type != 'out_refund' or not self.reversed_entry_id:
+            return 0.0
+        company_cur = self.company_currency_id
+        origin = self.reversed_entry_id
+        total = 0.0
+        posted_credits = origin.reversal_move_ids.filtered(
+            lambda m: m.state == 'posted' and m.move_type == 'out_refund'
+        )
+        for credit in posted_credits:
+            total = company_cur.round(total + credit._l10n_ve_to_company_abs_amount())
+        if include_current and self.state != 'posted':
+            total = company_cur.round(total + self._l10n_ve_to_company_abs_amount())
+        return total
+
     def action_post(self):
         for move_id in self:
             if move_id.country_code != self.env.ref("base.ve").code:
@@ -178,6 +219,25 @@ class AccountMove(models.Model):
                             move_id.name or _("Borrador"),
                         )
                     )
+
+                if move_id.move_type == "out_refund" and move_id.reversed_entry_id:
+                    company_cur = move_id.company_currency_id
+                    limit = move_id._l10n_ve_credit_note_limit_company_amount()
+                    accumulated = move_id._l10n_ve_credit_note_accumulated_company_amount(
+                        include_current=True
+                    )
+                    if accumulated > limit and not company_cur.is_zero(accumulated - limit):
+                        raise ValidationError(
+                            _(
+                                "No se puede confirmar la nota de crédito '%(move)s'. "
+                                "El monto máximo acumulado permitido es %(limit)s y con esta nota se alcanzan %(acc)s."
+                            )
+                            % {
+                                "move": move_id.name or _("Borrador"),
+                                "limit": company_cur.format(limit),
+                                "acc": company_cur.format(accumulated),
+                            }
+                        )
 
                 if (
                     move_id.l10n_ve_on_behalf_of_third_party
@@ -687,6 +747,34 @@ Please create a credit note instead.
         if self.company_id.account_fiscal_country_id.code == "VE":
             return "l10n_ve_seniat.report_invoice_document"
         return super()._get_name_invoice_report()
-        
+
+    @api.depends_context("lang")
+    @api.depends(
+        "invoice_line_ids.currency_rate",
+        "invoice_line_ids.tax_base_amount",
+        "invoice_line_ids.tax_line_id",
+        "invoice_line_ids.price_total",
+        "invoice_line_ids.price_subtotal",
+        "invoice_payment_term_id",
+        "partner_id",
+        "currency_id",
+    )
+    def _compute_tax_totals(self):
+        super()._compute_tax_totals()
+        for move in self:
+            if move.country_code != "VE" or not move.tax_totals:
+                continue
+            move.tax_totals["same_tax_base"] = False
+            for subtotal in move.tax_totals.get("subtotals", []):
+                for tax_group in subtotal.get("tax_groups", []):
+                    if tax_group.get("display_base_amount_currency") is False:
+                        tax_group["display_base_amount_currency"] = tax_group.get(
+                            "base_amount_currency", 0.0
+                        )
+                    if tax_group.get("display_base_amount") in (False, None):
+                        tax_group["display_base_amount"] = tax_group.get(
+                            "base_amount", 0.0
+                        )
+
     def action_print_pdf(self):
         return super(AccountMove, self.with_context(l10n_ve_invoice=True)).action_print_pdf()

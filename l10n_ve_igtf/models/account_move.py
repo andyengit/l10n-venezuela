@@ -27,7 +27,7 @@ class AccountMove(models.Model):
         readonly=True,
     )
 
-    def _l10n_ve_igtf_get_collected_amounts(self):
+    def _l10n_ve_igtf_get_collected_amounts(self, include_base=False):
         """
         Compute the IGTF collected for this invoice from reconciled IGTF payments.
 
@@ -49,17 +49,25 @@ class AccountMove(models.Model):
         self.ensure_one()
 
         if self.country_code != "VE":
+            if include_base:
+                return 0.0, 0.0, 0.0, 0.0
             return 0.0, 0.0
 
         if not self.is_sale_document(include_receipts=True):
+            if include_base:
+                return 0.0, 0.0, 0.0, 0.0
             return 0.0, 0.0
 
         company = self.company_id
         if not company.l10n_ve_igtf_account_id:
+            if include_base:
+                return 0.0, 0.0, 0.0, 0.0
             return 0.0, 0.0
 
         percent = company.l10n_ve_igtf_percent or 0.0
         if percent <= 0.0:
+            if include_base:
+                return 0.0, 0.0, 0.0, 0.0
             return 0.0, 0.0
 
         sign = 1.0
@@ -70,6 +78,8 @@ class AccountMove(models.Model):
         invoice_currency = self.currency_id
         invoice_total = invoice_currency.round(abs(self.amount_total))
         if invoice_currency.is_zero(invoice_total):
+            if include_base:
+                return 0.0, 0.0, 0.0, 0.0
             return 0.0, 0.0
 
         receivable_lines = self.line_ids.filtered(
@@ -85,6 +95,8 @@ class AccountMove(models.Model):
             )
         )
         if not partials:
+            if include_base:
+                return 0.0, 0.0, 0.0, 0.0
             return 0.0, 0.0
 
         by_pay_line = {}
@@ -121,6 +133,8 @@ class AccountMove(models.Model):
             )
 
         if not by_pay_line:
+            if include_base:
+                return 0.0, 0.0, 0.0, 0.0
             return 0.0, 0.0
 
         base_total = 0.0
@@ -188,10 +202,21 @@ class AccountMove(models.Model):
             )
         )
         igtf_company_currency = company.currency_id.round(sign * (base_total_company * p))
+        base_total_signed = invoice_currency.round(sign * base_total)
+        base_total_company_signed = company.currency_id.round(sign * base_total_company)
         if invoice_currency.is_zero(igtf_invoice_currency) and company.currency_id.is_zero(
             igtf_company_currency
         ):
+            if include_base:
+                return base_total_signed, base_total_company_signed, 0.0, 0.0
             return 0.0, 0.0
+        if include_base:
+            return (
+                base_total_signed,
+                base_total_company_signed,
+                igtf_invoice_currency,
+                igtf_company_currency,
+            )
         return igtf_invoice_currency, igtf_company_currency
 
     def _l10n_ve_igtf_get_residual_company_amount(self):
@@ -330,42 +355,28 @@ class AccountMove(models.Model):
                 or not move.is_sale_document(include_receipts=True)
             ):
                 continue
-            igtf_amount_currency = move.l10n_ve_igtf_collected_amount_currency
+            (
+                igtf_base_amount_currency,
+                igtf_base_amount_company_currency,
+                igtf_amount_currency,
+                igtf_amount_company_currency,
+            ) = move._l10n_ve_igtf_get_collected_amounts(include_base=True)
             if not move.currency_id:
                 continue
             totals = dict(move.tax_totals)
-            igtf_amount_company_currency = (
-                move.l10n_ve_igtf_collected_amount_company_currency
-            )
             subtotals = list(totals.get("subtotals") or [])
             percent = move.company_id.l10n_ve_igtf_percent or 0
             percent_str = int(percent) if percent == int(percent) else percent
-            p = percent / 100.0 if percent else 0.0
-            if p > 0:
-                base_currency = move.currency_id.round(
-                    igtf_amount_currency / p
-                )
-                base_company = move.company_currency_id.round(
-                    move.currency_id._convert(
-                        base_currency,
-                        move.company_currency_id,
-                        move.company_id,
-                        move.date,
-                    )
-                )
-            else:
-                base_currency = 0.0
-                base_company = 0.0
             igtf_tax_group = {
                 "id": -1,
                 "involved_tax_ids": [],
                 "group_name": _("IGTF %(percent)s %%") % {"percent": percent_str},
                 "group_label": False,
-                "base_amount_currency": base_currency,
-                "display_base_amount_currency": base_currency,
+                "base_amount_currency": igtf_base_amount_currency,
+                "display_base_amount_currency": igtf_base_amount_currency,
                 "tax_amount_currency": igtf_amount_currency,
-                "base_amount": base_company,
-                "display_base_amount": base_company,
+                "base_amount": igtf_base_amount_company_currency,
+                "display_base_amount": igtf_base_amount_company_currency,
                 "tax_amount": igtf_amount_company_currency,
             }
             if subtotals:
@@ -377,8 +388,8 @@ class AccountMove(models.Model):
                 subtotals.append(
                     {
                         "name": _("Untaxed Amount"),
-                        "base_amount_currency": base_currency,
-                        "base_amount": base_company,
+                        "base_amount_currency": igtf_base_amount_currency,
+                        "base_amount": igtf_base_amount_company_currency,
                         "tax_amount_currency": 0.0,
                         "tax_amount": 0.0,
                         "tax_groups": [igtf_tax_group],

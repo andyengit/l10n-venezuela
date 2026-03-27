@@ -1,0 +1,227 @@
+import base64
+import json
+
+from odoo import _, api, fields, models
+from odoo.exceptions import UserError, ValidationError
+
+from .edi_mixin import STATE_FAILED, STATE_QUEUED, STATE_SENT
+
+
+class AccountMove(models.Model):
+    _name = "account.move"
+    _inherit = ["account.move", "l10n_ve.edi.mixin"]
+
+    def _generate_control_number(self):
+        self.ensure_one()
+        if (
+            self.journal_id.l10n_ve_edi_provider
+            and self.journal_id.l10n_ve_edi_provider != "none"
+        ):
+            return
+        return super()._generate_control_number()
+
+    def _l10n_ve_edi_is_invoice_target(self):
+        self.ensure_one()
+        return (
+            self.state == "posted"
+            and self.country_code == "VE"
+            and self.move_type in ("out_invoice", "out_refund")
+            and self.journal_id.l10n_ve_edi_provider
+            and self.journal_id.l10n_ve_edi_provider != "none"
+        )
+
+    def _l10n_ve_edi_create_payload_attachment(self, payload):
+        self.ensure_one()
+        filename = (self.name or f"move_{self.id}").replace("/", "_")
+        content = json.dumps(payload, ensure_ascii=False, separators=(",", ":"))
+        datas = base64.b64encode(content.encode("utf-8"))
+        attachment = self.env["ir.attachment"].sudo().create(
+            {
+                "name": f"l10n_ve_edi_payload_{filename}.json",
+                "type": "binary",
+                "datas": datas,
+                "mimetype": "application/json",
+                "res_model": self._name,
+                "res_id": self.id,
+            }
+        )
+        return attachment
+
+    def _build_payload_to_send(self):
+        self.ensure_one()
+        provider = self.journal_id.l10n_ve_edi_provider
+        if not provider or provider == "none":
+            raise UserError(
+                _("Seleccione un proveedor de facturacion digital en el diario de la factura.")
+            )
+        self._l10n_ve_edi_validate_parties_identification()
+        return self._l10n_ve_edi_build_payload_for_provider(provider)
+
+    def _l10n_ve_edi_build_payload_for_provider(self, provider):
+        self.ensure_one()
+        raise UserError(
+            _(
+                "No hay modulo instalado para el proveedor EDI %(code)s. "
+                "Instale el conector correspondiente (por ejemplo l10n_ve_edi_tfhka para TFHKA)."
+            )
+            % {"code": provider}
+        )
+
+    def _l10n_ve_edi_enqueue_send(self, reuse_payload=False):
+        self.ensure_one()
+        attachment = self.l10n_ve_edi_payload_attachment_id if reuse_payload else False
+        if not attachment:
+            payload = self._build_payload_to_send()
+            attachment = self._l10n_ve_edi_create_payload_attachment(payload)
+        self.write(
+            {
+                "l10n_ve_edi_payload_attachment_id": attachment.id,
+                "l10n_ve_edi_send_state": STATE_QUEUED,
+                "l10n_ve_edi_last_error": False,
+                "l10n_ve_edi_response_json": False,
+            }
+        )
+        self.message_post(body="Solicitud de envio a Facturacion Digital encolada.")
+        self.with_delay(
+            description=f"EDI VE send invoice {self.name or self.id}",
+            channel="root",
+        )._job_l10n_ve_edi_send_invoice(self.id)
+
+    def action_l10n_ve_edi_send(self):
+        for move in self:
+            if move.state != "posted":
+                raise UserError(_("Solo se pueden enviar facturas confirmadas."))
+            if not move._l10n_ve_edi_is_invoice_target():
+                raise UserError(
+                    _(
+                        "El diario no tiene proveedor de facturacion digital configurado o el documento no aplica."
+                    )
+                )
+            if move.l10n_ve_edi_send_state == STATE_QUEUED:
+                raise UserError(_("Ya hay una solicitud de envio en cola para este documento."))
+            if move.l10n_ve_edi_send_state == STATE_SENT:
+                raise UserError(_("El documento ya fue enviado a facturacion digital."))
+            move._l10n_ve_edi_enqueue_send(reuse_payload=False)
+        return True
+
+    def action_l10n_ve_edi_retry_send(self):
+        return self.action_l10n_ve_edi_send()
+
+    def _l10n_ve_edi_get_company_partner(self):
+        self.ensure_one()
+        return self.company_id.partner_id.commercial_partner_id
+
+    def _l10n_ve_edi_get_buyer_partner(self):
+        self.ensure_one()
+        return self.partner_id.commercial_partner_id
+
+    def _l10n_ve_edi_get_company_vat(self):
+        self.ensure_one()
+        company_partner = self._l10n_ve_edi_get_company_partner()
+        return company_partner.vat or self.company_id.vat
+
+    def _l10n_ve_edi_get_seller_identification(self):
+        self.ensure_one()
+        return self._l10n_ve_edi_parse_ve_vat(self._l10n_ve_edi_get_company_vat())
+
+    def _l10n_ve_edi_get_buyer_identification(self):
+        self.ensure_one()
+        buyer = self._l10n_ve_edi_get_buyer_partner()
+        return self._l10n_ve_edi_parse_ve_vat(buyer.vat)
+
+    def _l10n_ve_edi_validate_parties_identification(self):
+        self.ensure_one()
+        buyer = self._l10n_ve_edi_get_buyer_partner()
+        buyer_prefix, buyer_number = self._l10n_ve_edi_get_buyer_identification()
+        if not buyer_prefix or not buyer_number:
+            raise UserError(
+                f"El RIF del cliente no es valido o falta para el payload EDI. Valor actual: {buyer.vat or 'VACIO'}"
+            )
+        company_vat = self._l10n_ve_edi_get_company_vat()
+        seller_prefix, seller_number = self._l10n_ve_edi_get_seller_identification()
+        if not seller_prefix or not seller_number:
+            raise UserError(
+                "El RIF del emisor (su empresa en Odoo) no es valido o falta para el payload EDI. "
+                "Configuracion: Ajustes > Empresas, campo NIF/CIF (no el RIF del cliente). "
+                f"Valor leido: {company_vat or 'VACIO'}"
+            )
+
+    def _l10n_ve_edi_dispatch_payload(self, payload):
+        self.ensure_one()
+        provider = self.journal_id.l10n_ve_edi_provider
+        return {
+            "success": False,
+            "error": (
+                "Proveedor EDI no soportado o modulo no instalado: %(provider)s."
+                % {"provider": provider or "none"}
+            ),
+        }
+
+    def _l10n_ve_edi_on_dispatch_success(self, response):
+        self.ensure_one()
+
+    def _run_job(self):
+        self.ensure_one()
+        attachment = self.l10n_ve_edi_payload_attachment_id
+        error_message = False
+        if not attachment or not attachment.datas:
+            error_message = "Falta el adjunto con el payload EDI."
+        else:
+            payload = json.loads(base64.b64decode(attachment.datas).decode("utf-8"))
+            dispatch = self._l10n_ve_edi_dispatch_payload(payload)
+            if dispatch.get("success"):
+                response = dispatch.get("response")
+                try:
+                    self._l10n_ve_edi_on_dispatch_success(response)
+                except (UserError, ValidationError) as exc:
+                    error_message = str(exc)
+                    response_json = False
+                    if response is not None:
+                        response_json = json.dumps(response, ensure_ascii=False, indent=2)
+                    self.write(
+                        {
+                            "l10n_ve_edi_send_state": STATE_SENT,
+                            "l10n_ve_edi_sent_at": fields.Datetime.now(),
+                            "l10n_ve_edi_last_error": error_message,
+                            "l10n_ve_edi_response_json": response_json,
+                        }
+                    )
+                    self.message_post(
+                        body=(
+                            "El envio a facturacion digital fue exitoso, pero hubo una "
+                            f"incidencia de validacion en Odoo: {error_message}"
+                        )
+                    )
+                    return True
+                response_json = False
+                if response is not None:
+                    response_json = json.dumps(response, ensure_ascii=False, indent=2)
+                self.write(
+                    {
+                        "l10n_ve_edi_send_state": STATE_SENT,
+                        "l10n_ve_edi_sent_at": fields.Datetime.now(),
+                        "l10n_ve_edi_last_error": False,
+                        "l10n_ve_edi_response_json": response_json,
+                    }
+                )
+                self.message_post(body="Documento enviado exitosamente a facturacion digital.")
+                return True
+            error_message = dispatch.get("error") or "El conector EDI no completo el envio."
+        if error_message:
+            self.write(
+                {
+                    "l10n_ve_edi_send_state": STATE_FAILED,
+                    "l10n_ve_edi_last_error": error_message,
+                }
+            )
+            self.message_post(
+                body=f"Fallo el envio a facturacion digital. Motivo: {error_message}"
+            )
+        return False
+
+    @api.model
+    def _job_l10n_ve_edi_send_invoice(self, move_id):
+        move = self.sudo().browse(move_id).exists()
+        if not move:
+            return False
+        return move._run_job()
